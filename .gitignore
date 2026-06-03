@@ -1,0 +1,11 @@
+# Microsoft Office documents
+*.docx
+*.doc
+*.xlsx
+*.xls
+*.pptx
+*.ppt
+
+# OS files
+.DS_Store
+Thumbs.db
