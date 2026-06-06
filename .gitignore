@@ -8,7 +8,7 @@
 
 # Agents
 *.claude
-*.SKILL.md
+SKILL.md
 
 # OS files
 .DS_Store
