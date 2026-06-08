@@ -1,0 +1,41 @@
+# LOC — Production override (built images, no source mounts, no hot reload)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Notes:
+#   - Frontend builds the Next.js standalone image (requires output: 'standalone' in next.config.ts).
+#   - Backend runs uvicorn without --reload, multiple workers.
+#   - On Hostinger, Coolify can consume these same Dockerfiles directly.
+
+services:
+  db:
+    ports: []                    # do not expose the DB publicly in prod
+    volumes:
+      - loc_pgdata:/var/lib/postgresql/data
+
+  redis:
+    ports: []
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+    environment:
+      ENV: production
+    volumes: []                  # no source mount in prod
+    restart: always
+
+  frontend:
+    image: ""                    # override the dev node image
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile     # frontend/Dockerfile (requires output:'standalone' in next.config.ts)
+      args:
+        # NEXT_PUBLIC_* vars are baked into the bundle at build time — must be passed as ARGs
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    command: node server.js
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://backend:8000   # server-side proxy route hits this, not the public URL
+    volumes: []
+    restart: always

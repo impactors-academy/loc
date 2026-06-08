@@ -8,21 +8,24 @@
 
 # Agents
 *.claude
-SKILL.md
+*.SKILL.md
 
 # OS files
 .DS_Store
 Thumbs.db
 
+# Environment — never commit real secrets
+.env
+backend/.env
+frontend/.env.local
+
 # Frontend
 frontend/node_modules/
 frontend/.next/
-frontend/.env.local
 
 # Backend
 backend/__pycache__/
 backend/**/__pycache__/
-backend/.env
 backend/*.egg-info/
 backend/.venv/
 backend/test.db

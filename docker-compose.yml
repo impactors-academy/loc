@@ -1,0 +1,86 @@
+# LOC — Development stack (hot reload)
+# Usage: cp .env.example .env  &&  docker compose up
+#
+# Services:
+#   db       PostgreSQL 16 + pgvector extension (ready for Phase-2 hybrid search)
+#   redis    Cache layer for fastapi-cache2 (5-min TTL on public listings)
+#   backend  FastAPI (uvicorn --reload), source-mounted for hot reload
+#   frontend Next.js (next dev), source-mounted for hot reload
+
+services:
+  db:
+    image: pgvector/pgvector:pg16   # plain Postgres now; pgvector available when we add semantic search
+    container_name: loc_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-loc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-loc}
+      POSTGRES_DB: ${POSTGRES_DB:-loc}
+    ports:
+      - "5432:5432"
+    volumes:
+      - loc_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-loc} -d ${POSTGRES_DB:-loc}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: loc_redis
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no"]  # cache only, no persistence
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: loc_backend
+    restart: unless-stopped
+    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-loc}:${POSTGRES_PASSWORD:-loc}@db:5432/${POSTGRES_DB:-loc}
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      ENV: development
+    volumes:
+      - ./backend:/app          # live source for --reload
+      - /app/.venv              # keep container venv (don't let mount shadow it)
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    image: node:20-alpine
+    container_name: loc_frontend
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    environment:
+      # Browser-facing URL (baked into JS bundle at runtime)
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      # Server-side URL used by Next.js API proxy routes inside Docker
+      API_INTERNAL_URL: http://backend:8000
+      NODE_ENV: development
+      WATCHPACK_POLLING: "true"   # reliable file-watching inside Docker
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules         # keep container node_modules (don't let mount shadow it)
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  loc_pgdata:
