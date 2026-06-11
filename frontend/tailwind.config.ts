@@ -50,6 +50,20 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // LOC Morocco brand palette
+        loc: {
+          terracotta: "#C4714A",
+          sand: "#F7EDD8",
+          amber: "#D4A44C",
+          teal: "#2D6A6A",
+          night: "#1A1A2E",
+          stone: "#8B7355",
+          cream: "#FAF5EC",
+        },
+      },
+      fontFamily: {
+        heading: ["var(--font-playfair)", "Georgia", "serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,10 +79,15 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(24px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-up": "fade-up 0.7s ease-out forwards",
       },
     },
   },

@@ -1,25 +1,95 @@
-import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
+import { SITE_NAME } from "@/lib/constants"
 import Link from "next/link"
+
+const FOOTER_SECTIONS = [
+  {
+    heading: "Explore",
+    links: [
+      { label: "Experiences", href: "/experiences" },
+      { label: "Places to Stay", href: "/stays" },
+      { label: "Digital Store", href: "/store" },
+      { label: "Blog", href: "/blog" },
+    ],
+  },
+  {
+    heading: "For Businesses",
+    links: [
+      { label: "List Your Experience", href: "/promote" },
+      { label: "Advertise with LOC", href: "/promote" },
+      { label: "Partner Packages", href: "/promote" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "About LOC", href: "/about" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Privacy Policy", href: "/privacy" },
+    ],
+  },
+]
 
 export function Footer() {
   return (
-    <footer className="border-t bg-neutral-950 text-neutral-400 py-12">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row items-start justify-between gap-8">
-        <div>
-          <p className="text-white font-bold text-lg">{SITE_NAME}</p>
-          <p className="text-sm mt-1">Your gateway to Morocco.</p>
-        </div>
-        <nav className="flex flex-col gap-2">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="text-sm hover:text-white transition-colors">
-              {link.label}
-            </Link>
+    <footer className="bg-loc-night text-neutral-400">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+          {/* Brand column */}
+          <div className="md:col-span-1">
+            <p className="font-heading text-white text-2xl font-bold">{SITE_NAME}</p>
+            <p className="text-sm mt-3 leading-relaxed text-neutral-400 max-w-xs">
+              Morocco&apos;s premier tourism connector — curated experiences, handpicked stays, and digital travel guides.
+            </p>
+            <div className="flex gap-5 mt-6">
+              <a
+                href="https://instagram.com/locmorocco"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LOC on Instagram"
+                className="text-neutral-500 hover:text-loc-amber transition-colors text-sm font-medium"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://tiktok.com/@locmorocco"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LOC on TikTok"
+                className="text-neutral-500 hover:text-loc-amber transition-colors text-sm font-medium"
+              >
+                TikTok
+              </a>
+            </div>
+          </div>
+
+          {/* Link columns */}
+          {FOOTER_SECTIONS.map((section) => (
+            <div key={section.heading}>
+              <p className="text-white text-xs font-semibold uppercase tracking-wider mb-4">
+                {section.heading}
+              </p>
+              <ul className="space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-neutral-400 hover:text-loc-amber transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </nav>
+        </div>
       </div>
-      <p className="text-center text-xs mt-8 text-neutral-600">
-        © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
-      </p>
+
+      <div className="border-t border-neutral-800 py-6">
+        <p className="text-center text-xs text-neutral-600">
+          © {new Date().getFullYear()} {SITE_NAME}. All rights reserved. Made with love for Morocco.
+        </p>
+      </div>
     </footer>
   )
 }
