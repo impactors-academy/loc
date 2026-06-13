@@ -36,12 +36,12 @@ export const metadata: Metadata = {
     "travel guide Morocco",
     "LOC Morocco",
   ],
-  authors: [{ name: "LOC", url: "https://loc.ma" }],
+  authors: [{ name: "LOC", url: "https://loctravels.com" }],
   creator: "LOC",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://loc.ma",
+    url: "https://loctravels.com",
     siteName: "LOC Morocco",
     title: "LOC — Discover Morocco | Experiences, Stays & Hidden Gems",
     description:
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://loc.ma",
+    canonical: "https://loctravels.com",
   },
 }
 
@@ -83,7 +83,7 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
   name: "LOC Morocco",
-  url: "https://loc.ma",
+  url: "https://loctravels.com",
   description:
     "Morocco's premier tourism connector — curated experiences, handpicked stays, and digital travel products.",
   areaServed: { "@type": "Country", name: "Morocco" },

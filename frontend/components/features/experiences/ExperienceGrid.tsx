@@ -1,22 +1,58 @@
 "use client"
 
+import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useExperiences } from "@/hooks/useExperiences"
+import { motion } from "framer-motion"
 import { ExperienceCard } from "./ExperienceCard"
 
 interface ExperienceGridProps {
   category?: string
 }
 
-export function ExperienceGrid({ category }: ExperienceGridProps) {
-  const { data, isLoading, isError } = useExperiences(category)
+const SKELETON = Array.from({ length: 6 })
 
-  if (isLoading) return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">{Array.from({ length: 6 }).map((_, i) => <div key={i} className="rounded-2xl bg-neutral-100 aspect-[4/3] animate-pulse" />)}</div>
-  if (isError) return <p className="text-red-500">Failed to load experiences.</p>
-  if (!data?.length) return <p className="text-muted-foreground">No experiences found.</p>
+export function ExperienceGrid({ category }: ExperienceGridProps) {
+  const { data, isPending, isError } = useExperiences(category)
+
+  if (isPending) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {SKELETON.map((_, i) => (
+          <div key={i} className="rounded-2xl bg-muted aspect-[4/3] animate-pulse" />
+        ))}
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <p className="text-loc-stone text-sm py-16 text-center">
+        Could not load experiences right now. Please try again later.
+      </p>
+    )
+  }
+
+  if (!data?.length) {
+    return (
+      <div className="py-16 text-center">
+        <p className="font-heading text-xl text-loc-night mb-2">No experiences found</p>
+        <p className="text-loc-stone text-sm">Try a different category or check back soon.</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {data.map((exp) => <ExperienceCard key={exp.id} experience={exp} />)}
-    </div>
+    <motion.div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+    >
+      {data.map((exp) => (
+        <motion.div key={exp.id} variants={fadeInUp}>
+          <ExperienceCard experience={exp} />
+        </motion.div>
+      ))}
+    </motion.div>
   )
 }
