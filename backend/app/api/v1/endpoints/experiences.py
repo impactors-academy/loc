@@ -14,10 +14,11 @@ router = APIRouter(prefix="/experiences", tags=["experiences"])
 async def list_experiences(
     category: str | None = None,
     q: str | None = None,
+    semantic: bool = False,
     db: Session = Depends(get_db),
     pages: dict = Depends(pagination),
 ):
-    return experience_service.get_all(db, category, q, pages["skip"], pages["limit"])
+    return experience_service.get_all(db, category, q, pages["skip"], pages["limit"], semantic)
 
 
 @router.get("/{slug}", response_model=ExperienceRead)

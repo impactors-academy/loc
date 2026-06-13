@@ -19,6 +19,12 @@ async def list_posts(
     return blog_post_service.get_all(db, tag, pages["skip"], pages["limit"])
 
 
+@router.get("/{slug}/related", response_model=list[BlogPostRead])
+@cache(expire=300, namespace="blog:related")
+async def related_posts(slug: str, db: Session = Depends(get_db)):
+    return blog_post_service.get_related(db, slug)
+
+
 @router.get("/{slug}", response_model=BlogPostRead)
 @cache(expire=300, namespace="blog:detail")
 async def get_post(slug: str, db: Session = Depends(get_db)):

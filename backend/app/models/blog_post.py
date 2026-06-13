@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -17,4 +18,5 @@ class BlogPost(Base):
     content: Mapped[str | None] = mapped_column(Text)
     image_url: Mapped[str | None] = mapped_column(String)
     published_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    tags: Mapped[str | None] = mapped_column(String)  # comma-separated; split in schema
+    tags: Mapped[str | None] = mapped_column(String)
+    embedding: Mapped[list | None] = mapped_column(Vector(1536), nullable=True)

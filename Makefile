@@ -22,6 +22,9 @@ migrate:       ## Apply Alembic migrations
 makemigration: ## Autogenerate a migration: make makemigration m="add experiences"
 	$(COMPOSE) exec backend uv run alembic revision --autogenerate -m "$(m)"
 
+seed:          ## Populate the DB with development seed data
+	$(COMPOSE) exec backend uv run python -m scripts.seed
+
 test:          ## Run backend tests
 	$(COMPOSE) exec backend uv run pytest -q
 
@@ -34,4 +37,4 @@ shell-db:      ## psql into the database
 prod:          ## Build + run the production stack
 	$(COMPOSE) -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
-.PHONY: up upd down logs build migrate makemigration test shell-backend shell-db prod
+.PHONY: up upd down logs build migrate makemigration seed test shell-backend shell-db prod
