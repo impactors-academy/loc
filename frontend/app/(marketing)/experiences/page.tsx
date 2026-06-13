@@ -8,14 +8,15 @@ export const metadata: Metadata = {
   title: "Experiences in Morocco | LOC",
   description:
     "Discover curated adventures, wellness retreats, cultural tours, and aerial experiences across Morocco — handpicked by locals.",
+  alternates: { canonical: "/experiences" },
 }
 
 interface Props {
-  searchParams: Promise<{ category?: string }>
+  searchParams: Promise<{ category?: string; q?: string }>
 }
 
 export default async function ExperiencesPage({ searchParams }: Props) {
-  const { category } = await searchParams
+  const { category, q } = await searchParams
 
   return (
     <main className="pt-24 pb-20">
@@ -27,10 +28,10 @@ export default async function ExperiencesPage({ searchParams }: Props) {
             subtitle="Adventures, wellness retreats, cultural tours, and more — curated by people who know Morocco best."
           />
         </div>
-        <Suspense fallback={<div className="h-10" />}>
+        <Suspense fallback={<div className="h-16" />}>
           <ExperienceFilters />
         </Suspense>
-        <ExperienceGrid category={category} />
+        <ExperienceGrid category={category} q={q} />
       </div>
     </main>
   )

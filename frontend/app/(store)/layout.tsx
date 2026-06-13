@@ -1,3 +1,4 @@
+import { Footer } from "@/components/shared/Footer"
 import { Navbar } from "@/components/shared/Navbar"
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -5,6 +6,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
     <>
       <Navbar />
       <main>{children}</main>
+      <Footer />
     </>
   )
 }

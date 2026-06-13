@@ -6,7 +6,16 @@ from app.schemas.experience import ExperienceRead
 
 
 class ExperienceService:
-    def get_all(self, db: Session, category: str | None, skip: int, limit: int) -> list[ExperienceRead]:
+    def get_all(
+        self,
+        db: Session,
+        category: str | None,
+        q: str | None,
+        skip: int,
+        limit: int,
+    ) -> list[ExperienceRead]:
+        if q:
+            return experience_repo.search(db, q, category, skip, limit)
         if category:
             return experience_repo.get_by_category(db, category, skip, limit)
         return experience_repo.get_multi(db, skip, limit)

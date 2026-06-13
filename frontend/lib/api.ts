@@ -12,8 +12,13 @@ async function fetcher<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   experiences: {
-    list: (category?: string) =>
-      fetcher<Experience[]>(`/api/v1/experiences${category ? `?category=${category}` : ""}`),
+    list: (category?: string, q?: string) => {
+      const params = new URLSearchParams()
+      if (category) params.set("category", category)
+      if (q) params.set("q", q)
+      const qs = params.toString()
+      return fetcher<Experience[]>(`/api/v1/experiences${qs ? `?${qs}` : ""}`)
+    },
     get: (slug: string) =>
       fetcher<Experience>(`/api/v1/experiences/${slug}`),
   },

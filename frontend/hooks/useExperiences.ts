@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import { QUERY_KEYS } from "@/lib/constants"
 
-export function useExperiences(category?: string) {
+export function useExperiences(category?: string, q?: string) {
   return useQuery({
-    queryKey: [...QUERY_KEYS.experiences, category],
-    queryFn: () => api.experiences.list(category),
+    queryKey: [...QUERY_KEYS.experiences, category, q],
+    queryFn: () => api.experiences.list(category, q),
   })
 }
 
