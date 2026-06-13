@@ -17,5 +17,23 @@ class BlogPostService:
             raise HTTPException(status_code=404, detail="Article not found")
         return obj
 
+    def get_related(self, db: Session, slug: str, limit: int = 3) -> list[BlogPostRead]:
+        post = blog_post_repo.get_by_slug(db, slug)
+        if not post:
+            raise HTTPException(status_code=404, detail="Article not found")
+        tags: list[str] = [t.strip() for t in (post.tags or "").split(",") if t.strip()]
+        return blog_post_repo.get_related(db, post.id, tags, limit)
+
+    def embed_and_save(self, db: Session, post_id: str) -> None:
+        from app.core.embeddings import blog_text, embed
+        post = blog_post_repo.get(db, post_id)
+        if not post:
+            return
+        text = blog_text(post.title, post.excerpt, post.content)
+        embedding = embed(text)
+        if embedding:
+            post.embedding = embedding
+            db.commit()
+
 
 blog_post_service = BlogPostService()

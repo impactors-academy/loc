@@ -1,5 +1,6 @@
 import uuid
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import Boolean, Float, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -23,3 +24,4 @@ class Experience(Base):
     provider_name: Mapped[str | None] = mapped_column(String)
     provider_contact: Mapped[str | None] = mapped_column(String)
     referral_url: Mapped[str | None] = mapped_column(String)
+    embedding: Mapped[list | None] = mapped_column(Vector(1536), nullable=True)

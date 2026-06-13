@@ -39,6 +39,7 @@ export const api = {
     list: (tag?: string) =>
       fetcher<BlogPost[]>(`/api/v1/blog${tag ? `?tag=${tag}` : ""}`),
     get: (slug: string) => fetcher<BlogPost>(`/api/v1/blog/${slug}`),
+    related: (slug: string) => fetcher<BlogPost[]>(`/api/v1/blog/${slug}/related`),
   },
 
   contact: {

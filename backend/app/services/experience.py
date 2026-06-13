@@ -13,7 +13,13 @@ class ExperienceService:
         q: str | None,
         skip: int,
         limit: int,
+        semantic: bool = False,
     ) -> list[ExperienceRead]:
+        if q and semantic:
+            from app.core.embeddings import embed, experience_text
+            embedding = embed(experience_text(q, None, None, category or ""))
+            if embedding:
+                return experience_repo.hybrid_search(db, q, embedding, category, limit)
         if q:
             return experience_repo.search(db, q, category, skip, limit)
         if category:

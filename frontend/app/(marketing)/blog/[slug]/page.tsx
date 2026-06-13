@@ -1,4 +1,5 @@
 import { api } from "@/lib/api"
+import { RelatedArticles } from "@/components/features/blog/RelatedArticles"
 import { CalendarDays } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
@@ -114,6 +115,8 @@ export default async function BlogPostPage({ params }: Props) {
             ))}
           </div>
         )}
+
+        {post && <RelatedArticles slug={slug} />}
 
         <div className="mt-12 pt-8 border-t border-border">
           <Link
