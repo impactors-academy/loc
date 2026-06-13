@@ -16,6 +16,7 @@ interface HeroSectionProps {
   ctaHref: string
   ctaSecondaryLabel?: string
   ctaSecondaryHref?: string
+  videoUrl?: string
   imageUrl?: string
 }
 
@@ -26,12 +27,30 @@ export function HeroSection({
   ctaHref,
   ctaSecondaryLabel,
   ctaSecondaryHref,
+  videoUrl,
   imageUrl,
 }: HeroSectionProps) {
+  const hasBg = videoUrl || imageUrl
+
   return (
     <section className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden">
-      {/* Background image */}
-      {imageUrl && (
+      {/* Cinematic video background */}
+      {videoUrl && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster={imageUrl}
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+          aria-hidden="true"
+        >
+          <source src={videoUrl} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Static image fallback (shown when no video, or as poster while video loads) */}
+      {!videoUrl && imageUrl && (
         <div
           className="absolute inset-0 bg-cover bg-center scale-105"
           style={{ backgroundImage: `url(${imageUrl})` }}
@@ -39,12 +58,12 @@ export function HeroSection({
         />
       )}
 
-      {/* Overlay — gradient when image present, brand gradient as fallback */}
+      {/* Overlay — dark gradient on media, brand gradient as full fallback */}
       <div
         className={cn(
           "absolute inset-0",
-          imageUrl
-            ? "bg-gradient-to-b from-black/25 via-black/45 to-black/80"
+          hasBg
+            ? "bg-gradient-to-b from-black/20 via-black/40 to-black/80"
             : "bg-gradient-to-br from-loc-night via-[#1a3d4a] to-loc-terracotta"
         )}
         aria-hidden="true"
@@ -67,7 +86,7 @@ export function HeroSection({
           {subtitle}
         </p>
 
-        {/* Primary + secondary CTAs */}
+        {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Link
             href={ctaHref}
