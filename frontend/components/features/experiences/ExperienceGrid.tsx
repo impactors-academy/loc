@@ -7,12 +7,13 @@ import { ExperienceCard } from "./ExperienceCard"
 
 interface ExperienceGridProps {
   category?: string
+  q?: string
 }
 
 const SKELETON = Array.from({ length: 6 })
 
-export function ExperienceGrid({ category }: ExperienceGridProps) {
-  const { data, isPending, isError } = useExperiences(category)
+export function ExperienceGrid({ category, q }: ExperienceGridProps) {
+  const { data, isPending, isError } = useExperiences(category, q)
 
   if (isPending) {
     return (
@@ -35,8 +36,10 @@ export function ExperienceGrid({ category }: ExperienceGridProps) {
   if (!data?.length) {
     return (
       <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">No experiences found</p>
-        <p className="text-loc-stone text-sm">Try a different category or check back soon.</p>
+        <p className="font-heading text-xl text-loc-night mb-2">
+          {q ? `No results for "${q}"` : "No experiences found"}
+        </p>
+        <p className="text-loc-stone text-sm">Try a different search or category.</p>
       </div>
     )
   }
