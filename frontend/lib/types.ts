@@ -8,11 +8,14 @@ export interface Experience {
   title: string
   description: string
   category: ExperienceCategory
-  priceRange: string
   location: string
-  imageUrl: string
+  priceMin: number | null
+  priceMax: number | null
+  images: string[]
+  isFeatured: boolean
   providerName: string
-  referralUrl: string
+  providerContact: string | null
+  referralUrl: string | null
 }
 
 export interface Property {
@@ -21,10 +24,12 @@ export interface Property {
   title: string
   description: string
   type: PropertyType
-  priceRange: string
   location: string
-  imageUrl: string
-  contactUrl: string
+  priceMin: number | null
+  priceMax: number | null
+  images: string[]
+  listingTier: string
+  ownerContact: string | null
 }
 
 export interface Product {
@@ -55,4 +60,13 @@ export interface InquiryPayload {
   phone?: string
   message: string
   subject: string
+  sourceType?: string
+  sourceId?: string
+}
+
+export function formatPriceRange(min: number | null, max: number | null, suffix = ""): string {
+  if (min == null && max == null) return ""
+  if (min != null && max != null) return `€${min}–€${max}${suffix ? ` ${suffix}` : ""}`
+  if (min != null) return `From €${min}${suffix ? ` ${suffix}` : ""}`
+  return `Up to €${max!}${suffix ? ` ${suffix}` : ""}`
 }

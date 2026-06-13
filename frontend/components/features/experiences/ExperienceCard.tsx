@@ -1,3 +1,4 @@
+import { formatPriceRange } from "@/lib/types"
 import type { Experience } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { MapPin } from "lucide-react"
@@ -23,20 +24,20 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
   const gradient =
     CATEGORY_GRADIENTS[experience.category] ?? "from-neutral-900 via-neutral-800 to-neutral-700"
   const icon = CATEGORY_ICONS[experience.category] ?? "✨"
-  const hasImage = Boolean(experience.imageUrl)
+  const mainImage = experience.images?.[0]
+  const priceDisplay = formatPriceRange(experience.priceMin, experience.priceMax, "/ person")
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-      {/* Image or gradient placeholder */}
       <div
         className={cn(
           "relative aspect-[4/3] overflow-hidden",
-          !hasImage && `bg-gradient-to-b ${gradient}`
+          !mainImage && `bg-gradient-to-b ${gradient}`
         )}
       >
-        {hasImage ? (
+        {mainImage ? (
           <img
-            src={experience.imageUrl}
+            src={mainImage}
             alt={`${experience.title} in ${experience.location}`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
@@ -46,13 +47,16 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
             <span className="text-6xl opacity-30 select-none">{icon}</span>
           </div>
         )}
-        {/* Category badge */}
         <span className="absolute top-3 left-3 bg-loc-terracotta text-white text-xs font-medium px-3 py-1 rounded-full capitalize">
           {experience.category}
         </span>
+        {experience.isFeatured && (
+          <span className="absolute top-3 right-3 bg-loc-amber text-white text-xs font-medium px-2 py-1 rounded-full">
+            Featured
+          </span>
+        )}
       </div>
 
-      {/* Content */}
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-1 text-loc-stone text-xs mb-2">
           <MapPin size={11} aria-hidden="true" />
@@ -65,7 +69,7 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
           {experience.description}
         </p>
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="text-loc-terracotta font-semibold text-sm">{experience.priceRange}</span>
+          <span className="text-loc-terracotta font-semibold text-sm">{priceDisplay}</span>
           <Link
             href={`/experiences/${experience.slug}`}
             className="text-xs font-semibold text-loc-night bg-loc-sand hover:bg-loc-sand/70 px-4 py-2 rounded-full transition-colors"
