@@ -102,6 +102,7 @@ const CATEGORIES = [
     href: "/experiences?category=adventure",
     gradient: "from-amber-950 via-orange-900 to-amber-800",
     icon: "🏜️",
+    imageUrl: "/images/categories/adventure.jpg",
   },
   {
     title: "Wellness & Spa",
@@ -109,6 +110,7 @@ const CATEGORIES = [
     href: "/experiences?category=wellness",
     gradient: "from-emerald-950 via-teal-900 to-emerald-800",
     icon: "🧘",
+    imageUrl: "/images/categories/wellness.jpg",
   },
   {
     title: "Cultural Tours",
@@ -116,6 +118,7 @@ const CATEGORIES = [
     href: "/experiences?category=cultural",
     gradient: "from-purple-950 via-indigo-900 to-purple-800",
     icon: "🕌",
+    imageUrl: "/images/categories/cultural.jpg",
   },
   {
     title: "Aerial & Sky",
@@ -123,6 +126,7 @@ const CATEGORIES = [
     href: "/experiences?category=aerial",
     gradient: "from-sky-950 via-blue-900 to-sky-800",
     icon: "🎈",
+    imageUrl: "/images/categories/aerial.jpg",
   },
 ]
 
@@ -186,15 +190,36 @@ export default function HomePage() {
               <Link
                 key={cat.href}
                 href={cat.href}
-                className={`group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end p-5 bg-gradient-to-b ${cat.gradient} hover:scale-[1.02] transition-transform duration-300 shadow-md`}
+                className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end p-5 hover:scale-[1.02] transition-transform duration-300 shadow-md"
               >
-                <span className="text-4xl mb-3 select-none">{cat.icon}</span>
-                <h3 className="font-heading text-white text-lg font-bold leading-tight">
-                  {cat.title}
-                </h3>
-                <p className="font-sans text-white/60 text-xs mt-1">{cat.subtitle}</p>
+                {/* Background image */}
+                {cat.imageUrl && (
+                  <img
+                    src={cat.imageUrl}
+                    alt={cat.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                )}
+                {/* Gradient overlay — full card when no image, bottom scrim when image present */}
+                <div
+                  className={`absolute inset-0 ${
+                    cat.imageUrl
+                      ? "bg-gradient-to-b from-black/10 via-black/20 to-black/75"
+                      : `bg-gradient-to-b ${cat.gradient}`
+                  }`}
+                  aria-hidden="true"
+                />
+                {/* Content */}
+                <div className="relative z-10">
+                  <span className="text-4xl mb-3 block select-none">{cat.icon}</span>
+                  <h3 className="font-heading text-white text-lg font-bold leading-tight">
+                    {cat.title}
+                  </h3>
+                  <p className="font-sans text-white/70 text-xs mt-1">{cat.subtitle}</p>
+                </div>
                 <span
-                  className="absolute top-4 right-4 text-white/30 group-hover:text-white/70 transition-colors text-xl"
+                  className="absolute top-4 right-4 text-white/30 group-hover:text-white/70 transition-colors text-xl z-10"
                   aria-hidden="true"
                 >
                   →
