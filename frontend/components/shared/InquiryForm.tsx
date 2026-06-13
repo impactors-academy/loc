@@ -24,7 +24,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
     return (
       <div className="rounded-2xl bg-loc-sand/60 border border-loc-sand p-8 text-center">
         <p className="font-heading text-xl text-loc-night mb-2">Message sent!</p>
-        <p className="text-loc-stone text-sm">We'll be in touch with you shortly.</p>
+        <p className="text-loc-stone text-sm">We&apos;ll be in touch with you shortly.</p>
       </div>
     )
   }
