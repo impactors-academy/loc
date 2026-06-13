@@ -1,6 +1,7 @@
 import uuid
 
-from sqlalchemy import String, Text
+from sqlalchemy import Boolean, Float, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
@@ -14,8 +15,11 @@ class Experience(Base):
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
     category: Mapped[str] = mapped_column(String, nullable=False, index=True)
-    price_range: Mapped[str | None] = mapped_column(String)
-    location: Mapped[str | None] = mapped_column(String)
-    image_url: Mapped[str | None] = mapped_column(String)
+    location: Mapped[str | None] = mapped_column(String, index=True)
+    price_min: Mapped[float | None] = mapped_column(Float)
+    price_max: Mapped[float | None] = mapped_column(Float)
+    images: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    is_featured: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     provider_name: Mapped[str | None] = mapped_column(String)
+    provider_contact: Mapped[str | None] = mapped_column(String)
     referral_url: Mapped[str | None] = mapped_column(String)

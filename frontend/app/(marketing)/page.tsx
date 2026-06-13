@@ -15,10 +15,13 @@ const FEATURED_EXPERIENCES: Experience[] = [
     description:
       "Float above the ancient medina and Atlas Mountains at dawn in this once-in-a-lifetime aerial experience.",
     category: "aerial",
-    priceRange: "From €180 / person",
+    priceMin: 180,
+    priceMax: null,
     location: "Marrakech",
-    imageUrl: "",
+    images: [],
+    isFeatured: true,
     providerName: "Sky Morocco",
+    providerContact: null,
     referralUrl: "#",
   },
   {
@@ -28,10 +31,13 @@ const FEATURED_EXPERIENCES: Experience[] = [
     description:
       "Trek into the golden Erg Chebbi dunes on camelback and sleep under a million desert stars.",
     category: "adventure",
-    priceRange: "From €95 / person",
+    priceMin: 95,
+    priceMax: null,
     location: "Merzouga",
-    imageUrl: "",
+    images: [],
+    isFeatured: false,
     providerName: "Sahara Nomads",
+    providerContact: null,
     referralUrl: "#",
   },
   {
@@ -41,10 +47,13 @@ const FEATURED_EXPERIENCES: Experience[] = [
     description:
       "Restore your body in a centuries-old hammam ceremony with locally sourced argan oil and rose water.",
     category: "wellness",
-    priceRange: "From €55 / person",
+    priceMin: 55,
+    priceMax: null,
     location: "Fès",
-    imageUrl: "",
+    images: [],
+    isFeatured: false,
     providerName: "Riad Wellness",
+    providerContact: null,
     referralUrl: "#",
   },
 ]
@@ -57,10 +66,12 @@ const FEATURED_PROPERTIES: Property[] = [
     description:
       "A beautifully restored 9th-century riad hidden in the labyrinthine heart of the old medina.",
     type: "local-stay",
-    priceRange: "From €120 / night",
+    priceMin: 120,
+    priceMax: null,
     location: "Marrakech",
-    imageUrl: "",
-    contactUrl: "#",
+    images: [],
+    listingTier: "featured",
+    ownerContact: null,
   },
   {
     id: "2",
@@ -69,10 +80,12 @@ const FEATURED_PROPERTIES: Property[] = [
     description:
       "A modern villa with a private pool and lush garden, set in the tranquil Palmeraie.",
     type: "villa",
-    priceRange: "From €350 / night",
+    priceMin: 350,
+    priceMax: null,
     location: "Marrakech",
-    imageUrl: "",
-    contactUrl: "#",
+    images: [],
+    listingTier: "standard",
+    ownerContact: null,
   },
   {
     id: "3",
@@ -81,10 +94,12 @@ const FEATURED_PROPERTIES: Property[] = [
     description:
       "Spacious, architect-designed apartment in Rabat's most prestigious neighborhood, walkable to everything.",
     type: "apartment",
-    priceRange: "From €85 / night",
+    priceMin: 85,
+    priceMax: null,
     location: "Rabat",
-    imageUrl: "",
-    contactUrl: "#",
+    images: [],
+    listingTier: "standard",
+    ownerContact: null,
   },
 ]
 

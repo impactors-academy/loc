@@ -7,6 +7,8 @@ class InquiryCreate(BaseModel):
     phone: str | None = None
     message: str
     subject: str
+    source_type: str = "general"
+    source_id: str | None = None
 
 
 class InquiryResponse(BaseModel):

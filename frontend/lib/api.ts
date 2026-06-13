@@ -40,7 +40,15 @@ export const api = {
     submit: (payload: InquiryPayload) =>
       fetcher<{ success: boolean }>("/api/v1/contact", {
         method: "POST",
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          message: payload.message,
+          subject: payload.subject,
+          source_type: payload.sourceType ?? "general",
+          source_id: payload.sourceId ?? null,
+        }),
       }),
   },
 }

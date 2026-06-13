@@ -1,5 +1,6 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { api } from "@/lib/api"
+import { formatPriceRange } from "@/lib/types"
 import { Home, MapPin } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
@@ -54,9 +55,9 @@ export default async function PropertyDetailPage({ params }: Props) {
       <div
         className={`relative h-72 md:h-96 bg-gradient-to-br ${gradient} overflow-hidden`}
       >
-        {property?.imageUrl && (
+        {property?.images?.[0] && (
           <img
-            src={property.imageUrl}
+            src={property.images[0]}
             alt={property.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -112,7 +113,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
                   <p className="font-heading text-2xl font-bold text-loc-terracotta">
-                    {property.priceRange}
+                    {formatPriceRange(property.priceMin, property.priceMax, "/ night")}
                   </p>
                 </div>
               </>

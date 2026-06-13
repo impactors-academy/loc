@@ -1,5 +1,6 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { api } from "@/lib/api"
+import { formatPriceRange } from "@/lib/types"
 import { MapPin, Tag, User } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
@@ -48,9 +49,9 @@ export default async function ExperienceDetailPage({ params }: Props) {
       <div
         className={`relative h-72 md:h-96 bg-gradient-to-br ${gradient} overflow-hidden`}
       >
-        {experience?.imageUrl && (
+        {experience?.images?.[0] && (
           <img
-            src={experience.imageUrl}
+            src={experience.images[0]}
             alt={experience.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -108,7 +109,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
                   <p className="font-heading text-2xl font-bold text-loc-terracotta">
-                    {experience.priceRange}
+                    {formatPriceRange(experience.priceMin, experience.priceMax, "/ person")}
                   </p>
                 </div>
               </>
