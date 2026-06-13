@@ -68,7 +68,6 @@ class ExperienceRepository(BaseRepository[Experience]):
         limit: int = 20,
     ) -> list[Experience]:
         # ── keyword arm ────────────────────────────────────────────────────
-        tsquery = func.plainto_tsquery("english", q)
         kw_ids: list[str] = [
             row[0]
             for row in db.execute(
