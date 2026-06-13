@@ -1,6 +1,7 @@
 "use client"
 
 import { EXPERIENCE_CATEGORIES } from "@/lib/constants"
+import { cn } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export function ExperienceFilters() {
@@ -21,9 +22,12 @@ export function ExperienceFilters() {
         <button
           key={cat.value}
           onClick={() => setCategory(cat.value)}
-          className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
-            active === cat.value ? "bg-black text-white border-black" : "border-neutral-300 hover:border-black"
-          }`}
+          className={cn(
+            "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+            active === cat.value
+              ? "bg-loc-terracotta text-white border-loc-terracotta"
+              : "border-border text-loc-stone hover:border-loc-terracotta hover:text-loc-terracotta"
+          )}
         >
           {cat.label}
         </button>

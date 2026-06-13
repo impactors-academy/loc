@@ -2,15 +2,36 @@ import { PropertyFilters } from "@/components/features/stays/PropertyFilters"
 import { PropertyGrid } from "@/components/features/stays/PropertyGrid"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import type { Metadata } from "next"
+import { Suspense } from "react"
 
-export const metadata: Metadata = { title: "Stays" }
+export const metadata: Metadata = {
+  title: "Stays in Morocco | LOC",
+  description:
+    "Browse handpicked riads, villas, apartments, and local stays across Morocco — with direct contact, no hidden fees.",
+}
 
-export default function StaysPage() {
+interface Props {
+  searchParams: Promise<{ type?: string }>
+}
+
+export default async function StaysPage({ searchParams }: Props) {
+  const { type } = await searchParams
+
   return (
-    <div className="container mx-auto py-12 px-4">
-      <SectionHeader title="Places to Stay" subtitle="Apartments, villas, and local stays in Morocco" />
-      <PropertyFilters />
-      <PropertyGrid />
-    </div>
+    <main className="pt-24 pb-20">
+      <div className="container mx-auto px-4">
+        <div className="mb-10">
+          <SectionHeader
+            eyebrow="Places to Stay"
+            title="Stays"
+            subtitle="Riads, villas, apartments, and local homes — each one selected for its character, comfort, and location."
+          />
+        </div>
+        <Suspense fallback={<div className="h-10" />}>
+          <PropertyFilters />
+        </Suspense>
+        <PropertyGrid type={type} />
+      </div>
+    </main>
   )
 }

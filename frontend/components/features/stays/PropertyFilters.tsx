@@ -1,6 +1,7 @@
 "use client"
 
 import { PROPERTY_TYPES } from "@/lib/constants"
+import { cn } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export function PropertyFilters() {
@@ -21,9 +22,12 @@ export function PropertyFilters() {
         <button
           key={t.value}
           onClick={() => setType(t.value)}
-          className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
-            active === t.value ? "bg-black text-white border-black" : "border-neutral-300 hover:border-black"
-          }`}
+          className={cn(
+            "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+            active === t.value
+              ? "bg-loc-terracotta text-white border-loc-terracotta"
+              : "border-border text-loc-stone hover:border-loc-terracotta hover:text-loc-terracotta"
+          )}
         >
           {t.label}
         </button>
