@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -7,9 +9,12 @@ from app.main import app
 from app.models.base import Base
 from app.core.deps import get_db
 
-TEST_DATABASE_URL = "sqlite:///./test.db"
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/loc_test",
+)
 
-engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 TestingSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
