@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     redis = aioredis.from_url(settings.redis_url, encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="loc-cache")
     yield
-    await redis.aclose()
+    await redis.close()
 
 
 app = FastAPI(title="LOC API", version="1.0.0", lifespan=lifespan)
