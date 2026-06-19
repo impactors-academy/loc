@@ -3,9 +3,9 @@ import { SectionHeader } from "@/components/shared/SectionHeader"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Morocco Travel Guides & Digital Products | LOC",
+  title: "Global Travel Guides & Digital Products | LOC",
   description:
-    "Download curated Morocco travel guides, experience maps, relocation guides, and photography packs — crafted by people who live here.",
+    "Download curated travel guides, destination itineraries, and video courses for Japan, France, Morocco, Bali, and more — crafted by people who live there.",
   alternates: { canonical: "/store" },
 }
 
@@ -17,7 +17,7 @@ export default function StorePage() {
           <SectionHeader
             eyebrow="Digital Products"
             title="Travel smarter with LOC"
-            subtitle="Guides, maps, and resource packs for your Morocco journey — downloadable instantly."
+            subtitle="Guides, itineraries, and video courses for destinations around the world — downloadable instantly."
           />
         </div>
         <ProductGrid />

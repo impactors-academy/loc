@@ -4,9 +4,9 @@ import { Check } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Promote Your Business in Morocco | LOC",
+  title: "Promote Your Tourism Business | LOC",
   description:
-    "Reach thousands of active travelers through LOC's platform. Featured placements, social media content, and full marketing packages for Morocco tourism businesses.",
+    "Reach thousands of active travellers through LOC's global platform. Featured placements, social media content, and full marketing packages for tourism businesses worldwide.",
   alternates: { canonical: "/promote" },
 }
 
@@ -72,7 +72,7 @@ const WHY_LOC = [
   {
     icon: "📍",
     title: "Local credibility",
-    desc: "LOC is built by people who live in Morocco. Our audience trusts our recommendations — and your listing inherits that trust.",
+    desc: "LOC surfaces providers who are genuinely embedded in their destination. Our audience trusts our curation — and your listing inherits that trust.",
   },
 ]
 
@@ -84,7 +84,7 @@ export default function PromotePage() {
         <SectionHeader
           eyebrow="For Businesses"
           title="Grow with LOC"
-          subtitle="Connect your experience or property with thousands of travelers actively searching for what Morocco has to offer."
+          subtitle="Connect your experience or property with thousands of travellers actively searching for authentic destinations around the world."
           center
         />
       </section>

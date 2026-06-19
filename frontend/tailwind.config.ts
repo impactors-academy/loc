@@ -50,7 +50,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // LOC Morocco brand palette
+        // LOC brand palette
         loc: {
           terracotta: "#C4714A",
           sand: "#F7EDD8",

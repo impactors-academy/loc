@@ -6,6 +6,7 @@ class ExperienceBase(BaseModel):
     title: str
     description: str | None = None
     category: str
+    country: str | None = None
     location: str | None = None
     price_min: float | None = None
     price_max: float | None = None

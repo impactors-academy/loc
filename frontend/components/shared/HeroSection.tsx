@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 const CATEGORY_PILLS = [
   { label: "Adventures", href: "/experiences?category=adventure" },
   { label: "Wellness", href: "/experiences?category=wellness" },
-  { label: "Cultural", href: "/experiences?category=cultural" },
+  { label: "Cultural", href: "/experiences?category=culture" },
   { label: "Stays", href: "/stays" },
   { label: "Guides", href: "/store" },
 ]
@@ -73,7 +73,7 @@ export function HeroSection({
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto pt-10">
         {/* Eyebrow */}
         <p className="font-sans text-loc-amber uppercase tracking-[0.3em] text-xs font-medium mb-5">
-          Morocco · Authentic · Curated
+          Global · Authentic · Curated
         </p>
 
         {/* H1 */}

@@ -5,9 +5,9 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "Experiences in Morocco | LOC",
+  title: "Experiences Around the World | LOC",
   description:
-    "Discover curated adventures, wellness retreats, cultural tours, and aerial experiences across Morocco — handpicked by locals.",
+    "Discover curated adventures, wellness retreats, culinary tours, and cultural experiences across Japan, France, Morocco, Bali, and beyond — handpicked by locals.",
   alternates: { canonical: "/experiences" },
 }
 
@@ -23,9 +23,9 @@ export default async function ExperiencesPage({ searchParams }: Props) {
       <div className="container mx-auto px-4">
         <div className="mb-10">
           <SectionHeader
-            eyebrow="Explore Morocco"
+            eyebrow="Explore the world"
             title="Experiences"
-            subtitle="Adventures, wellness retreats, cultural tours, and more — curated by people who know Morocco best."
+            subtitle="Adventures, wellness retreats, culinary tours, and more — curated by people who know each destination best."
           />
         </div>
         <Suspense fallback={<div className="h-16" />}>

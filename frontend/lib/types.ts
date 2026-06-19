@@ -1,6 +1,6 @@
-export type ExperienceCategory = "adventure" | "wellness" | "cultural" | "water" | "aerial"
-export type PropertyType = "apartment" | "villa" | "vacation-home" | "local-stay"
-export type ProductType = "guide" | "map" | "photography" | "template"
+export type ExperienceCategory = "adventure" | "wellness" | "culture" | "culinary" | "water" | "aerial"
+export type PropertyType = "apartment" | "villa" | "riad" | "ryokan" | "gite" | "hotel" | "bivouac"
+export type ProductType = "guide" | "itinerary" | "course" | "map" | "photography" | "template"
 
 export interface Experience {
   id: string
@@ -8,6 +8,7 @@ export interface Experience {
   title: string
   description: string
   category: ExperienceCategory
+  country?: string
   location: string
   priceMin: number | null
   priceMax: number | null
@@ -24,6 +25,7 @@ export interface Property {
   title: string
   description: string
   type: PropertyType
+  country?: string
   location: string
   priceMin: number | null
   priceMax: number | null

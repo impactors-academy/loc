@@ -5,54 +5,55 @@ import { SectionHeader } from "@/components/shared/SectionHeader"
 import type { Experience, Property } from "@/lib/types"
 import Link from "next/link"
 
-// ─── Stub data — replace with TanStack Query hooks in EXP-1 / STAY-1 ──────────
-
 const FEATURED_EXPERIENCES: Experience[] = [
   {
     id: "1",
-    slug: "hot-air-balloon-marrakech",
-    title: "Hot Air Balloon over Marrakech",
+    slug: "kyoto-tea-ceremony",
+    title: "Traditional Tea Ceremony — Kyoto",
     description:
-      "Float above the ancient medina and Atlas Mountains at dawn in this once-in-a-lifetime aerial experience.",
-    category: "aerial",
-    priceMin: 180,
-    priceMax: null,
-    location: "Marrakech",
-    images: [],
+      "Step inside a 200-year-old machiya townhouse and learn the art of chado from a certified tea master. Matcha, wagashi sweets, and meditative silence included.",
+    category: "culture",
+    country: "Japan",
+    priceMin: 45,
+    priceMax: 65,
+    location: "Higashiyama, Kyoto",
+    images: ["https://images.unsplash.com/photo-1568393691622-c7ba131d1b16?w=800"],
     isFeatured: true,
-    providerName: "Sky Morocco",
+    providerName: "Kyoto Tea House",
     providerContact: null,
     referralUrl: "#",
   },
   {
     id: "2",
-    slug: "camel-trek-merzouga",
-    title: "Sahara Camel Trek & Desert Camp",
+    slug: "santorini-sailing-sunset",
+    title: "Catamaran Sunset Sail — Santorini",
     description:
-      "Trek into the golden Erg Chebbi dunes on camelback and sleep under a million desert stars.",
-    category: "adventure",
-    priceMin: 95,
-    priceMax: null,
-    location: "Merzouga",
-    images: [],
-    isFeatured: false,
-    providerName: "Sahara Nomads",
+      "Board a catamaran, snorkel above volcanic reef, and anchor off Oia for the world-famous sunset. BBQ dinner and open bar included.",
+    category: "water",
+    country: "Greece",
+    priceMin: 110,
+    priceMax: 150,
+    location: "Oia, Santorini",
+    images: ["https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"],
+    isFeatured: true,
+    providerName: "Santorini Catamarans",
     providerContact: null,
     referralUrl: "#",
   },
   {
     id: "3",
-    slug: "hammam-ritual-fes",
-    title: "Traditional Hammam & Argan Ritual",
+    slug: "tuscany-cooking-class",
+    title: "Tuscan Farmhouse Cooking Class — Siena",
     description:
-      "Restore your body in a centuries-old hammam ceremony with locally sourced argan oil and rose water.",
-    category: "wellness",
-    priceMin: 55,
-    priceMax: null,
-    location: "Fès",
-    images: [],
+      "Make fresh pici pasta and wild boar ragù in a 14th-century farmhouse kitchen, followed by a long-table lunch in the olive grove with Brunello di Montalcino.",
+    category: "culinary",
+    country: "Italy",
+    priceMin: 95,
+    priceMax: 130,
+    location: "Chianti, Siena Province",
+    images: ["https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800"],
     isFeatured: false,
-    providerName: "Riad Wellness",
+    providerName: "Casa Toscana",
     providerContact: null,
     referralUrl: "#",
   },
@@ -61,87 +62,90 @@ const FEATURED_EXPERIENCES: Experience[] = [
 const FEATURED_PROPERTIES: Property[] = [
   {
     id: "1",
-    slug: "riad-atlas-marrakech",
-    title: "Riad Atlas — Old Medina",
+    slug: "kyoto-ryokan-higashiyama",
+    title: "Ryokan Kiyomizu — Higashiyama, Kyoto",
     description:
-      "A beautifully restored 9th-century riad hidden in the labyrinthine heart of the old medina.",
-    type: "local-stay",
-    priceMin: 120,
-    priceMax: null,
-    location: "Marrakech",
-    images: [],
-    listingTier: "featured",
+      "A family-run ryokan on the stone-paved Ninenzaka lane with futon beds, yukata robes, and private hinoki wood baths. Kaiseki dinner included.",
+    type: "ryokan",
+    country: "Japan",
+    priceMin: 220,
+    priceMax: 380,
+    location: "Higashiyama, Kyoto",
+    images: ["https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800"],
+    listingTier: "premium",
     ownerContact: null,
   },
   {
     id: "2",
-    slug: "villa-palmeraie",
-    title: "Villa Palmeraie — Private Pool",
+    slug: "provence-mas-villa",
+    title: "Mas Provençal — Luberon Valley",
     description:
-      "A modern villa with a private pool and lush garden, set in the tranquil Palmeraie.",
+      "An 18th-century stone farmhouse with a 12-metre pool and lavender terraces. Sleeps 8; private chef available. Ideal May–July for the bloom.",
     type: "villa",
-    priceMin: 350,
-    priceMax: null,
-    location: "Marrakech",
-    images: [],
-    listingTier: "standard",
+    country: "France",
+    priceMin: 450,
+    priceMax: 750,
+    location: "Lourmarin, Luberon",
+    images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"],
+    listingTier: "premium",
     ownerContact: null,
   },
   {
     id: "3",
-    slug: "apartment-agdal-rabat",
-    title: "Modern Apartment — Agdal",
+    slug: "riad-zouak-marrakech",
+    title: "Riad Zouak — Marrakech Medina",
     description:
-      "Spacious, architect-designed apartment in Rabat's most prestigious neighborhood, walkable to everything.",
-    type: "apartment",
-    priceMin: 85,
-    priceMax: null,
-    location: "Rabat",
-    images: [],
-    listingTier: "standard",
+      "Seven rooms around a central courtyard fountain, each adorned with hand-painted zellij tilework. Rooftop terrace with Atlas views.",
+    type: "riad",
+    country: "Morocco",
+    priceMin: 120,
+    priceMax: 220,
+    location: "Marrakech Medina",
+    images: ["https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"],
+    listingTier: "featured",
     ownerContact: null,
   },
 ]
 
 const STATS = [
   { value: "50+", label: "Curated Experiences" },
-  { value: "120+", label: "Handpicked Properties" },
-  { value: "6", label: "Regions Covered" },
-  { value: "1,000+", label: "Happy Travelers" },
+  { value: "20+", label: "Countries" },
+  { value: "120+", label: "Handpicked Stays" },
+  { value: "1,000+", label: "Happy Travellers" },
 ]
 
 const CATEGORIES = [
   {
-    title: "Desert Adventures",
-    subtitle: "Quads, camels & dunes",
+    title: "Adventures",
+    subtitle: "Treks, dunes & volcano hikes",
     href: "/experiences?category=adventure",
     gradient: "from-amber-950 via-orange-900 to-amber-800",
-    icon: "🏜️",
-    imageUrl: "/images/categories/adventure.jpg",
+    icon: "🏔️",
+    imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800",
   },
   {
     title: "Wellness & Spa",
-    subtitle: "Hammams, riads & serenity",
+    subtitle: "Hammams, ryokans & serenity",
     href: "/experiences?category=wellness",
     gradient: "from-emerald-950 via-teal-900 to-emerald-800",
     icon: "🧘",
-    imageUrl: "/images/categories/wellness.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1545389336-cf090694435e?w=800",
   },
   {
-    title: "Cultural Tours",
-    subtitle: "Medinas, souks & history",
-    href: "/experiences?category=cultural",
+    title: "Culinary",
+    subtitle: "Wine, cooking classes & markets",
+    href: "/experiences?category=culinary",
+    gradient: "from-red-950 via-rose-900 to-red-800",
+    icon: "🍷",
+    imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800",
+  },
+  {
+    title: "Cultural",
+    subtitle: "Temples, souks & history",
+    href: "/experiences?category=culture",
     gradient: "from-purple-950 via-indigo-900 to-purple-800",
-    icon: "🕌",
-    imageUrl: "/images/categories/cultural.jpg",
-  },
-  {
-    title: "Aerial & Sky",
-    subtitle: "Hot air balloons & paragliding",
-    href: "/experiences?category=aerial",
-    gradient: "from-sky-950 via-blue-900 to-sky-800",
-    icon: "🎈",
-    imageUrl: "/images/categories/aerial.jpg",
+    icon: "🏯",
+    imageUrl: "https://images.unsplash.com/photo-1568393691622-c7ba131d1b16?w=800",
   },
 ]
 
@@ -149,7 +153,7 @@ const HOW_IT_WORKS = [
   {
     step: "01",
     title: "Browse & Discover",
-    desc: "Explore curated experiences, handpicked stays, and hidden gems across Morocco — filtered to match your travel style.",
+    desc: "Explore curated experiences, handpicked stays, and hidden gems from around the world — filtered to match your travel style.",
   },
   {
     step: "02",
@@ -159,7 +163,7 @@ const HOW_IT_WORKS = [
   {
     step: "03",
     title: "Live the Experience",
-    desc: "Set off knowing every detail has been vetted by locals who know and love this land.",
+    desc: "Set off knowing every detail has been vetted by travellers who know and love the destination.",
   },
 ]
 
@@ -168,13 +172,12 @@ export default function HomePage() {
     <>
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <HeroSection
-        title="Discover Morocco"
-        subtitle="Experiences, stays, and hidden gems — curated by people who live here."
+        title="Discover the World"
+        subtitle="Experiences, stays, and hidden gems — curated by people who live there."
         ctaLabel="Explore Experiences"
         ctaHref="/experiences"
         ctaSecondaryLabel="Find a Stay"
         ctaSecondaryHref="/stays"
-        videoUrl="/videos/sahara_hero_horizontal.mp4"
         imageUrl="/images/hero.jpg"
       />
 
@@ -196,9 +199,9 @@ export default function HomePage() {
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
           <SectionHeader
-            eyebrow="Explore Morocco"
+            eyebrow="Explore by type"
             title="What will you discover?"
-            subtitle="From the Sahara to the Atlas, Morocco holds a different adventure around every corner."
+            subtitle="From Sahara dunes to Japanese tea houses, a different adventure waits around every corner."
           />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
             {CATEGORIES.map((cat) => (
@@ -207,7 +210,6 @@ export default function HomePage() {
                 href={cat.href}
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end p-5 hover:scale-[1.02] transition-transform duration-300 shadow-md"
               >
-                {/* Background image */}
                 {cat.imageUrl && (
                   <img
                     src={cat.imageUrl}
@@ -216,7 +218,6 @@ export default function HomePage() {
                     loading="lazy"
                   />
                 )}
-                {/* Gradient overlay — full card when no image, bottom scrim when image present */}
                 <div
                   className={`absolute inset-0 ${
                     cat.imageUrl
@@ -225,7 +226,6 @@ export default function HomePage() {
                   }`}
                   aria-hidden="true"
                 />
-                {/* Content */}
                 <div className="relative z-10">
                   <span className="text-4xl mb-3 block select-none">{cat.icon}</span>
                   <h3 className="font-heading text-white text-lg font-bold leading-tight">
@@ -252,7 +252,7 @@ export default function HomePage() {
             <SectionHeader
               eyebrow="Handpicked for you"
               title="Top Experiences"
-              subtitle="Unforgettable moments crafted by Morocco's finest local providers."
+              subtitle="Unforgettable moments crafted by the world's finest local providers."
             />
             <Link
               href="/experiences"
@@ -283,7 +283,7 @@ export default function HomePage() {
           <SectionHeader
             eyebrow="Simple by design"
             title="How LOC Works"
-            subtitle="We connect curious travelers with authentic Moroccan providers — directly, with no booking engine in the way."
+            subtitle="We connect curious travellers with authentic local providers — directly, with no booking engine in the way."
             center
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-14">
@@ -307,7 +307,7 @@ export default function HomePage() {
             <SectionHeader
               eyebrow="Places to call home"
               title="Handpicked Stays"
-              subtitle="Riads, villas, and apartments selected for their character, comfort, and location."
+              subtitle="Ryokans, riads, villas, and farmhouses — selected for their character, comfort, and location."
             />
             <Link
               href="/stays"
@@ -342,8 +342,8 @@ export default function HomePage() {
             Grow your business with LOC
           </h2>
           <p className="font-sans text-neutral-400 text-lg leading-relaxed mb-10">
-            List your experience, property, or tourism service and reach thousands of travelers
-            actively searching for what Morocco has to offer.
+            List your experience, property, or tourism service and reach thousands of travellers
+            actively searching for authentic destinations around the world.
           </p>
           <Link
             href="/promote"

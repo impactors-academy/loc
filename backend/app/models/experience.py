@@ -16,6 +16,7 @@ class Experience(Base):
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
     category: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    country: Mapped[str | None] = mapped_column(String, index=True)
     location: Mapped[str | None] = mapped_column(String, index=True)
     price_min: Mapped[float | None] = mapped_column(Float)
     price_max: Mapped[float | None] = mapped_column(Float)

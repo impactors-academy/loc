@@ -6,6 +6,7 @@ class PropertyBase(BaseModel):
     title: str
     description: str | None = None
     type: str
+    country: str | None = None
     location: str | None = None
     price_min: float | None = None
     price_max: float | None = None
