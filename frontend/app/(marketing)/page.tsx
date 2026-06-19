@@ -172,7 +172,7 @@ export default function HomePage() {
     <>
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <HeroSection
-        title="Discover the World"
+        animated
         subtitle="Experiences, stays, and hidden gems — curated by people who live there."
         ctaLabel="Explore Experiences"
         ctaHref="/experiences"

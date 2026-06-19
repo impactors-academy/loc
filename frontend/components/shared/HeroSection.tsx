@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { TypewriterTitle } from "./TypewriterTitle"
 
 const CATEGORY_PILLS = [
   { label: "Adventures", href: "/experiences?category=adventure" },
@@ -10,7 +11,8 @@ const CATEGORY_PILLS = [
 ]
 
 interface HeroSectionProps {
-  title: string
+  title?: string
+  animated?: boolean
   subtitle: string
   ctaLabel: string
   ctaHref: string
@@ -22,6 +24,7 @@ interface HeroSectionProps {
 
 export function HeroSection({
   title,
+  animated = false,
   subtitle,
   ctaLabel,
   ctaHref,
@@ -77,9 +80,13 @@ export function HeroSection({
         </p>
 
         {/* H1 */}
-        <h1 className="font-heading text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight text-balance leading-[1.05] mb-6">
-          {title}
-        </h1>
+        {animated ? (
+          <TypewriterTitle />
+        ) : (
+          <h1 className="font-heading text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight text-balance leading-[1.05] mb-6">
+            {title}
+          </h1>
+        )}
 
         {/* Subtitle */}
         <p className="font-sans text-lg md:text-xl text-white/75 mb-10 max-w-xl mx-auto leading-relaxed">
