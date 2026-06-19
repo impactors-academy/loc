@@ -5,24 +5,33 @@ import { MapPin } from "lucide-react"
 import Link from "next/link"
 
 const TYPE_GRADIENTS: Record<string, string> = {
-  "local-stay": "from-rose-950 via-pink-900 to-rose-800",
   villa: "from-emerald-950 via-teal-900 to-emerald-800",
   apartment: "from-indigo-950 via-blue-900 to-indigo-800",
-  "vacation-home": "from-amber-950 via-orange-900 to-amber-800",
+  riad: "from-rose-950 via-pink-900 to-rose-800",
+  ryokan: "from-amber-950 via-orange-900 to-amber-800",
+  gite: "from-lime-950 via-green-900 to-lime-800",
+  hotel: "from-sky-950 via-blue-900 to-sky-800",
+  bivouac: "from-stone-950 via-stone-800 to-stone-700",
 }
 
 const TYPE_ICONS: Record<string, string> = {
-  "local-stay": "🏮",
   villa: "🌿",
   apartment: "🏙️",
-  "vacation-home": "🏡",
+  riad: "🏮",
+  ryokan: "🎋",
+  gite: "🏡",
+  hotel: "🛎️",
+  bivouac: "⛺",
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  "local-stay": "Local Stay",
   villa: "Villa",
   apartment: "Apartment",
-  "vacation-home": "Vacation Home",
+  riad: "Riad",
+  ryokan: "Ryokan",
+  gite: "Gîte",
+  hotel: "Hotel",
+  bivouac: "Bivouac",
 }
 
 const TIER_BADGE: Record<string, string> = {

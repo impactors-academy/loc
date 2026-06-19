@@ -25,15 +25,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const TYPE_GRADIENTS: Record<string, string> = {
   apartment: "from-slate-900 via-slate-800 to-slate-700",
   villa: "from-emerald-950 via-emerald-900 to-teal-800",
-  "vacation-home": "from-amber-950 via-orange-900 to-amber-800",
-  "local-stay": "from-rose-950 via-rose-900 to-pink-800",
+  riad: "from-rose-950 via-rose-900 to-pink-800",
+  ryokan: "from-amber-950 via-orange-900 to-amber-800",
+  gite: "from-lime-950 via-green-900 to-lime-800",
+  hotel: "from-sky-950 via-blue-900 to-sky-800",
+  bivouac: "from-stone-950 via-stone-800 to-stone-700",
 }
 
 const TYPE_LABELS: Record<string, string> = {
   apartment: "Apartment",
   villa: "Villa",
-  "vacation-home": "Vacation Home",
-  "local-stay": "Local Stay",
+  riad: "Riad",
+  ryokan: "Ryokan",
+  gite: "Gîte",
+  hotel: "Hotel",
+  bivouac: "Bivouac",
 }
 
 export default async function PropertyDetailPage({ params }: Props) {

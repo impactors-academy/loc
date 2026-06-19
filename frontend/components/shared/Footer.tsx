@@ -38,11 +38,11 @@ export function Footer() {
           <div className="md:col-span-1">
             <p className="font-heading text-white text-2xl font-bold">{SITE_NAME}</p>
             <p className="text-sm mt-3 leading-relaxed text-neutral-400 max-w-xs">
-              Morocco&apos;s premier tourism connector — curated experiences, handpicked stays, and digital travel guides.
+              Your global tourism connector — curated experiences, handpicked stays, and digital travel guides from around the world.
             </p>
             <div className="flex gap-5 mt-6">
               <a
-                href="https://instagram.com/locmorocco"
+                href="https://instagram.com/loctravels"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LOC on Instagram"
@@ -51,7 +51,7 @@ export function Footer() {
                 Instagram
               </a>
               <a
-                href="https://tiktok.com/@locmorocco"
+                href="https://tiktok.com/@loctravels"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LOC on TikTok"
@@ -87,7 +87,7 @@ export function Footer() {
 
       <div className="border-t border-neutral-800 py-6">
         <p className="text-center text-xs text-neutral-600">
-          © {new Date().getFullYear()} {SITE_NAME}. All rights reserved. Made with love for Morocco.
+          © {new Date().getFullYear()} {SITE_NAME}. All rights reserved. Made for curious travellers everywhere.
         </p>
       </div>
     </footer>

@@ -5,9 +5,9 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "Stays in Morocco | LOC",
+  title: "Stays Around the World | LOC",
   description:
-    "Browse handpicked riads, villas, apartments, and local stays across Morocco — with direct contact, no hidden fees.",
+    "Browse handpicked ryokans, riads, villas, gîtes, and apartments around the world — with direct contact, no hidden fees.",
 }
 
 interface Props {
@@ -24,7 +24,7 @@ export default async function StaysPage({ searchParams }: Props) {
           <SectionHeader
             eyebrow="Places to Stay"
             title="Stays"
-            subtitle="Riads, villas, apartments, and local homes — each one selected for its character, comfort, and location."
+            subtitle="Ryokans, riads, villas, gîtes, and apartments — each one selected for its character, comfort, and location."
           />
         </div>
         <Suspense fallback={<div className="h-10" />}>

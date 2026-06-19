@@ -19,22 +19,22 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://loctravels.com"),
   title: {
-    default: "LOC — Discover Morocco | Experiences, Stays & Hidden Gems",
-    template: "%s | LOC Morocco",
+    default: "LOC — Discover the World | Experiences, Stays & Hidden Gems",
+    template: "%s | LOC",
   },
   description:
-    "Discover the best tourism experiences, stays, and hidden gems across Morocco. Quad biking, desert tours, riads, and more — curated by locals who love this land.",
+    "Discover the best tourism experiences, stays, and hidden gems around the world — from Japan to Morocco, Bali to Bordeaux. Curated by people who love to travel.",
   keywords: [
+    "travel experiences",
+    "boutique stays",
+    "hidden gems travel",
+    "global tourism",
+    "curated travel",
+    "Japan travel",
+    "France travel",
+    "Bali travel",
     "Morocco travel",
-    "Morocco experiences",
-    "Morocco stays",
-    "tourism Morocco",
-    "Marrakech activities",
-    "Morocco adventures",
-    "desert tours Morocco",
-    "Moroccan riads",
-    "travel guide Morocco",
-    "LOC Morocco",
+    "LOC travel",
   ],
   authors: [{ name: "LOC", url: "https://loctravels.com" }],
   creator: "LOC",
@@ -42,26 +42,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://loctravels.com",
-    siteName: "LOC Morocco",
-    title: "LOC — Discover Morocco | Experiences, Stays & Hidden Gems",
+    siteName: "LOC",
+    title: "LOC — Discover the World | Experiences, Stays & Hidden Gems",
     description:
-      "Discover the best tourism experiences, stays, and hidden gems across Morocco.",
+      "Discover the best tourism experiences, stays, and hidden gems around the world.",
     images: [
       {
         url: "/images/og-default.jpg",
         width: 1200,
         height: 630,
-        alt: "LOC — Discover Morocco",
+        alt: "LOC — Discover the World",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "LOC — Discover Morocco",
+    title: "LOC — Discover the World",
     description:
-      "Discover the best tourism experiences, stays, and hidden gems across Morocco.",
+      "Discover the best tourism experiences, stays, and hidden gems around the world.",
     images: ["/images/og-default.jpg"],
-    creator: "@locmorocco",
+    creator: "@loctravels",
   },
   robots: {
     index: true,
@@ -82,14 +82,13 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
-  name: "LOC Morocco",
+  name: "LOC",
   url: "https://loctravels.com",
   description:
-    "Morocco's premier tourism connector — curated experiences, handpicked stays, and digital travel products.",
-  areaServed: { "@type": "Country", name: "Morocco" },
+    "Your global tourism connector — curated experiences, handpicked stays, and digital travel products from around the world.",
   sameAs: [
-    "https://instagram.com/locmorocco",
-    "https://tiktok.com/@locmorocco",
+    "https://instagram.com/loctravels",
+    "https://tiktok.com/@loctravels",
   ],
 }
 

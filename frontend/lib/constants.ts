@@ -15,7 +15,8 @@ export const EXPERIENCE_CATEGORIES = [
   { label: "All", value: "" },
   { label: "Adventure", value: "adventure" },
   { label: "Wellness", value: "wellness" },
-  { label: "Cultural", value: "cultural" },
+  { label: "Cultural", value: "culture" },
+  { label: "Culinary", value: "culinary" },
   { label: "Water", value: "water" },
   { label: "Aerial", value: "aerial" },
 ]
@@ -24,8 +25,10 @@ export const PROPERTY_TYPES = [
   { label: "All", value: "" },
   { label: "Apartment", value: "apartment" },
   { label: "Villa", value: "villa" },
-  { label: "Vacation Home", value: "vacation-home" },
-  { label: "Local Stay", value: "local-stay" },
+  { label: "Ryokan", value: "ryokan" },
+  { label: "Gîte", value: "gite" },
+  { label: "Riad", value: "riad" },
+  { label: "Hotel", value: "hotel" },
 ]
 
 export const NAV_LINKS = [
@@ -37,4 +40,4 @@ export const NAV_LINKS = [
 ]
 
 export const SITE_NAME = "LOC"
-export const SITE_TAGLINE = "Discover Morocco"
+export const SITE_TAGLINE = "Discover the World"

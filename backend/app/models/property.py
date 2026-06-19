@@ -15,6 +15,7 @@ class Property(Base):
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
     type: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    country: Mapped[str | None] = mapped_column(String, index=True)
     location: Mapped[str | None] = mapped_column(String, index=True)
     price_min: Mapped[float | None] = mapped_column(Float)
     price_max: Mapped[float | None] = mapped_column(Float)

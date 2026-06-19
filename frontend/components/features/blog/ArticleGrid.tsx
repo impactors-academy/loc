@@ -36,7 +36,7 @@ export function ArticleGrid({ tag }: ArticleGridProps) {
     return (
       <div className="py-16 text-center">
         <p className="font-heading text-xl text-loc-night mb-2">No articles yet</p>
-        <p className="text-loc-stone text-sm">Stories from across Morocco are coming soon.</p>
+        <p className="text-loc-stone text-sm">Stories from around the world are coming soon.</p>
       </div>
     )
   }
