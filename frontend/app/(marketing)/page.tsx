@@ -178,6 +178,7 @@ export default function HomePage() {
         ctaHref="/experiences"
         ctaSecondaryLabel="Find a Stay"
         ctaSecondaryHref="/stays"
+        videoUrl="/videos/sahara_hero_horizontal.mp4"
         imageUrl="/images/hero.jpg"
       />
 
@@ -227,7 +228,9 @@ export default function HomePage() {
                   aria-hidden="true"
                 />
                 <div className="relative z-10">
-                  <span className="text-4xl mb-3 block select-none">{cat.icon}</span>
+                  {!cat.imageUrl && (
+                    <span className="text-4xl mb-3 block select-none">{cat.icon}</span>
+                  )}
                   <h3 className="font-heading text-white text-lg font-bold leading-tight">
                     {cat.title}
                   </h3>
