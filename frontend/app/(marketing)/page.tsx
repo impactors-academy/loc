@@ -178,6 +178,7 @@ export default function HomePage() {
         ctaHref="/experiences"
         ctaSecondaryLabel="Find a Stay"
         ctaSecondaryHref="/stays"
+        videoUrl="/videos/sahara_hero_horizontal.mp4"
         imageUrl="/images/hero.jpg"
       />
 
