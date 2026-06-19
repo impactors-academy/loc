@@ -14,6 +14,8 @@ COPY . .
 # NEXT_PUBLIC_* must be present at build time (baked into the bundle)
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# Enable standalone output for Docker self-hosting
+ENV NEXT_BUILD_STANDALONE=true
 RUN npm run build
 
 FROM node:20-alpine AS runner

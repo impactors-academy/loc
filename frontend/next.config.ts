@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone", // required for production Docker image (copies .next/standalone)
+  // standalone output is only for Docker self-hosting.
+  // Vercel manages its own pipeline — set NEXT_BUILD_STANDALONE=true
+  // in Dockerfile build args only; leave unset on Vercel.
+  output: process.env.NEXT_BUILD_STANDALONE === "true" ? "standalone" : undefined,
 };
 
 export default nextConfig;
