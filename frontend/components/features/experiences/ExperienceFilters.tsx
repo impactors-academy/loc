@@ -1,6 +1,6 @@
 "use client"
 
-import { EXPERIENCE_CATEGORIES } from "@/lib/constants"
+import { COUNTRIES, EXPERIENCE_CATEGORIES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { Search, X } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -10,6 +10,7 @@ export function ExperienceFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeCategory = searchParams.get("category") ?? ""
+  const activeCountry = searchParams.get("country") ?? ""
   const activeQ = searchParams.get("q") ?? ""
   const inputRef = useRef<HTMLInputElement>(null)
   const [, startTransition] = useTransition()
@@ -23,7 +24,7 @@ export function ExperienceFilters() {
     startTransition(() => router.push(`/experiences?${params.toString()}`))
   }
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = (e: { preventDefault(): void }) => {
     e.preventDefault()
     push({ q: inputRef.current?.value ?? "" })
   }
@@ -70,6 +71,35 @@ export function ExperienceFilters() {
             )}
           >
             {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Country pills */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => push({ country: "" })}
+          className={cn(
+            "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+            activeCountry === ""
+              ? "bg-loc-teal text-white border-loc-teal"
+              : "border-border text-loc-stone hover:border-loc-teal hover:text-loc-teal"
+          )}
+        >
+          All countries
+        </button>
+        {COUNTRIES.map((c) => (
+          <button
+            key={c.value}
+            onClick={() => push({ country: c.value })}
+            className={cn(
+              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+              activeCountry === c.value
+                ? "bg-loc-teal text-white border-loc-teal"
+                : "border-border text-loc-stone hover:border-loc-teal hover:text-loc-teal"
+            )}
+          >
+            {c.label}
           </button>
         ))}
       </div>

@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 }
 
 interface Props {
-  searchParams: Promise<{ type?: string }>
+  searchParams: Promise<{ type?: string; country?: string }>
 }
 
 export default async function StaysPage({ searchParams }: Props) {
-  const { type } = await searchParams
+  const { type, country } = await searchParams
 
   return (
     <main className="pt-24 pb-20">
@@ -30,7 +30,7 @@ export default async function StaysPage({ searchParams }: Props) {
         <Suspense fallback={<div className="h-10" />}>
           <PropertyFilters />
         </Suspense>
-        <PropertyGrid type={type} />
+        <PropertyGrid type={type} country={country} />
       </div>
     </main>
   )

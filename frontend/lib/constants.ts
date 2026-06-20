@@ -21,6 +21,17 @@ export const EXPERIENCE_CATEGORIES = [
   { label: "Aerial", value: "aerial" },
 ]
 
+export const COUNTRIES = [
+  { label: "Japan", value: "Japan" },
+  { label: "France", value: "France" },
+  { label: "Morocco", value: "Morocco" },
+  { label: "Bali", value: "Bali" },
+  { label: "Greece", value: "Greece" },
+  { label: "UK", value: "United Kingdom" },
+  { label: "Italy", value: "Italy" },
+  { label: "Belgium", value: "Belgium" },
+]
+
 export const PROPERTY_TYPES = [
   { label: "All", value: "" },
   { label: "Apartment", value: "apartment" },

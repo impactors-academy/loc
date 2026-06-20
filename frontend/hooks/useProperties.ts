@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import { QUERY_KEYS } from "@/lib/constants"
 
-export function useProperties(type?: string) {
+export function useProperties(type?: string, country?: string) {
   return useQuery({
-    queryKey: [...QUERY_KEYS.properties, type],
-    queryFn: () => api.properties.list(type),
+    queryKey: [...QUERY_KEYS.properties, type, country],
+    queryFn: () => api.properties.list(type, country),
   })
 }
 

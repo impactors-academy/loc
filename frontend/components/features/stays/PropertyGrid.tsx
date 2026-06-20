@@ -7,12 +7,13 @@ import { PropertyCard } from "./PropertyCard"
 
 interface PropertyGridProps {
   type?: string
+  country?: string
 }
 
 const SKELETON = Array.from({ length: 6 })
 
-export function PropertyGrid({ type }: PropertyGridProps) {
-  const { data, isPending, isError } = useProperties(type)
+export function PropertyGrid({ type, country }: PropertyGridProps) {
+  const { data, isPending, isError } = useProperties(type, country)
 
   if (isPending) {
     return (

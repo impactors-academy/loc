@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 }
 
 interface Props {
-  searchParams: Promise<{ category?: string; q?: string }>
+  searchParams: Promise<{ category?: string; country?: string; q?: string }>
 }
 
 export default async function ExperiencesPage({ searchParams }: Props) {
-  const { category, q } = await searchParams
+  const { category, country, q } = await searchParams
 
   return (
     <main className="pt-24 pb-20">
@@ -31,7 +31,7 @@ export default async function ExperiencesPage({ searchParams }: Props) {
         <Suspense fallback={<div className="h-16" />}>
           <ExperienceFilters />
         </Suspense>
-        <ExperienceGrid category={category} q={q} />
+        <ExperienceGrid category={category} country={country} q={q} />
       </div>
     </main>
   )
