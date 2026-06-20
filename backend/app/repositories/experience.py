@@ -14,26 +14,31 @@ def _rrf(ranked_lists: list[list[str]], k: int = 60) -> list[str]:
 
 
 class ExperienceRepository(BaseRepository[Experience]):
-    def get_by_category(self, db: Session, category: str, skip: int = 0, limit: int = 20) -> list[Experience]:
-        return (
-            db.query(self.model)
-            .filter(self.model.category == category)
-            .order_by(self.model.is_featured.desc())
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def get_by_category(
+        self, db: Session, category: str, country: str | None = None, skip: int = 0, limit: int = 20
+    ) -> list[Experience]:
+        q = db.query(self.model).filter(self.model.category == category)
+        if country:
+            q = q.filter(self.model.country == country)
+        return q.order_by(self.model.is_featured.desc()).offset(skip).limit(limit).all()
 
-    def get_multi(self, db: Session, skip: int = 0, limit: int = 20) -> list[Experience]:
-        return (
-            db.query(self.model)
-            .order_by(self.model.is_featured.desc())
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def get_multi(
+        self, db: Session, country: str | None = None, skip: int = 0, limit: int = 20
+    ) -> list[Experience]:
+        q = db.query(self.model)
+        if country:
+            q = q.filter(self.model.country == country)
+        return q.order_by(self.model.is_featured.desc()).offset(skip).limit(limit).all()
 
-    def search(self, db: Session, q: str, category: str | None, skip: int = 0, limit: int = 20) -> list[Experience]:
+    def search(
+        self,
+        db: Session,
+        q: str,
+        category: str | None,
+        country: str | None,
+        skip: int = 0,
+        limit: int = 20,
+    ) -> list[Experience]:
         tsquery = func.plainto_tsquery("english", q)
         trgm_filter = self.model.title.op("%%")(q)
 
@@ -51,6 +56,8 @@ class ExperienceRepository(BaseRepository[Experience]):
         )
         if category:
             base = base.filter(self.model.category == category)
+        if country:
+            base = base.filter(self.model.country == country)
         return (
             base
             .order_by(self.model.is_featured.desc())
@@ -65,8 +72,18 @@ class ExperienceRepository(BaseRepository[Experience]):
         q: str,
         embedding: list[float],
         category: str | None,
+        country: str | None,
         limit: int = 20,
     ) -> list[Experience]:
+        params: dict = {"q": q}
+        if category:
+            params["cat"] = category
+        if country:
+            params["country"] = country
+
+        cat_clause = " AND category = :cat" if category else ""
+        country_clause = " AND country = :country" if country else ""
+
         # ── keyword arm ────────────────────────────────────────────────────
         kw_ids: list[str] = [
             row[0]
@@ -74,10 +91,11 @@ class ExperienceRepository(BaseRepository[Experience]):
                 text(
                     "SELECT id FROM experiences "
                     "WHERE to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(location,'') || ' ' || coalesce(category,'')) @@ plainto_tsquery('english', :q)"
-                    + (" AND category = :cat" if category else "")
+                    + cat_clause
+                    + country_clause
                     + " ORDER BY ts_rank(to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(location,'') || ' ' || coalesce(category,'')), plainto_tsquery('english', :q)) DESC LIMIT 20"
                 ),
-                {"q": q, **({} if not category else {"cat": category})},
+                params,
             ).fetchall()
         ]
 
@@ -88,10 +106,11 @@ class ExperienceRepository(BaseRepository[Experience]):
             for row in db.execute(
                 text(
                     "SELECT id FROM experiences WHERE embedding IS NOT NULL"
-                    + (" AND category = :cat" if category else "")
+                    + cat_clause
+                    + country_clause
                     + " ORDER BY embedding <=> :vec LIMIT 20"
                 ),
-                {"vec": vec_str, **({} if not category else {"cat": category})},
+                {**params, "vec": vec_str},
             ).fetchall()
         ]
 

@@ -13,10 +13,11 @@ router = APIRouter(prefix="/properties", tags=["properties"])
 @cache(expire=300, namespace="properties:list")
 async def list_properties(
     type: str | None = None,
+    country: str | None = None,
     db: Session = Depends(get_db),
     pages: dict = Depends(pagination),
 ):
-    return property_service.get_all(db, type, pages["skip"], pages["limit"])
+    return property_service.get_all(db, type, country, pages["skip"], pages["limit"])
 
 
 @router.get("/{slug}", response_model=PropertyRead)
