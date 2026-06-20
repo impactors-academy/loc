@@ -49,7 +49,8 @@ class ExperienceRepository(BaseRepository[Experience]):
                     func.coalesce(self.model.title, "") + " " +
                     func.coalesce(self.model.description, "") + " " +
                     func.coalesce(self.model.location, "") + " " +
-                    func.coalesce(self.model.category, ""),
+                    func.coalesce(self.model.category, "") + " " +
+                    func.coalesce(self.model.country, ""),
                 ).op("@@")(tsquery),
                 trgm_filter,
             )
@@ -84,16 +85,18 @@ class ExperienceRepository(BaseRepository[Experience]):
         cat_clause = " AND category = :cat" if category else ""
         country_clause = " AND country = :country" if country else ""
 
+        _fts = "to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(location,'') || ' ' || coalesce(category,'') || ' ' || coalesce(country,''))"
+        _tsq = "plainto_tsquery('english', :q)"
+
         # ── keyword arm ────────────────────────────────────────────────────
         kw_ids: list[str] = [
             row[0]
             for row in db.execute(
                 text(
-                    "SELECT id FROM experiences "
-                    "WHERE to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(location,'') || ' ' || coalesce(category,'')) @@ plainto_tsquery('english', :q)"
+                    f"SELECT id FROM experiences WHERE {_fts} @@ {_tsq}"
                     + cat_clause
                     + country_clause
-                    + " ORDER BY ts_rank(to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(location,'') || ' ' || coalesce(category,'')), plainto_tsquery('english', :q)) DESC LIMIT 20"
+                    + f" ORDER BY ts_rank({_fts}, {_tsq}) DESC LIMIT 20"
                 ),
                 params,
             ).fetchall()
