@@ -15,6 +15,8 @@ const DESTINATIONS = [
   "Amsterdam",
   "Santorini",
   "Prague",
+  "Shenzhen",
+  "Hangzhou",
   "the World",
 ]
 
