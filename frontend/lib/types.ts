@@ -10,6 +10,7 @@ export interface Experience {
   category: ExperienceCategory
   country?: string
   location: string
+  duration?: string
   priceMin: number | null
   priceMax: number | null
   images: string[]

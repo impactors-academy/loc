@@ -1,7 +1,7 @@
 import { formatPriceRange } from "@/lib/types"
 import type { Property } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { MapPin } from "lucide-react"
+import { Globe, MapPin } from "lucide-react"
 import Link from "next/link"
 
 const TYPE_GRADIENTS: Record<string, string> = {
@@ -79,9 +79,17 @@ export function PropertyCard({ property }: { property: Property }) {
       </div>
 
       <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-center gap-1 text-loc-stone text-xs mb-2">
-          <MapPin size={11} aria-hidden="true" />
-          <span>{property.location}</span>
+        <div className="flex items-center gap-3 text-loc-stone text-xs mb-2 flex-wrap">
+          <span className="flex items-center gap-1">
+            <MapPin size={11} aria-hidden="true" />
+            {property.location}
+          </span>
+          {property.country && (
+            <span className="flex items-center gap-1">
+              <Globe size={11} aria-hidden="true" />
+              {property.country}
+            </span>
+          )}
         </div>
         <h3 className="font-heading font-bold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
           {property.title}

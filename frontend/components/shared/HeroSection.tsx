@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { HeroSearchBar } from "./HeroSearchBar"
 import { TypewriterTitle } from "./TypewriterTitle"
 
 const CATEGORY_PILLS = [
@@ -13,6 +14,7 @@ const CATEGORY_PILLS = [
 interface HeroSectionProps {
   title?: string
   animated?: boolean
+  showSearch?: boolean
   subtitle: string
   ctaLabel: string
   ctaHref: string
@@ -25,6 +27,7 @@ interface HeroSectionProps {
 export function HeroSection({
   title,
   animated = false,
+  showSearch = false,
   subtitle,
   ctaLabel,
   ctaHref,
@@ -89,9 +92,12 @@ export function HeroSection({
         )}
 
         {/* Subtitle */}
-        <p className="font-sans text-lg md:text-xl text-white/75 mb-10 max-w-xl mx-auto leading-relaxed">
+        <p className="font-sans text-lg md:text-xl text-white/75 mb-8 max-w-xl mx-auto leading-relaxed">
           {subtitle}
         </p>
+
+        {/* Search bar */}
+        {showSearch && <HeroSearchBar />}
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">

@@ -14,9 +14,10 @@ const FEATURED_EXPERIENCES: Experience[] = [
       "Step inside a 200-year-old machiya townhouse and learn the art of chado from a certified tea master. Matcha, wagashi sweets, and meditative silence included.",
     category: "culture",
     country: "Japan",
+    location: "Higashiyama, Kyoto",
+    duration: "2 hours",
     priceMin: 45,
     priceMax: 65,
-    location: "Higashiyama, Kyoto",
     images: ["https://images.unsplash.com/photo-1568393691622-c7ba131d1b16?w=800"],
     isFeatured: true,
     providerName: "Kyoto Tea House",
@@ -31,9 +32,10 @@ const FEATURED_EXPERIENCES: Experience[] = [
       "Board a catamaran, snorkel above volcanic reef, and anchor off Oia for the world-famous sunset. BBQ dinner and open bar included.",
     category: "water",
     country: "Greece",
+    location: "Oia, Santorini",
+    duration: "5 hours",
     priceMin: 110,
     priceMax: 150,
-    location: "Oia, Santorini",
     images: ["https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"],
     isFeatured: true,
     providerName: "Santorini Catamarans",
@@ -48,9 +50,10 @@ const FEATURED_EXPERIENCES: Experience[] = [
       "Make fresh pici pasta and wild boar ragù in a 14th-century farmhouse kitchen, followed by a long-table lunch in the olive grove with Brunello di Montalcino.",
     category: "culinary",
     country: "Italy",
+    location: "Chianti, Siena Province",
+    duration: "Full day",
     priceMin: 95,
     priceMax: 130,
-    location: "Chianti, Siena Province",
     images: ["https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800"],
     isFeatured: false,
     providerName: "Casa Toscana",
@@ -149,6 +152,49 @@ const CATEGORIES = [
   },
 ]
 
+const DESTINATIONS = [
+  {
+    country: "Japan",
+    tagline: "Temples & Traditions",
+    photo: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "France",
+    tagline: "Joie de Vivre",
+    photo: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Morocco",
+    tagline: "Dunes & Medinas",
+    photo: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Bali",
+    tagline: "Spiritual & Serene",
+    photo: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Greece",
+    tagline: "Islands & History",
+    photo: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "United Kingdom",
+    tagline: "Culture & Castles",
+    photo: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Italy",
+    tagline: "Art & Cuisine",
+    photo: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Belgium",
+    tagline: "Hidden European Gem",
+    photo: "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=600&auto=format&fit=crop&q=80",
+  },
+]
+
 const HOW_IT_WORKS = [
   {
     step: "01",
@@ -173,6 +219,7 @@ export default function HomePage() {
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <HeroSection
         animated
+        showSearch
         subtitle="Experiences, stays, and hidden gems — curated by people who live there."
         ctaLabel="Explore Experiences"
         ctaHref="/experiences"
@@ -191,6 +238,43 @@ export default function HomePage() {
                 <p className="font-heading text-3xl font-bold text-loc-terracotta">{stat.value}</p>
                 <p className="font-sans text-sm text-loc-stone mt-1">{stat.label}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Popular Destinations ────────────────────────────────────────── */}
+      <section className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <SectionHeader
+            eyebrow="Browse by destination"
+            title="Popular Destinations"
+            subtitle="Pick a place and dive in — experiences and stays filtered just for that corner of the world."
+          />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-10">
+            {DESTINATIONS.map((dest) => (
+              <Link
+                key={dest.country}
+                href={`/experiences?country=${encodeURIComponent(dest.country)}`}
+                className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end hover:scale-[1.02] transition-transform duration-300 shadow-md"
+              >
+                <img
+                  src={dest.photo}
+                  alt={dest.country}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/10 to-black/70"
+                  aria-hidden="true"
+                />
+                <div className="relative z-10 p-4">
+                  <h3 className="font-heading text-white text-base font-bold leading-tight">
+                    {dest.country}
+                  </h3>
+                  <p className="font-sans text-white/70 text-xs mt-0.5">{dest.tagline}</p>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

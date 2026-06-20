@@ -1,13 +1,14 @@
 import { formatPriceRange } from "@/lib/types"
 import type { Experience } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { MapPin } from "lucide-react"
+import { Clock, Globe, MapPin } from "lucide-react"
 import Link from "next/link"
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   adventure: "from-amber-950 via-orange-900 to-amber-800",
   wellness: "from-emerald-950 via-teal-900 to-emerald-800",
-  cultural: "from-purple-950 via-indigo-900 to-purple-800",
+  culture: "from-purple-950 via-indigo-900 to-purple-800",
+  culinary: "from-red-950 via-rose-900 to-red-800",
   water: "from-blue-950 via-cyan-900 to-blue-800",
   aerial: "from-sky-950 via-blue-900 to-sky-800",
 }
@@ -15,7 +16,8 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 const CATEGORY_ICONS: Record<string, string> = {
   adventure: "🏜️",
   wellness: "🧘",
-  cultural: "🕌",
+  culture: "🏯",
+  culinary: "🍷",
   water: "🌊",
   aerial: "🎈",
 }
@@ -58,9 +60,23 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
       </div>
 
       <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-center gap-1 text-loc-stone text-xs mb-2">
-          <MapPin size={11} aria-hidden="true" />
-          <span>{experience.location}</span>
+        <div className="flex items-center gap-3 text-loc-stone text-xs mb-2 flex-wrap">
+          <span className="flex items-center gap-1">
+            <MapPin size={11} aria-hidden="true" />
+            {experience.location}
+          </span>
+          {experience.country && (
+            <span className="flex items-center gap-1">
+              <Globe size={11} aria-hidden="true" />
+              {experience.country}
+            </span>
+          )}
+          {experience.duration && (
+            <span className="flex items-center gap-1">
+              <Clock size={11} aria-hidden="true" />
+              {experience.duration}
+            </span>
+          )}
         </div>
         <h3 className="font-heading font-bold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
           {experience.title}
