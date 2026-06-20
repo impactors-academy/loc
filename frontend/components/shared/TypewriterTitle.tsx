@@ -74,7 +74,7 @@ export function TypewriterTitle() {
       <span className="text-loc-amber whitespace-nowrap">
         {text}
         <span
-          className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-middle animate-[blink_1s_step-end_infinite]"
+          className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
           aria-hidden="true"
         />
       </span>
