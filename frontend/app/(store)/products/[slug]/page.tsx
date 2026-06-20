@@ -1,6 +1,7 @@
 import { api } from "@/lib/api"
 import { ExternalLink, Tag } from "lucide-react"
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 
 interface Props {
@@ -62,12 +63,15 @@ export default async function ProductDetailPage({ params }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
           {/* Cover image */}
-          <div className={`rounded-2xl overflow-hidden aspect-[3/4] bg-gradient-to-br ${gradient}`}>
+          <div className={`relative rounded-2xl overflow-hidden aspect-[3/4] bg-gradient-to-br ${gradient}`}>
             {product?.imageUrl && (
-              <img
+              <Image
                 src={product.imageUrl}
                 alt={product.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
               />
             )}
           </div>

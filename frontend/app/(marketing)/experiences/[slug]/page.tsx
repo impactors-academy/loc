@@ -3,6 +3,7 @@ import { api } from "@/lib/api"
 import { formatPriceRange } from "@/lib/types"
 import { MapPin, Tag, User } from "lucide-react"
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 
 interface Props {
@@ -50,10 +51,13 @@ export default async function ExperienceDetailPage({ params }: Props) {
         className={`relative h-72 md:h-96 bg-gradient-to-br ${gradient} overflow-hidden`}
       >
         {experience?.images?.[0] && (
-          <img
+          <Image
             src={experience.images[0]}
             alt={experience.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />

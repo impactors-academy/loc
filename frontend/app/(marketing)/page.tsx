@@ -3,6 +3,7 @@ import { PropertyCard } from "@/components/features/stays/PropertyCard"
 import { HeroSection } from "@/components/shared/HeroSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import type { Experience, Property } from "@/lib/types"
+import Image from "next/image"
 import Link from "next/link"
 
 const FEATURED_EXPERIENCES: Experience[] = [
@@ -258,11 +259,12 @@ export default function HomePage() {
                 href={`/experiences?country=${encodeURIComponent(dest.country)}`}
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end hover:scale-[1.02] transition-transform duration-300 shadow-md"
               >
-                <img
+                <Image
                   src={dest.photo}
                   alt={dest.country}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 640px) 50vw, 25vw"
                 />
                 <div
                   className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/10 to-black/70"
@@ -296,11 +298,12 @@ export default function HomePage() {
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end p-5 hover:scale-[1.02] transition-transform duration-300 shadow-md"
               >
                 {cat.imageUrl && (
-                  <img
+                  <Image
                     src={cat.imageUrl}
                     alt={cat.title}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 50vw, 25vw"
                   />
                 )}
                 <div

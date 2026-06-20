@@ -2,6 +2,7 @@ import { formatPriceRange } from "@/lib/types"
 import type { Experience } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Clock, Globe, MapPin } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
@@ -38,11 +39,12 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
         )}
       >
         {mainImage ? (
-          <img
+          <Image
             src={mainImage}
             alt={`${experience.title} in ${experience.location}`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">

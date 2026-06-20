@@ -2,6 +2,7 @@ import { formatPriceRange } from "@/lib/types"
 import type { Property } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Globe, MapPin } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 
 const TYPE_GRADIENTS: Record<string, string> = {
@@ -57,11 +58,12 @@ export function PropertyCard({ property }: { property: Property }) {
         )}
       >
         {mainImage ? (
-          <img
+          <Image
             src={mainImage}
             alt={`${property.title} in ${property.location}`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">

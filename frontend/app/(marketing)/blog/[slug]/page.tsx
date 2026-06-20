@@ -2,6 +2,7 @@ import { api } from "@/lib/api"
 import { RelatedArticles } from "@/components/features/blog/RelatedArticles"
 import { CalendarDays } from "lucide-react"
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 
 interface Props {
@@ -86,12 +87,14 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* Hero image */}
             {post.imageUrl && (
-              <div className="rounded-2xl overflow-hidden aspect-video mb-10">
-                <img
+              <div className="relative rounded-2xl overflow-hidden aspect-video mb-10">
+                <Image
                   src={post.imageUrl}
                   alt={post.title}
-                  className="w-full h-full object-cover"
-                  fetchPriority="high"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 728px"
+                  priority
                 />
               </div>
             )}

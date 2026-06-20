@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/lib/types"
+import Image from "next/image"
 import Link from "next/link"
 
 export function ArticleCard({ post }: { post: BlogPost }) {
@@ -13,11 +14,12 @@ export function ArticleCard({ post }: { post: BlogPost }) {
       <Link href={`/blog/${post.slug}`} className="block">
         <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-loc-night via-loc-stone/60 to-loc-terracotta/40">
           {post.imageUrl ? (
-            <img
+            <Image
               src={post.imageUrl}
               alt={post.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">

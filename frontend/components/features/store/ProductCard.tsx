@@ -1,6 +1,7 @@
 import type { Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { ExternalLink } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 
 const TYPE_GRADIENTS: Record<string, string> = {
@@ -39,11 +40,12 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         >
           {product.imageUrl ? (
-            <img
+            <Image
               src={product.imageUrl}
               alt={product.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
