@@ -1,56 +1,24 @@
 import { formatPriceRange } from "@/lib/types"
 import type { Experience } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { getPoolImage } from "@/lib/images"
 import { Clock, Globe, MapPin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  adventure: "from-amber-950 via-orange-900 to-amber-800",
-  wellness: "from-emerald-950 via-teal-900 to-emerald-800",
-  culture: "from-purple-950 via-indigo-900 to-purple-800",
-  culinary: "from-red-950 via-rose-900 to-red-800",
-  water: "from-blue-950 via-cyan-900 to-blue-800",
-  aerial: "from-sky-950 via-blue-900 to-sky-800",
-}
-
-const CATEGORY_ICONS: Record<string, string> = {
-  adventure: "🏜️",
-  wellness: "🧘",
-  culture: "🏯",
-  culinary: "🍷",
-  water: "🌊",
-  aerial: "🎈",
-}
-
 export function ExperienceCard({ experience }: { experience: Experience }) {
-  const gradient =
-    CATEGORY_GRADIENTS[experience.category] ?? "from-neutral-900 via-neutral-800 to-neutral-700"
-  const icon = CATEGORY_ICONS[experience.category] ?? "✨"
-  const mainImage = experience.images?.[0]
+  const image = experience.images?.[0] ?? getPoolImage(experience.category, experience.slug)
   const priceDisplay = formatPriceRange(experience.priceMin, experience.priceMax, "/ person")
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-      <div
-        className={cn(
-          "relative aspect-[4/3] overflow-hidden",
-          !mainImage && `bg-gradient-to-b ${gradient}`
-        )}
-      >
-        {mainImage ? (
-          <Image
-            src={mainImage}
-            alt={`${experience.title} in ${experience.location}`}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-6xl opacity-30 select-none">{icon}</span>
-          </div>
-        )}
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <Image
+          src={image}
+          alt={`${experience.title} in ${experience.location}`}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
         <span className="absolute top-3 left-3 bg-loc-terracotta text-white text-xs font-medium px-3 py-1 rounded-full capitalize">
           {experience.category}
         </span>

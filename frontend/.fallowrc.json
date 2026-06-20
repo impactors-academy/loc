@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/fallow/schema.json",
+  "ignorePatterns": ["node_modules/**", ".next/**", "public/**"],
+  "ignoreDependencies": [
+    "eslint-config-next",
+    "@eslint/eslintrc",
+    "postcss-load-config"
+  ],
+  "ignoreExports": [
+    { "file": "hooks/useBlogPosts.ts", "exports": ["useBlogPost"] },
+    { "file": "hooks/useExperiences.ts", "exports": ["useExperience"] },
+    { "file": "hooks/useProducts.ts", "exports": ["useProduct"] },
+    { "file": "hooks/useProperties.ts", "exports": ["useProperty"] },
+    { "file": "lib/constants.ts", "exports": ["SITE_TAGLINE"] },
+    { "file": "lib/animations.ts", "exports": ["*"] }
+  ]
+}
