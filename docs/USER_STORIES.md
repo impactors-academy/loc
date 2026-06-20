@@ -1,11 +1,11 @@
 # LOC — Product Backlog (User Stories)
 
-Written as Product Owner. Grounded in the LOC brief and skill: a tourism **connector + media brand** that earns through referrals, leads, sponsored placements, and digital product sales — **not** bookings or checkout.
+Written as Product Owner. Grounded in the LOC brief and skill: a **global** tourism **connector + media brand** that earns through referrals, leads, sponsored placements, and digital product sales — **not** bookings or checkout.
 
 **Personas**
-- **Tourist** — traveler discovering experiences/stays/content (mobile-first).
+- **Tourist** — traveller discovering experiences/stays/content (mobile-first, global).
 - **Provider** — experience/activity business wanting clients.
-- **Landlord** — property owner wanting visibility and leads.
+- **Landlord/Host** — property owner wanting visibility and leads.
 - **Advertiser** — tourism business buying sponsored placement/content.
 - **Editor** — LOC team member publishing content and managing listings.
 
@@ -14,81 +14,102 @@ Written as Product Owner. Grounded in the LOC brief and skill: a tourism **conne
 
 ---
 
-## EPIC 1 — Tourism Experience Discovery  *(revenue: referral commission)*  · **P0**
+## Release Status
 
-- **EXP-1 (P0)** — As a *Tourist*, I want to browse experiences in a card grid so I can see what's available.
-  *AC:* mobile-first grid; each card shows image, name, category, price range, location; data via `useExperiences()`.
-- **EXP-2 (P0)** — As a *Tourist*, I want to filter by category, location, and price so I can narrow to what fits.
-  *AC:* filters combine in one request; results cached 5m; empty-state handled.
-- **EXP-3 (P0)** — As a *Tourist*, I want an experience detail page so I can decide and make contact.
-  *AC:* `/experiences/[slug]`; provider info, gallery, description; **referral/inquiry CTA** (no booking engine).
-- **EXP-4 (P1)** — As a *Tourist*, I want to search experiences by keyword so I can find a specific activity fast.
-  *AC:* Postgres FTS + `pg_trgm` typo tolerance (see `docs/SEARCH_STRATEGY.md`); results ranked.
-- **EXP-5 (P1)** — As a *Provider*, I want my listing to carry a trackable referral link so LOC's commission is attributable.
-  *AC:* outbound CTA tagged with referral param; click logged.
-- **EXP-6 (P2)** — As a *Tourist*, I want natural-language discovery ("desert escape under $300") so I get relevant results without filters.
-  *AC:* Phase-2 hybrid search (FTS + pgvector).
+| Release | Status | What shipped |
+|---|---|---|
+| **R0 — Foundation** | ✅ Done | Docker stack, Alembic, models, CI skeleton |
+| **R1 — Core platform** | ✅ Done | Experiences/stays/store/blog, inquiry form, referral CTAs |
+| **R2 — Monetisation** | ✅ Done | Digital store, blog, promote page, FTS search, featured tiers |
+| **R3 — Discovery & scale** | ✅ Done | pgvector hybrid search (RRF), related articles (vector), product POST API, global seed, CI green |
+| **Global pivot** | ✅ Done | `country` field on experiences+properties, global seed (10 destinations), Unsplash image pool, all copy globalised, typewriter hero |
+| **R4 — GYG-inspired discovery** | 🔵 Active | Hero search, popular destinations, country filters, duration on cards, country on cards |
 
-## EPIC 2 — Property Listings  *(revenue: lead fee / subscription / featured)*  · **P0**
+---
 
-- **STAY-1 (P0)** — As a *Tourist*, I want to browse stays (apartments, villas, vacation homes) in a filterable grid.
-  *AC:* filters location/type/price; `PropertyCard` grid; mobile-first.
-- **STAY-2 (P0)** — As a *Tourist*, I want a property detail page with an inquiry form so I can contact about a stay.
-  *AC:* `/stays/[slug]`; inquiry posts to `POST /api/v1/contact`; **no direct booking**.
-- **STAY-3 (P1)** — As a *Landlord*, I want a "featured/premium" placement tier so my property surfaces higher.
-  *AC:* `listing_tier` drives ordering; featured visually marked.
-- **STAY-4 (P1)** — As a *Landlord*, I want each inquiry routed to me so I get the lead LOC generated.
-  *AC:* `notify_partner()` emails/webhooks the owner; lead stored.
+## EPIC 1 — Tourism Experience Discovery  *(revenue: referral commission)*  · **P0 — DONE**
 
-## EPIC 3 — Digital Product Store  *(revenue: direct sale)*  · **P1**
+- **EXP-1** ✅ — Browse experience grid (mobile-first, image/name/category/price/location).
+- **EXP-2** ✅ — Filter by category, location, price; results cached 5m; empty-state handled.
+- **EXP-3** ✅ — Experience detail page `/experiences/[slug]`; referral/inquiry CTA (no booking engine).
+- **EXP-4** ✅ — Keyword search via Postgres FTS + pg_trgm typo tolerance.
+- **EXP-5** ⬜ P1 — As a *Provider*, I want a trackable referral link so LOC's commission is attributable. *AC:* outbound CTA tagged with referral param; click logged.
+- **EXP-6** ✅ — Natural-language discovery via pgvector hybrid search (FTS + cosine, RRF fusion).
 
-- **STORE-1 (P1)** — As a *Tourist*, I want to browse travel guides/maps/packs so I can buy useful digital products.
-  *AC:* `/store` grid; product cards with cover, title, price.
-- **STORE-2 (P1)** — As a *Tourist*, I want a product page with a buy button so I can purchase.
-  *AC:* `/products/[slug]`; CTA links to **Gumroad/Lemon Squeezy** (no in-house checkout).
-- **STORE-3 (P2)** — As an *Editor*, I want to add a product by pointing at its external sale URL so I can list without code.
-  *AC:* product create includes `external_url`, `kind`.
+## EPIC 2 — Property Listings  *(revenue: lead fee / subscription / featured)*  · **P0 — DONE**
 
-## EPIC 4 — Tourism Media / Content Hub  *(revenue: SEO trust, sponsored posts)*  · **P1**
+- **STAY-1** ✅ — Browse stays in filterable grid (type/price/location).
+- **STAY-2** ✅ — Property detail page `/stays/[slug]`; inquiry form → contact pipeline.
+- **STAY-3** ✅ — `listing_tier` drives ordering; featured/premium visually marked.
+- **STAY-4** ⬜ P1 — As a *Landlord*, I want each inquiry routed to me. *AC:* `notify_partner()` emails the owner; lead stored.
 
-- **BLOG-1 (P1)** — As a *Tourist*, I want to read travel articles / watch reels so I trust LOC and discover places.
-  *AC:* `/blog` grid; article + embedded Reels/TikTok where possible.
-- **BLOG-2 (P1)** — As a *Tourist*, I want an article page so I can read a full guide.
-  *AC:* `/blog/[slug]`; tags; SEO metadata.
-- **BLOG-3 (P2)** — As a *Tourist*, I want "related articles" so I keep exploring.
-  *AC:* Phase-2 vector similarity on content.
+## EPIC 3 — Digital Product Store  *(revenue: direct sale)*  · **P1 — DONE**
 
-## EPIC 5 — Business Promotion Packages  *(revenue: sponsored / agency services)*  · **P1**
+- **STORE-1** ✅ — Browse products grid `/store`.
+- **STORE-2** ✅ — Product detail page `/products/[slug]`; buy CTA → external link (Gumroad/Lemon Squeezy).
+- **STORE-3** ✅ — `POST /api/v1/products` — editor can create a product via API (with 409 on duplicate slug).
 
-- **PROMO-1 (P1)** — As an *Advertiser*, I want a page describing promotion/content packages so I understand offerings.
-  *AC:* `/promote`; packages (social promo, reels, featured placement, content production).
-- **PROMO-2 (P1)** — As an *Advertiser*, I want an inquiry form so I can request a package.
-  *AC:* posts to contact pipeline; routed to LOC sales.
+## EPIC 4 — Tourism Media / Content Hub  *(revenue: SEO trust, sponsored posts)*  · **P1 — DONE**
 
-## EPIC 6 — Inquiry & Lead Engine  *(cross-cutting, monetization backbone)*  · **P0**
+- **BLOG-1** ✅ — Browse articles grid `/blog`; tag filter.
+- **BLOG-2** ✅ — Article page `/blog/[slug]`; SEO metadata.
+- **BLOG-3** ✅ — "Related articles" via vector cosine similarity; falls back to tag overlap.
 
-- **LEAD-1 (P0)** — As a *Tourist*, I want one reliable inquiry form so contacting any provider/landlord works the same way.
-  *AC:* shared `InquiryForm`; Next route proxies to FastAPI; validation + success/error states.
-- **LEAD-2 (P0)** — As an *Editor*, I want inquiries stored and the right partner notified so no lead is lost.
-  *AC:* persisted to `inquiries` table; `notify_partner()`; cache invalidated on write.
-- **LEAD-3 (P1)** — As an *Editor*, I want basic lead/referral tracking so we can prove LOC's value to partners.
-  *AC:* `source_type` + `source_id` recorded; simple export endpoint.
+## EPIC 5 — Business Promotion Packages  *(revenue: sponsored / agency)*  · **P1 — DONE**
 
-## EPIC 7 — Platform & Foundations  *(enablers)*  · **P0**
+- **PROMO-1** ✅ — `/promote` page with three-tier packages (Visibility/Content/Growth).
+- **PROMO-2** ✅ — Inquiry form on `/promote` → LOC sales pipeline.
 
-- **INFRA-1 (P0)** — As an *Editor/Dev*, I want the Dockerized stack so anyone can run LOC locally with one command.
-  *AC:* `docker compose up` from repo root starts all 4 services; frontend on :3000, API docs on :8000/docs; no manual Python/Node install needed.
-  *Status:* **open** — compose + Dockerfiles now in repo root; verify end-to-end before closing.
-- **INFRA-2 (P0)** — As a *Dev*, I want the layered FastAPI skeleton + Alembic wired so features drop into a consistent structure.
-  *AC:* `make migrate` runs cleanly; `make test` passes; all 5 endpoints return 200/404 correctly.
-- **INFRA-3 (P0)** — As a *Tourist*, I want a homepage with hero + clear paths (experiences / stays / store / content) so I know what LOC offers.
-  *AC:* `/` renders hero + section stubs; mobile layout passes; Navbar links all resolve.
-- **INFRA-4 (P0)** — As a *Dev*, I want the data models corrected to match the architecture spec so filtering and sorting work.
-  *AC:* `price_range: str` replaced with `price_min/price_max: float`; `image_url: str` replaced with `images: JSONB`; `is_featured` added to experiences; `listing_tier` added to properties; `owner_contact`/`provider_contact` added; `inquiries` table created; Alembic migration included.
-- **INFRA-5 (P0)** — As a *Dev*, I want `next.config.ts` to have `output: 'standalone'` so the production Docker image builds correctly.
-  *AC:* `npm run build` produces `.next/standalone`; `docker compose -f ... -f docker-compose.prod.yml build` succeeds.
-- **INFRA-6 (P1)** — As a *Dev*, I want CI (lint/test/build) on PRs so `develope` stays green.
-  *AC:* GitHub Actions runs `ruff`, `pytest`, `eslint`, `tsc --noEmit`, `next build` in parallel on every PR.
+## EPIC 6 — Inquiry & Lead Engine  *(cross-cutting backbone)*  · **P0 — DONE**
+
+- **LEAD-1** ✅ — Shared `InquiryForm`; Next proxy route → FastAPI; validation + success/error states.
+- **LEAD-2** ✅ — Inquiries persisted to `inquiries` table; `notify_partner()` stub wired.
+- **LEAD-3** ⬜ P1 — Basic lead/referral tracking; `source_type` + `source_id` recorded; simple export endpoint.
+
+## EPIC 7 — Platform & Foundations  *(enablers)*  · **P0 — DONE**
+
+- **INFRA-1** ✅ — Docker stack (`docker compose up` → all 4 services running).
+- **INFRA-2** ✅ — Layered FastAPI skeleton + Alembic (`make migrate` clean, `make test` passes).
+- **INFRA-3** ✅ — Homepage hero + section structure; Navbar links resolve; mobile layout correct.
+- **INFRA-4** ✅ — Data models match spec: `price_min/max`, `images(JSONB)`, `is_featured`, `listing_tier`, contact fields, `inquiries` table.
+- **INFRA-5** ✅ — `output: standalone` conditional; Docker build produces `.next/standalone`; Vercel build works without it.
+- **INFRA-6** ✅ — CI (GitHub Actions): `ruff`, `pytest`, `eslint`, `tsc --noEmit`, `next build` — all green.
+
+## EPIC 8 — Global Expansion  *(brand reach)*  · **DONE**
+
+- **GLOB-1** ✅ — `country` field added to `Experience` and `Property` (migration 004).
+- **GLOB-2** ✅ — Global seed: 10 experiences across Japan, France, UK, Belgium, Bali, Greece, Italy, Morocco; 6 properties across 5 countries.
+- **GLOB-3** ✅ — `frontend/lib/images.ts`: Unsplash pool by category/property type, slug-hash deterministic picker.
+- **GLOB-4** ✅ — All Morocco-specific copy removed: layout metadata, hero, footer, all page titles, ArticleGrid empty state, Tailwind comment.
+- **GLOB-5** ✅ — Typewriter hero: cycles Morocco → Paris → Greece → Belgium → London → Madrid → Barcelona → Bali → Kyoto → Amsterdam → Santorini → Prague → **the World**.
+- **GLOB-6** ✅ — `PropertyType` expanded: `riad/ryokan/gite/hotel/bivouac`. `ExperienceCategory` expanded: `culture/culinary`.
+
+---
+
+## EPIC 9 — GetYourGuide-Inspired Discovery Layer  *(R4 — Active)*
+
+Selectively borrows GYG's UX patterns for intent-first discovery. Does **not** copy booking engine, reviews, or urgency dark patterns.
+
+- **DISC-1** 🔵 P0 — As a *Tourist*, I want a search bar in the homepage hero so I can start with intent rather than browsing.
+  *AC:* Input below typewriter, routes to `/experiences?q=...` on submit; pre-fills if `?q` already set; matches existing `ExperienceFilters` search behaviour.
+
+- **DISC-2** 🔵 P0 — As a *Tourist*, I want a "Popular Destinations" section on the homepage so I can browse by place.
+  *AC:* 8 destination photo cards (Japan, France, Morocco, Bali, Greece, UK, Italy, Belgium) with cover image + country name; links to `/experiences?country=X`; horizontal scroll on mobile, 4-col grid on desktop.
+
+- **DISC-3** 🔵 P1 — As a *Tourist*, I want to filter experiences and stays by country so I can browse one destination at a time.
+  *AC:* `country` query param added to `ExperienceFilters` and `PropertyFilters`; backend search endpoint accepts `country` filter; existing category filter still works alongside it.
+
+- **DISC-4** 🔵 P1 — As a *Tourist*, I want to see the duration of an experience on the card so I can quickly judge fit.
+  *AC:* `duration` field added to frontend `Experience` type; rendered as a clock badge (e.g. "2 hours") on `ExperienceCard` below the location line; backend `ExperienceRead` schema exposes it.
+
+- **DISC-5** 🔵 P1 — As a *Tourist*, I want to see the country on experience and property cards so the global scope is tangible.
+  *AC:* Country name shown as a secondary line or flag chip on both `ExperienceCard` and `PropertyCard`; gracefully absent when `country` is null.
+
+- **DISC-6** ⬜ P2 — As a *Tourist*, I want a destination page `/destinations/[country]` so I can read a curated intro and see all listings for that country.
+  *AC:* Dynamic route; hero with destination cover photo; curated intro text; experiences + stays tabs filtered by country.
+
+- **DISC-7** ⬜ P2 — As a *Dev*, I want the backend `/experiences` endpoint to accept a `country` query param so the frontend country filter has API support.
+  *AC:* `country: str | None` param in `ExperienceService.search()`; repository adds `.filter(Experience.country == country)` when set; cached with country in the cache key.
 
 ---
 
@@ -96,9 +117,9 @@ Written as Product Owner. Grounded in the LOC brief and skill: a tourism **conne
 
 | Release | Stories | Outcome |
 |---|---|---|
-| **R0 — Foundation** | INFRA-1/2/4/5 | Stack runs locally; models match spec; prod image builds |
-| **R1 — Core platform live** | INFRA-3, EXP-1/2/3, STAY-1/2, LEAD-1/2 | Tourists discover experiences & stays and send inquiries → first referral/lead revenue |
-| **R2 — Monetize the audience** | STORE-1/2, BLOG-1/2, PROMO-1/2, EXP-4/5, STAY-3/4, LEAD-3 | Digital sales, content/SEO, sponsored packages, attributable referrals |
-| **R3 — Discovery & scale** | EXP-6, BLOG-3, STORE-3, INFRA-6, auth/dashboard | Hybrid search, recommendations, partner self-serve, CI gate |
+| **R4a — Hero + Destinations (this sprint)** | DISC-1, DISC-2, DISC-4, DISC-5 | Homepage feels GYG-inspired; duration + country visible on cards |
+| **R4b — Country filtering** | DISC-3, DISC-7 | Filter by destination end-to-end (frontend + backend) |
+| **R4c — Destination pages** | DISC-6 | Deep destination experience; SEO for "things to do in Japan" etc. |
+| **R5 — Auth + Dashboard** | Partner self-serve, lead tracking, admin | Business tier: partners manage their own listings |
 
-Ship R1 end-to-end before starting R2 — lean first, sophistication layered.
+Ship R4a before R4b — the UI change is independent of the backend filter.

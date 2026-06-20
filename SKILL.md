@@ -1,85 +1,141 @@
 ---
 name: loc
-description: Use this skill when building, extending, or making decisions about the LOC tourism platform. Triggers on any task related to LOC features, pages, components, revenue streams, backend logic, or content strategy. Also triggers when the user mentions tourists, listings, experiences, commissions, Morocco, or digital products in the context of this project.
+description: Use this skill when building, extending, or making decisions about the LOC tourism platform. Triggers on any task related to LOC features, pages, components, revenue streams, backend logic, or content strategy. Also triggers when the user mentions tourists, listings, experiences, destinations, countries, or digital products in the context of this project.
 ---
 
 ## Project Overview
 
-LOC is a **digital tourism connector and media brand** operating under Impactor's Academy, focused on Morocco (and France). It is transitioning from a direct short-term rental operator into a scalable tourism-tech platform.
+LOC is a **global digital tourism connector and media brand** operating under Impactor's Academy. It started focused on Morocco and France and has expanded to a worldwide platform covering Japan, France, UK, Belgium, Bali, Greece, Italy, Morocco, and beyond. It is transitioning from a direct short-term rental operator into a scalable tourism-tech platform.
 
 The platform connects tourists with:
-- **Experience providers** (quad biking, desert tours, skydiving, hot air balloons, boat trips, wellness)
-- **Property owners** (apartments, villas, vacation homes, local stays)
-- **Digital products** (travel guides, experience maps, relocation guides, content packs)
+- **Experience providers** (adventure, culinary, wellness, cultural, water, aerial experiences worldwide)
+- **Property owners** (apartments, villas, riads, ryokans, gîtes, hotels, bivouacs)
+- **Digital products** (travel guides, destination itineraries, video courses, experience maps)
 
 LOC earns revenue through referral commissions, featured placements, sponsored promotions, affiliate partnerships, and digital product sales — not by owning or operating properties directly.
 
 ## Tech Stack
 
-- **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, TanStack Query v5 (server-state caching + background refetch)
-- **Backend:** Python 3.11+ · FastAPI · uv · Uvicorn (ASGI server) · Pydantic v2 (validation) · python-dotenv (env management)
-- **Caching:** Redis · `fastapi-cache2` (response-level caching on the FastAPI side) — keeps repeated listing/experience queries off the DB entirely
-- **Database:** PostgreSQL (local dev) · SQLAlchemy (ORM) · Alembic (migrations) · psycopg2-binary (driver) — with plans to migrate to managed hosting (e.g. Supabase or Railway) and add auth in a later phase
-- **API design:** RESTful, versioned under `/api/v1/`, CORS configured to allow the Next.js frontend origin
+- **Frontend:** Next.js 15.3 App Router · TypeScript · Tailwind CSS · shadcn/ui · TanStack Query v5 · framer-motion v12
+- **Backend:** Python 3.11+ · FastAPI · uv · Uvicorn · Pydantic v2 · python-dotenv
+- **Caching:** Redis · `fastapi-cache2` (service-layer response caching, TTL 5m)
+- **Database:** PostgreSQL 16 · SQLAlchemy 2 · Alembic · psycopg2-binary · **pgvector** (hybrid search)
+- **Search:** Phase 1 — Postgres FTS + pg_trgm · Phase 2 (live) — pgvector cosine + RRF hybrid
+- **API:** RESTful, versioned `/api/v1/`, CORS to Next.js origin
+- **Deployment:** Vercel (frontend) · Railway (backend + PostgreSQL + Redis)
 - **Repo structure:**
   - `frontend/` — Next.js app
-  - `backend/` — FastAPI app (`main.py` entrypoint, `api/`, `models/`, `schemas/`, `repositories/`, `services/`, `db/`)
-- **Branch:** `develope` is the active development branch; `main` is production-stable
+  - `backend/` — FastAPI app (`main.py`, `api/`, `models/`, `schemas/`, `repositories/`, `services/`, `db/`)
+- **Branches:** `develope` = active development · `main` = production-stable
+
+## Brand Palette
+
+| Token | Hex | Use |
+|---|---|---|
+| `loc-terracotta` | `#C4714A` | Primary CTA, category badges |
+| `loc-sand` | `#F7EDD8` | Background highlights, stat strips |
+| `loc-amber` | `#D4A44C` | Accents, featured badges, typewriter cursor |
+| `loc-teal` | `#2D6A6A` | Secondary accent |
+| `loc-night` | `#1A1A2E` | Dark backgrounds, text |
+| `loc-stone` | `#8B7355` | Muted text, subtitles |
 
 ## Core Platform Features (Priority Order)
 
 ### 1. Tourism Experience Discovery
-Pages and components that let tourists browse and filter experiences by category (adventure, wellness, cultural, etc.). Each listing shows provider info, pricing range, and a referral/inquiry CTA. LOC earns a commission on referrals — do not build a full booking engine, just lead generation.
+Pages and components that let tourists browse and filter global experiences by category and country. Each listing shows provider info, pricing, duration, country/location, and a referral/inquiry CTA. LOC earns a commission on referrals — no booking engine, lead generation only.
+
+**Supported categories:** `adventure` · `wellness` · `culture` · `culinary` · `water` · `aerial`
 
 ### 2. Property Listings
-A directory of stays (apartments, villas, vacation homes) where landlords pay for visibility. Build as a listing card grid with filters (location, type, price range). Each card links to a contact/inquiry form — not a direct booking system.
+A global directory of stays where landlords/hosts pay for visibility. Each card links to a contact/inquiry form — not a direct booking system.
+
+**Supported types:** `villa` · `apartment` · `riad` · `ryokan` · `gite` · `hotel` · `bivouac`
 
 ### 3. Digital Product Store
 A simple storefront for downloadable products:
-- Morocco & France travel guides (PDF/eBook)
-- Local experience maps (Notion templates or PDF)
-- Relocation & remote worker guides
-- Tourism photography/content packs
+- World travel guides (PDF/eBook)
+- Destination itinerary packs
+- Video travel masterclasses
+- Local experience maps
+- Photography/content packs
 
 ### 4. Tourism Media / Content Hub
-A blog or video feed showcasing travel content, hidden destinations, and experience reviews. This builds audience trust and SEO. Connect to social media (Instagram Reels, TikTok embeds where possible).
+A blog showcasing travel content, hidden destinations, and destination guides. Builds audience trust and SEO. Related articles powered by pgvector cosine similarity.
 
 ### 5. Business Promotion Packages
-A landing page for tourism businesses to inquire about sponsored placements, social media promotions, and content packages.
+A landing page for tourism businesses to inquire about sponsored placements, social media promotions, and content packages. Flat monthly fees — no booking commissions.
 
-## Brand & Design Direction
+## Global Expansion Model
 
-LOC positions itself around these themes: **Discovery, Adventure, Lifestyle, Luxury experiences, Authentic Moroccan tourism, Convenience, Community.**
+LOC is destination-agnostic. Each entity (`Experience`, `Property`) carries a `country` field. The seed and UI support filtering by country/destination. The discovery layer (R4) adds:
+- **Homepage hero search bar** routing to `/experiences?q=...`
+- **Popular Destinations** section with photo cards per country
+- **Country filter** in `ExperienceFilters` and `PropertyFilters`
+- **Destination pages** `/destinations/[country]` (future)
 
-Design guidelines:
-- Clean, modern, tourism-forward aesthetic
-- Mobile-first (tourists browse on phones)
-- Use warm earthy tones + vibrant accent colors that evoke Morocco (terracotta, sand, deep blue)
-- High-quality imagery is central — always reserve prominent space for hero images and experience photos
-- Avoid cluttered layouts; prioritize whitespace and clear CTAs
+### GetYourGuide-inspired patterns (adopted selectively)
 
-## Revenue Model — Keep in Mind
+| Pattern | Adopted | Reason |
+|---|---|---|
+| Search bar in hero | ✅ R4 | Intent-first discovery |
+| Destination browsing cards | ✅ R4 | Country-based navigation |
+| Duration on cards | ✅ R4 | Quick mental filter |
+| Country badge on cards | ✅ R4 | Makes global scope tangible |
+| Star ratings + reviews | ❌ | No review engine planned |
+| Instant booking / checkout | ❌ | LOC = lead-gen, not transactions |
+| "Likely to sell out" urgency | ❌ | Dark pattern, off-brand |
 
-When building any feature, consider how it connects to a revenue stream:
+## Release History
+
+| Release | Status | What shipped |
+|---|---|---|
+| **R0 — Foundation** | ✅ Done | Docker stack, Alembic, models, CI skeleton |
+| **R1 — Core platform** | ✅ Done | Experiences/stays/store/blog pages, inquiry form, referral CTAs |
+| **R2 — Monetisation** | ✅ Done | Digital store, blog, promote page, FTS search, featured tiers |
+| **R3 — Discovery & scale** | ✅ Done | pgvector hybrid search (RRF), related articles, product POST API, seed, CI green |
+| **Global pivot** | ✅ Done | `country` field, global seed (10 countries), image pool, global copy, typewriter hero |
+| **R4 — GYG-inspired discovery** | 🔵 Next | Hero search, destination cards, country filters, duration on cards |
+
+## Data Model Summary (current)
+
+### experiences
+`id · slug · title · description · category · country · location · duration · price_min · price_max · images(JSONB) · is_featured · provider_name · provider_contact · referral_url · embedding(vector 1536) · search_vector(tsvector)`
+
+### properties
+`id · slug · title · description · type · country · location · price_min · price_max · images(JSONB) · listing_tier · owner_contact`
+
+### products
+`id · slug · title · description · type · price · image_url · purchase_url`
+
+### blog_posts
+`id · slug · title · excerpt · content · image_url · tags(str comma-sep) · published_at · embedding(vector 1536)`
+
+### inquiries
+`id · name · email · phone · message · subject · source_type · source_id · created_at`
+
+## Revenue Model
 
 | Feature | Revenue model |
 |---|---|
 | Experience listings | Referral commission per booking |
 | Property listings | Monthly subscription or per-lead fee |
 | Sponsored placements | One-time or recurring ad fee |
-| Digital products | Direct sale (PDF/eBook) |
+| Digital products | Direct sale (PDF/eBook/course) |
 | Affiliate links | Commission on external purchases |
 | Content/media | Sponsored posts, brand partnerships |
 
-Never build a complex booking engine — LOC's model is lead generation and referral, not transaction processing.
+**Never build a payment/checkout system** — use Gumroad/Lemon Squeezy for digital products; experiences/properties use inquiry + referral links.
 
 ## Development Principles
 
-- Build pages and components that work on mobile first, then scale up
-- Keep the codebase simple — this is a lean team; avoid over-engineering
-- Use shadcn/ui components as the base UI layer; extend with Tailwind
-- Every page should have a clear CTA that connects to a revenue stream (inquiry form, product purchase, referral link)
-- For any new feature, ask: "Does this help a tourist discover something, or help a business get clients?" If neither, deprioritize it
+- Mobile-first, then scale up — tourists browse on phones
+- Keep it lean — avoid over-engineering, small team
+- Use shadcn/ui as the base UI layer; extend with Tailwind
+- Every page must have a clear CTA connected to a revenue stream
+- Ask: *"Does this help a tourist discover something, or help a business get clients?"* If neither, deprioritise
+- Dependency flow: `endpoints → services → repositories → models` — never skip or reverse
+- Cache at the **service layer** using `@cache()` — not on endpoints; invalidate on write
+- All API calls through `lib/api.ts`; all server-state through TanStack Query hooks — no raw `fetch()` in components
 
 ## File Structure Conventions
 
@@ -87,295 +143,75 @@ Never build a complex booking engine — LOC's model is lead generation and refe
 
 ```
 frontend/
-├── app/                          # Next.js App Router root
-│   ├── (marketing)/              # Public-facing route group (no shared layout with store)
-│   │   ├── page.tsx              # Homepage
-│   │   ├── experiences/
-│   │   │   ├── page.tsx          # Experience discovery listing
-│   │   │   └── [slug]/
-│   │   │       └── page.tsx      # Individual experience detail
-│   │   ├── stays/
-│   │   │   ├── page.tsx          # Property listings
-│   │   │   └── [slug]/
-│   │   │       └── page.tsx      # Individual property detail
-│   │   ├── blog/
-│   │   │   ├── page.tsx          # Tourism content hub
-│   │   │   └── [slug]/
-│   │   │       └── page.tsx      # Individual article/video
-│   │   ├── promote/
-│   │   │   └── page.tsx          # Business promotion packages CTA
-│   │   └── layout.tsx            # Marketing layout (Navbar + Footer)
-│   ├── (store)/                  # Digital product store route group
-│   │   ├── store/
-│   │   │   └── page.tsx          # Store homepage → /store (avoids conflict with marketing /)
-│   │   ├── products/
-│   │   │   └── [slug]/
-│   │   │       └── page.tsx      # Product detail + purchase link → /products/[slug]
-│   │   └── layout.tsx            # Store layout (minimal, focused)
-│   ├── (dashboard)/              # Future: partner/admin dashboard (auth-gated)
-│   │   └── layout.tsx
-│   ├── api/                      # Next.js API routes (lightweight only — proxy to FastAPI)
-│   │   └── contact/
-│   │       └── route.ts          # Contact/inquiry form handler
-│   ├── layout.tsx                # Root layout (fonts, QueryClientProvider, global providers)
-│   └── globals.css               # Tailwind base styles + CSS variables
+├── app/
+│   ├── (marketing)/
+│   │   ├── page.tsx              # Homepage (typewriter hero, destination grid, featured cards)
+│   │   ├── experiences/          # /experiences list + [slug] detail
+│   │   ├── stays/                # /stays list + [slug] detail
+│   │   ├── blog/                 # /blog list + [slug] article
+│   │   ├── promote/              # /promote business packages
+│   │   └── layout.tsx            # Navbar + Footer
+│   ├── (store)/
+│   │   ├── store/page.tsx        # /store product grid
+│   │   └── products/[slug]/      # /products/[slug] detail + buy CTA
+│   ├── (dashboard)/              # Future: partner/admin (auth-gated)
+│   ├── api/contact/route.ts      # Inquiry proxy → FastAPI
+│   ├── layout.tsx                # Root layout (fonts, providers, schema.org)
+│   └── globals.css               # Tailwind base + CSS vars + @keyframes blink
 │
 ├── components/
-│   ├── ui/                       # shadcn/ui primitives (auto-generated, do not hand-edit)
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── input.tsx
-│   │   └── ...
-│   ├── shared/                   # Reusable layout and global components
+│   ├── ui/                       # shadcn/ui primitives — never hand-edit
+│   ├── shared/
 │   │   ├── Navbar.tsx
 │   │   ├── Footer.tsx
-│   │   ├── HeroSection.tsx       # Reusable hero banner with image + CTA
-│   │   ├── SectionHeader.tsx     # Consistent section title + subtitle block
-│   │   └── InquiryForm.tsx       # Shared contact/inquiry modal or section
-│   └── features/                 # Feature-specific components (colocated with their domain)
-│       ├── experiences/
-│       │   ├── ExperienceCard.tsx
-│       │   ├── ExperienceGrid.tsx
-│       │   └── ExperienceFilters.tsx
-│       ├── stays/
-│       │   ├── PropertyCard.tsx
-│       │   ├── PropertyGrid.tsx
-│       │   └── PropertyFilters.tsx
-│       ├── store/
-│       │   ├── ProductCard.tsx
-│       │   └── ProductGrid.tsx
-│       └── blog/
-│           ├── ArticleCard.tsx
-│           └── ArticleGrid.tsx
+│   │   ├── HeroSection.tsx       # Accepts animated prop → renders TypewriterTitle
+│   │   ├── TypewriterTitle.tsx   # Client component: cycles destinations, lands on "the World"
+│   │   ├── SectionHeader.tsx
+│   │   └── InquiryForm.tsx
+│   └── features/
+│       ├── experiences/          # ExperienceCard · ExperienceGrid · ExperienceFilters
+│       ├── stays/                # PropertyCard · PropertyGrid · PropertyFilters
+│       ├── store/                # ProductCard · ProductGrid
+│       └── blog/                 # ArticleCard · ArticleGrid · RelatedArticles
 │
 ├── lib/
-│   ├── api.ts                    # Centralized fetch wrapper for FastAPI calls (used by hooks)
-│   ├── query-client.ts           # TanStack QueryClient singleton with global staleTime/gcTime
-│   ├── types.ts                  # Shared TypeScript types (Experience, Property, Product, etc.)
-│   ├── utils.ts                  # shadcn cn() helper + general utilities
-│   └── constants.ts              # Site-wide constants (categories, nav links, query keys)
+│   ├── api.ts                    # Centralised fetch wrapper
+│   ├── images.ts                 # Unsplash pool by category/type + slug-hash picker
+│   ├── query-client.ts           # TanStack QueryClient (staleTime 5m)
+│   ├── types.ts                  # Experience · Property · Product · BlogPost · etc.
+│   ├── utils.ts                  # cn() helper
+│   └── constants.ts              # EXPERIENCE_CATEGORIES · PROPERTY_TYPES · NAV_LINKS · QUERY_KEYS · SITE_NAME
 │
-├── hooks/                        # TanStack Query hooks — one file per domain
-│   ├── useExperiences.ts         # useExperiences(), useExperience(slug)
-│   ├── useProperties.ts          # useProperties(), useProperty(slug)
-│   ├── useProducts.ts            # useProducts(), useProduct(slug)
-│   └── useBlogPosts.ts           # useBlogPosts(), useBlogPost(slug)
-│
-├── public/                       # Static assets
-│   ├── images/
-│   └── icons/
-│
-├── components.json               # shadcn/ui config
-├── tailwind.config.ts
-├── next.config.ts
-└── tsconfig.json
+└── hooks/
+    ├── useExperiences.ts
+    ├── useProperties.ts
+    ├── useProducts.ts
+    └── useBlogPosts.ts
 ```
-
-**Key rules:**
-- `components/ui/` is owned by shadcn — never hand-edit these files; re-run `npx shadcn add` to update
-- `components/shared/` is for anything used across 2+ pages or route groups
-- `components/features/` is domain-scoped — an experience component lives in `features/experiences/`, not at the root
-- All API calls go through `lib/api.ts`; no raw `fetch()` calls scattered in components or hooks
-- Types are defined once in `lib/types.ts` and imported everywhere
-- Query keys are defined as constants in `lib/constants.ts` (e.g. `QUERY_KEYS.experiences`) — never use inline strings as query keys
-- All server-state (API data) is managed by TanStack Query hooks in `hooks/`; no `useState` + `useEffect` for fetching
-- Set `staleTime: 1000 * 60 * 5` (5 min) globally in `lib/query-client.ts` — data stays fresh client-side while Redis handles freshness server-side
-- Components never call `lib/api.ts` directly — they call a hook, which calls `lib/api.ts`
-
----
 
 ### Backend (`backend/`)
 
+Strict layered architecture: `endpoints → services → repositories → models`
+
 ```
-backend/
-├── app/
-│   ├── main.py                   # FastAPI app entry point; registers routers, CORS, lifespan
-│   ├── config.py                 # Settings loaded from .env via pydantic-settings
-│   │
-│   ├── api/
-│   │   └── v1/                   # Version 1 of the API (all routes live here)
-│   │       ├── __init__.py
-│   │       ├── router.py         # Aggregates all v1 sub-routers into one prefix `/api/v1`
-│   │       └── endpoints/        # One file per domain
-│   │           ├── experiences.py
-│   │           ├── properties.py
-│   │           ├── products.py
-│   │           ├── blog.py
-│   │           └── contact.py
-│   │
-│   ├── models/                   # SQLAlchemy ORM models (database table definitions)
-│   │   ├── __init__.py
-│   │   ├── base.py               # Base declarative class shared by all models
-│   │   ├── experience.py
-│   │   ├── property.py
-│   │   ├── product.py
-│   │   └── blog_post.py
-│   │
-│   ├── schemas/                  # Pydantic schemas (request/response validation)
-│   │   ├── __init__.py
-│   │   ├── experience.py         # ExperienceCreate, ExperienceRead, ExperienceUpdate
-│   │   ├── property.py
-│   │   ├── product.py
-│   │   └── blog_post.py
-│   │
-│   ├── repositories/             # Data access only — all SQLAlchemy queries live here, nothing else
-│   │   ├── __init__.py
-│   │   ├── base.py               # Generic BaseRepository with get, get_multi, create, update, delete
-│   │   ├── experience.py         # Extends BaseRepository: filter_by_category, get_by_slug, etc.
-│   │   ├── property.py
-│   │   ├── product.py
-│   │   └── blog_post.py
-│   │
-│   ├── services/                 # Business logic — orchestrates repositories, applies rules
-│   │   ├── __init__.py
-│   │   ├── experience.py         # get_featured_experiences(), handle_referral_inquiry()
-│   │   ├── property.py           # get_available_stays(), calculate_lead_fee()
-│   │   ├── product.py            # get_store_listings(), process_purchase_redirect()
-│   │   ├── blog_post.py          # get_published_articles(), get_by_tag()
-│   │   └── contact.py            # handle_inquiry(), notify_partner()
-│   │
-│   ├── db/
-│   │   ├── __init__.py
-│   │   ├── session.py            # SQLAlchemy engine + SessionLocal + get_db() dependency
-│   │   └── init_db.py            # Creates tables on startup (dev only)
-│   │
-│   └── core/
-│       ├── __init__.py
-│       └── deps.py               # Shared FastAPI dependencies (get_db, pagination params, etc.)
-│
-├── alembic/                      # Database migration history
-│   ├── env.py
-│   ├── script.py.mako
-│   └── versions/                 # Auto-generated migration files
-│
-├── tests/
-│   ├── conftest.py               # Shared pytest fixtures (test DB, test client)
-│   └── api/
-│       └── v1/
-│           ├── test_experiences.py
-│           └── test_properties.py
-│
-├── .env                          # Local env vars (never commit)
-├── .env.example                  # Committed template with placeholder values
-├── alembic.ini
-├── pyproject.toml                # Project metadata + dependencies (managed with uv)
-└── requirements.txt              # Pinned lockfile export for deployment
+backend/app/
+├── api/v1/endpoints/   # HTTP only: parse, call service, return schema
+├── services/           # Business logic: orchestrate repos, cache, notify
+├── repositories/       # SQLAlchemy queries only — no business rules
+├── models/             # ORM table definitions
+├── schemas/            # Pydantic *Create/*Read/*Update per model
+├── db/session.py       # Engine + SessionLocal + get_db()
+└── core/deps.py        # Shared FastAPI deps
 ```
 
-**Key rules:**
-- Dependency flow is strictly one-way: `endpoints` → `services` → `repositories` → `models` — never skip or reverse a layer
-- Cache at the **service layer** using `fastapi-cache2` `@cache()` decorator — not on endpoints, not on repositories; services own the caching decision
-- Default TTL for public listing endpoints (experiences, properties, blog): 5 minutes — matches frontend `staleTime` so both layers stay in sync
-- Use cache key namespacing by domain: `experiences:{slug}`, `properties:list`, `blog:{slug}` — avoids key collisions across services
-- On any create/update/delete operation, invalidate the relevant cache keys in the same service method — never leave stale data after a write
-- Endpoints handle HTTP only: parse the request, call a service, return a response — no DB access, no business logic inline
-- Services handle business logic only: they call repositories for data, apply rules, and return domain results — no raw SQLAlchemy queries
-- Repositories handle data access only: all SQLAlchemy queries live here — no business rules, no HTTP concerns
-- `repositories/base.py` provides a `BaseRepository` generic class; domain repositories inherit from it and only add domain-specific queries
-- `schemas/` mirrors `models/` but is separate — ORM models are never exposed directly to the API; always pass through a Pydantic schema
-- Add a `v2/` folder under `api/` when breaking changes are needed; `v1/` stays frozen and continues to work
-- `.env` is gitignored; `.env.example` is always kept up to date when a new variable is added
+Alembic migrations live in `backend/alembic/versions/` — every model change requires a migration in the same PR.
 
 ## What to Avoid
 
-- Do not build a full payment/checkout system yet — use Gumroad or a simple link for digital products initially
-- Do not build user authentication in the first phase — focus on the public-facing platform
-- Do not replicate Airbnb — LOC does not manage bookings; it generates leads and earns commissions
-- Do not over-invest in admin dashboards before the public platform is live
-
----
-
-## SEO Strategy & Implementation
-
-### Core Principles
-
-- Every public page must have a **unique** `<title>` and meta description (150–160 chars)
-- Target keyword appears in title, H1, and the first paragraph — not force-stuffed
-- URL slugs are lowercase, hyphenated, semantic, and **never changed** after first publish
-- One `<h1>` per page; logical `<h2>` / `<h3>` hierarchy below it
-- All images carry descriptive `alt` text that includes subject + location when relevant
-- Internal links connect related pages — every experience/blog post links to at least 2 other pages
-
-### Metadata Template (per page/layout)
-
-```tsx
-export const metadata: Metadata = {
-  title: "Page Title",            // template appends " | LOC Morocco"
-  description: "150–160 char unique description with primary keyword.",
-  alternates: { canonical: "/page-path" },
-  openGraph: {
-    title: "...",
-    description: "...",
-    images: [{ url: "/images/og-page-name.jpg", width: 1200, height: 630 }],
-  },
-}
-// For the homepage only, bypass the template:
-// title: { absolute: "LOC — Discover Morocco | Experiences, Stays & Hidden Gems" }
-```
-
-### OpenGraph & Twitter Cards
-
-- **Default OG image**: `/public/images/og-default.jpg` (1200×630) — always maintain this file
-- Experience/stay detail pages: use `images[0]` as OG image
-- Blog posts: use `cover_image` as OG image
-- All pages include `twitter:card: "summary_large_image"` and `twitter:creator: "@locmorocco"`
-
-### JSON-LD Structured Data (by page type)
-
-| Page | Schema type |
-|---|---|
-| Root layout | `TravelAgency` (done) |
-| Homepage | `WebSite` with `SearchAction` |
-| `/experiences/[slug]` | `TouristAttraction` + `Offer` |
-| `/stays/[slug]` | `LodgingBusiness` with `priceRange`, `address` |
-| `/blog/[slug]` | `Article` with `author`, `datePublished`, `image` |
-| `/products/[slug]` | `Product` with `Offer` (price + purchaseUrl) |
-
-Add JSON-LD as a `<Script id="..." type="application/ld+json" dangerouslySetInnerHTML={...} />` in the page component, not in `layout.tsx` (each page has different data).
-
-### URL & Slug Rules
-
-- Slugs set at creation, never changed — a rename requires a `301` redirect
-- Pattern: `/experiences/quad-biking-marrakech`, not `/experiences/QuadBikingMarrakech`
-- No trailing slashes; canonical URLs enforce the canonical form
-- Canonical must be set on every page via `alternates.canonical`
-
-### Image SEO
-
-- All images in components use `<img>` for now; migrate to `next/image` with explicit `width`/`height` once image domains are configured in `next.config.ts` (prevents CLS)
-- Hero image: add `fetchPriority="high"` or use `next/image` with `priority` (LCP element)
-- OG images: 1200×630 JPG, ≤200 KB, stored in `public/images/`
-- Experience/stay images: WebP preferred, aspect ratio 4:3
-
-### Core Web Vitals Targets
-
-| Metric | Target | Key action |
-|---|---|---|
-| LCP | < 2.5 s | `priority` / `fetchPriority="high"` on hero image |
-| CLS | < 0.1 | Explicit dimensions on all images and embeds |
-| FID / INP | < 100 ms | Minimize client JS; keep `"use client"` to interactive components only |
-
-### sitemap.xml & robots.txt
-
-Both are generated by Next.js route handlers:
-- `app/sitemap.ts` — static routes + future dynamic routes (fetch slugs from API)
-- `app/robots.ts` — allows all public routes, disallows `/api/` and `/(dashboard)/`
-
-### Keyword Targets (by page)
-
-| Page | Primary keyword | Secondary |
-|---|---|---|
-| Homepage | "discover Morocco" | "Morocco tourism", "Morocco travel" |
-| `/experiences` | "Morocco experiences" | "Morocco activities", category names |
-| `/experiences/[slug]` | "[activity] in [city] Morocco" | provider name, category |
-| `/stays` | "Morocco stays" | "Moroccan riads", "Marrakech apartments" |
-| `/stays/[slug]` | "[type] in [city] Morocco" | property type, location |
-| `/blog` | "Morocco travel guide" | destination names, traveler tips |
-| `/store` | "Morocco travel guide PDF" | "Morocco map", "relocation guide" |
-
-### Brand Color & Font Reference (design-to-SEO alignment)
-
-LOC's design choices support SEO via Core Web Vitals:
-- `Playfair Display` loaded via `next/font` with `display: "swap"` — no FOIT
-- `Inter` body font same approach — both injected as CSS variables, zero layout shift
-- Morocco palette defined as Tailwind `loc.*` tokens — zero unused CSS classes in production (PurgeCSS via Tailwind content scanning)
+- Full payment/checkout — external links only (Gumroad/Lemon Squeezy)
+- User authentication in Phase 1 — public platform first
+- Replicating Airbnb — no booking management, only lead generation
+- Admin dashboards before the public platform is live
+- Standalone vector DB (Pinecone/Weaviate) — Postgres + pgvector is sufficient at this scale
+- Raw `fetch()` in components — always go through `lib/api.ts` + a TanStack Query hook
+- Inline query key strings — always use `QUERY_KEYS.*` from `constants.ts`
