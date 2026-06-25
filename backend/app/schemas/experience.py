@@ -8,6 +8,7 @@ class ExperienceBase(BaseModel):
     category: str
     country: str | None = None
     location: str | None = None
+    duration: str | None = None
     price_min: float | None = None
     price_max: float | None = None
     images: list[str] = []

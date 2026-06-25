@@ -18,6 +18,7 @@ class Experience(Base):
     category: Mapped[str] = mapped_column(String, nullable=False, index=True)
     country: Mapped[str | None] = mapped_column(String, index=True)
     location: Mapped[str | None] = mapped_column(String, index=True)
+    duration: Mapped[str | None] = mapped_column(String)
     price_min: Mapped[float | None] = mapped_column(Float)
     price_max: Mapped[float | None] = mapped_column(Float)
     images: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
