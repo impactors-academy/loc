@@ -34,6 +34,11 @@ export function ExperienceFilters() {
     push({ q: "" })
   }
 
+  const pillPush = (updates: Record<string, string>) => {
+    if (inputRef.current) inputRef.current.value = ""
+    push({ ...updates, q: "" })
+  }
+
   return (
     <div className="space-y-4 mb-8">
       {/* Search bar */}
@@ -62,7 +67,7 @@ export function ExperienceFilters() {
         {EXPERIENCE_CATEGORIES.map((cat) => (
           <button
             key={cat.value}
-            onClick={() => push({ category: cat.value })}
+            onClick={() => pillPush({ category: cat.value })}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCategory === cat.value
@@ -78,7 +83,7 @@ export function ExperienceFilters() {
       {/* Country pills */}
       <div className="flex flex-wrap gap-2">
         <button
-          onClick={() => push({ country: "" })}
+          onClick={() => pillPush({ country: "" })}
           className={cn(
             "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
             activeCountry === ""
@@ -91,7 +96,7 @@ export function ExperienceFilters() {
         {COUNTRIES.map((c) => (
           <button
             key={c.value}
-            onClick={() => push({ country: c.value })}
+            onClick={() => pillPush({ country: c.value })}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCountry === c.value

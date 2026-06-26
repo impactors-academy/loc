@@ -1,4 +1,4 @@
-from sqlalchemy import func, or_, text
+from sqlalchemy import func, text
 from sqlalchemy.orm import Session
 
 from app.models.experience import Experience
@@ -40,21 +40,16 @@ class ExperienceRepository(BaseRepository[Experience]):
         limit: int = 20,
     ) -> list[Experience]:
         tsquery = func.plainto_tsquery("english", q)
-        trgm_filter = self.model.title.op("%%")(q)
+        fts = func.to_tsvector(
+            "english",
+            func.coalesce(self.model.title, "") + " " +
+            func.coalesce(self.model.description, "") + " " +
+            func.coalesce(self.model.location, "") + " " +
+            func.coalesce(self.model.category, "") + " " +
+            func.coalesce(self.model.country, ""),
+        ).op("@@")(tsquery)
 
-        base = db.query(self.model).filter(
-            or_(
-                func.to_tsvector(
-                    "english",
-                    func.coalesce(self.model.title, "") + " " +
-                    func.coalesce(self.model.description, "") + " " +
-                    func.coalesce(self.model.location, "") + " " +
-                    func.coalesce(self.model.category, "") + " " +
-                    func.coalesce(self.model.country, ""),
-                ).op("@@")(tsquery),
-                trgm_filter,
-            )
-        )
+        base = db.query(self.model).filter(fts)
         if category:
             base = base.filter(self.model.category == category)
         if country:
