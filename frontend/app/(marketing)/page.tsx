@@ -55,7 +55,7 @@ export default function HomePage() {
             {DESTINATIONS.map((dest) => (
               <Link
                 key={dest.country}
-                href={`/experiences?country=${encodeURIComponent(dest.country)}`}
+                href={`/destinations/${encodeURIComponent(dest.country)}`}
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end hover:scale-[1.02] transition-transform duration-300 shadow-md"
               >
                 <Image
