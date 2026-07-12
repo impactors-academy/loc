@@ -1,3 +1,4 @@
+import { AffiliateLinks } from "@/components/features/affiliates/AffiliateLinks"
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { ReferralButton } from "@/components/features/experiences/ReferralButton"
 import { api } from "@/lib/api"
@@ -143,6 +144,11 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 </div>
               )}
               <InquiryForm subject={`Inquiry about experience: ${experience?.title ?? slug}`} />
+              {experience?.country && (
+                <div className="mt-5">
+                  <AffiliateLinks country={experience.country} heading="Plan your trip" />
+                </div>
+              )}
             </div>
           </aside>
         </div>
