@@ -15,6 +15,30 @@ interface Inquiry {
   created_at: string
 }
 
+function exportCsv(items: Inquiry[]) {
+  const headers = ["Date", "Name", "Email", "Phone", "Subject", "Source Type", "Source ID", "Message"]
+  const rows = items.map((i) => [
+    new Date(i.created_at).toISOString().slice(0, 10),
+    i.name,
+    i.email,
+    i.phone ?? "",
+    i.subject,
+    i.source_type,
+    i.source_id ?? "",
+    i.message.replace(/\n/g, " "),
+  ])
+  const csv = [headers, ...rows]
+    .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+    .join("\n")
+  const blob = new Blob([csv], { type: "text/csv" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = `loc-inquiries-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function InquiriesPage() {
   const [items, setItems] = useState<Inquiry[]>([])
   const [loading, setLoading] = useState(true)
@@ -25,9 +49,19 @@ export default function InquiriesPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="font-heading text-2xl font-bold text-loc-night">Inquiries</h1>
-        <p className="text-loc-stone text-sm mt-0.5">{items.length} total — read-only</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-loc-night">Inquiries</h1>
+          <p className="text-loc-stone text-sm mt-0.5">{items.length} total — read-only</p>
+        </div>
+        {items.length > 0 && (
+          <button
+            onClick={() => exportCsv(items)}
+            className="px-4 py-2 text-sm font-medium border border-border rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Export CSV
+          </button>
+        )}
       </div>
 
       {loading ? (

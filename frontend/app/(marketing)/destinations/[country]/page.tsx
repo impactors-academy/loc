@@ -1,3 +1,4 @@
+import { AffiliateLinks } from "@/components/features/affiliates/AffiliateLinks"
 import { DestinationTabs } from "@/components/features/destinations/DestinationTabs"
 import { DESTINATIONS_META } from "@/lib/destinations"
 import type { Metadata } from "next"
@@ -52,7 +53,7 @@ export default async function DestinationPage({ params }: Props) {
         />
         <div className="relative z-10 container mx-auto px-4 pb-12">
           <Link
-            href="/"
+            href="/destinations"
             className="text-white/70 text-sm mb-5 inline-flex items-center gap-1.5 hover:text-white transition-colors"
           >
             ← All destinations
@@ -76,7 +77,16 @@ export default async function DestinationPage({ params }: Props) {
       {/* Experiences & Stays tabs */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <DestinationTabs country={country} />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2">
+              <DestinationTabs country={country} />
+            </div>
+            <aside className="lg:col-span-1">
+              <div className="sticky top-28">
+                <AffiliateLinks country={dest.country} heading={`Getting to ${dest.country}`} />
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
     </>
