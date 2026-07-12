@@ -49,6 +49,11 @@ export const api = {
     related: (slug: string) => fetcher<BlogPost[]>(`/api/v1/blog/${slug}/related`),
   },
 
+  referrals: {
+    click: (slug: string) =>
+      fetcher<{ logged: boolean; referral_url: string | null }>(`/api/v1/referrals/click/${slug}`, { method: "POST" }),
+  },
+
   contact: {
     submit: (payload: InquiryPayload) =>
       fetcher<{ success: boolean }>("/api/v1/contact", {
