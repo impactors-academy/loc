@@ -1,8 +1,13 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from app.models.blog_post import BlogPost
 from app.repositories.blog_post import blog_post_repo
-from app.schemas.blog_post import BlogPostRead
+from app.schemas.blog_post import BlogPostCreate, BlogPostRead, BlogPostUpdate
+
+
+def _tags_to_str(tags: list[str]) -> str:
+    return ", ".join(t for t in tags if t)
 
 
 class BlogPostService:
@@ -34,6 +39,32 @@ class BlogPostService:
         if embedding:
             post.embedding = embedding
             db.commit()
+
+    def create(self, db: Session, data: BlogPostCreate) -> BlogPostRead:
+        if blog_post_repo.get_by_slug(db, data.slug):
+            raise HTTPException(status_code=409, detail="Slug already in use")
+        dump = data.model_dump()
+        dump["tags"] = _tags_to_str(dump.get("tags") or [])
+        post = BlogPost(**dump)
+        return blog_post_repo.create(db, post)
+
+    def update(self, db: Session, slug: str, data: BlogPostUpdate) -> BlogPostRead:
+        obj = blog_post_repo.get_by_slug(db, slug)
+        if not obj:
+            raise HTTPException(status_code=404, detail="Article not found")
+        dump = data.model_dump()
+        dump["tags"] = _tags_to_str(dump.get("tags") or [])
+        for field, value in dump.items():
+            setattr(obj, field, value)
+        db.commit()
+        db.refresh(obj)
+        return obj
+
+    def delete(self, db: Session, slug: str) -> None:
+        obj = blog_post_repo.get_by_slug(db, slug)
+        if not obj:
+            raise HTTPException(status_code=404, detail="Article not found")
+        blog_post_repo.delete(db, obj.id)
 
 
 blog_post_service = BlogPostService()

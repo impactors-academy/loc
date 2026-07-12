@@ -3,7 +3,7 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_db, pagination
-from app.schemas.product import ProductCreate, ProductRead
+from app.schemas.product import ProductCreate, ProductRead, ProductUpdate
 from app.services.product import product_service
 
 router = APIRouter(prefix="/products", tags=["products"])
@@ -24,3 +24,13 @@ async def create_product(data: ProductCreate, db: Session = Depends(get_db)):
 @cache(expire=300, namespace="products:detail")
 async def get_product(slug: str, db: Session = Depends(get_db)):
     return product_service.get_by_slug(db, slug)
+
+
+@router.put("/{slug}", response_model=ProductRead)
+async def update_product(slug: str, data: ProductUpdate, db: Session = Depends(get_db)):
+    return product_service.update(db, slug, data)
+
+
+@router.delete("/{slug}", status_code=204)
+async def delete_product(slug: str, db: Session = Depends(get_db)):
+    product_service.delete(db, slug)
