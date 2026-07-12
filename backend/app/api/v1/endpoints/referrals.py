@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.deps import get_db
 from app.repositories.experience import experience_repo
+from app.repositories.referral_click import referral_click_repo
 
 router = APIRouter(prefix="/referrals", tags=["referrals"])
 
@@ -13,6 +14,12 @@ async def log_referral_click(slug: str, db: Session = Depends(get_db)):
     experience = experience_repo.get_by_slug(db, slug)
     if not experience:
         return {"logged": False}
-    # TODO: persist to a referral_clicks table in EXP-5 full implementation
-    # For now, the referral_url itself carries UTM params for attribution
+    referral_click_repo.log(db, slug, experience.referral_url or "")
     return {"logged": True, "referral_url": experience.referral_url}
+
+
+@router.get("/clicks/{slug}")
+async def get_referral_click_count(slug: str, db: Session = Depends(get_db)):
+    """Return total click count for a given experience slug."""
+    count = referral_click_repo.count_by_slug(db, slug)
+    return {"slug": slug, "clicks": count}
