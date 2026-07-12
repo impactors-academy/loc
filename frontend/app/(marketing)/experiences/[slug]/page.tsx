@@ -1,4 +1,5 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
+import { ReferralButton } from "@/components/features/experiences/ReferralButton"
 import { api } from "@/lib/api"
 import { formatPriceRange } from "@/lib/types"
 import { MapPin, Tag, User } from "lucide-react"
@@ -132,9 +133,15 @@ export default async function ExperienceDetailPage({ params }: Props) {
               <p className="font-heading text-lg font-semibold text-loc-night mb-1">
                 Interested in this experience?
               </p>
-              <p className="text-loc-stone text-sm mb-6">
+              <p className="text-loc-stone text-sm mb-4">
                 Send a message and the provider will get back to you directly.
               </p>
+              {experience?.referralUrl && (
+                <div className="mb-5">
+                  <ReferralButton slug={slug} referralUrl={experience.referralUrl} />
+                  <p className="text-center text-xs text-loc-stone mt-2">Opens provider booking page</p>
+                </div>
+              )}
               <InquiryForm subject={`Inquiry about experience: ${experience?.title ?? slug}`} />
             </div>
           </aside>
