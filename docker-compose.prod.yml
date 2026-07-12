@@ -2,9 +2,10 @@
 # Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 #
 # Notes:
-#   - Frontend builds the Next.js standalone image (requires output: 'standalone' in next.config.ts).
-#   - Backend runs uvicorn without --reload, multiple workers.
-#   - On Hostinger, Coolify can consume these same Dockerfiles directly.
+#   - Frontend builds the Next.js standalone image (output: 'standalone' in next.config.ts).
+#   - Backend runs alembic migrations then uvicorn with multiple workers.
+#   - DB and Redis ports are NOT exposed publicly.
+#   - pgadmin is disabled in production.
 
 services:
   db:
@@ -19,7 +20,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+    # Run migrations before starting uvicorn — same pattern as Railway
+    command: >
+      sh -c "uv run alembic upgrade head &&
+             uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"
     environment:
       ENV: production
     volumes: []                  # no source mount in prod
@@ -39,3 +43,7 @@ services:
       API_INTERNAL_URL: http://backend:8000   # server-side proxy route hits this, not the public URL
     volumes: []
     restart: always
+
+  pgadmin:
+    deploy:
+      replicas: 0                # disabled in production
