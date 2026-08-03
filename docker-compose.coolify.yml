@@ -58,6 +58,7 @@ services:
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-loc}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-loc}
       REDIS_URL: redis://redis:6379/0
       CORS_ORIGINS: https://loctravels.com,https://www.loctravels.com
+      EDITOR_API_KEY: ${EDITOR_API_KEY:?set a strong editor key in Coolify}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.core.deps import get_db, pagination
+from app.core.deps import get_db, pagination, require_editor_key
 from app.repositories.inquiry import inquiry_repo
 
-router = APIRouter(prefix="/leads", tags=["leads"])
+router = APIRouter(prefix="/leads", tags=["leads"], dependencies=[Depends(require_editor_key)])
 
 
 @router.get("/")

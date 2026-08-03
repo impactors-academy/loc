@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
-from app.core.deps import get_db, pagination
+from app.core.deps import get_db, pagination, require_editor_key
 from app.schemas.product import ProductCreate, ProductRead, ProductUpdate
 from app.services.product import product_service
 
@@ -15,7 +15,7 @@ async def list_products(db: Session = Depends(get_db), pages: dict = Depends(pag
     return product_service.get_all(db, pages["skip"], pages["limit"])
 
 
-@router.post("/", response_model=ProductRead, status_code=201)
+@router.post("/", response_model=ProductRead, status_code=201, dependencies=[Depends(require_editor_key)])
 async def create_product(data: ProductCreate, db: Session = Depends(get_db)):
     return product_service.create(db, data)
 
@@ -26,11 +26,11 @@ async def get_product(slug: str, db: Session = Depends(get_db)):
     return product_service.get_by_slug(db, slug)
 
 
-@router.put("/{slug}", response_model=ProductRead)
+@router.put("/{slug}", response_model=ProductRead, dependencies=[Depends(require_editor_key)])
 async def update_product(slug: str, data: ProductUpdate, db: Session = Depends(get_db)):
     return product_service.update(db, slug, data)
 
 
-@router.delete("/{slug}", status_code=204)
+@router.delete("/{slug}", status_code=204, dependencies=[Depends(require_editor_key)])
 async def delete_product(slug: str, db: Session = Depends(get_db)):
     product_service.delete(db, slug)

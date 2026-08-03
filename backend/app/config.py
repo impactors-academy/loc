@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -5,6 +6,16 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg2://loc:loc@localhost:5432/loc"
     redis_url: str = "redis://localhost:6379"
     cors_origins: list[str] = ["http://localhost:3000"]
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v: object) -> list[str]:
+        if isinstance(v, str):
+            return [o.strip() for o in v.split(",") if o.strip()]
+        return v  # type: ignore[return-value]
+
+    # Editor auth — required for all write endpoints (POST/PUT/DELETE)
+    editor_api_key: str = ""
 
     # AI / embeddings — set to enable pgvector hybrid search (EXP-6)
     openai_api_key: str = ""
