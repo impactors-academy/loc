@@ -70,9 +70,10 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       `referral_click_repo`; `GET /api/v1/referrals/clicks/{slug}` returns count for commission attribution
 - [x] **STAY-4** — Inquiry routing: `ContactService._notify_partner()` emails the property/experience
       owner (falls back to LOC team inbox); lead stored with `source_type + source_id`
-- [ ] **LEAD-3** — `source_type + source_id` recorded on all inquiries ✅; but `GET /api/v1/leads/`
-      returns raw JSON, not an actual CSV file — **CSV export still not implemented**, only a
-      filtered JSON list. Close this gap before marking LEAD-3 done.
+- [x] **LEAD-3** — `source_type + source_id` on all inquiries ✅; `GET /api/v1/leads/export.csv`
+      now returns a `StreamingResponse` with `text/csv` content-type, timestamped filename,
+      and all inquiry fields; optional `?source_type=` / `?source_id=` filters honoured.
+      Endpoint is behind `require_editor_key` (X-API-Key header). 2026-08-03.
 
 ### Editor Tooling
 - [x] `POST /api/v1/products` — editor can create a product via API (409 on duplicate slug)
@@ -90,8 +91,10 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 ## Phase 6 — Security
 
-- [ ] Editor API endpoints authenticated — `POST /api/v1/products` and future editor
-      routes must require an API key or session token; currently open
+- [x] Editor API endpoints authenticated — `require_editor_key` dep (X-API-Key header,
+      reads `EDITOR_API_KEY` env var, fail-closed if unset) applied to all write routes:
+      POST/PUT/DELETE on experiences, stays, products, blog posts; all of /leads/.
+      Verified in code 2026-08-03.
 - [ ] Rate limiting on inquiry form — prevent spam submissions
 - [ ] CORS locked to production origin only (not `*` or `localhost` in production config)
 - [ ] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
@@ -162,19 +165,15 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 
 ## Open Flags
 
-1. **Editor auth** — `POST /api/v1/products` is currently unauthenticated. Any editor
-   endpoint must be gated before launch.
-2. **Production deploy not confirmed** — Vercel and Railway services not yet verified
-   as live. Confirm URLs and health checks before marking Phase 7 done.
-3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02): hero search bar, popular
-   destinations, country filters, duration/country on cards all present in code.
-4. **Custom domain** — confirm final domain for LOC (own domain vs. subdomain under
-   `impactorsacademy.com`).
-5. **CSV export (LEAD-3)** — `/api/v1/leads/` returns JSON, not CSV. Needs a
-   `text/csv` `StreamingResponse` for the sales team.
-6. **Editor CRUD gap** — only `POST /api/v1/products` exists; no create/update endpoints
-   for Experience or Property yet, and none of the editor endpoints (including products) are
-   authenticated. Same root cause as Open Flag #1.
-7. **Working branch note** — repo was left checked out on `main` at session start with an
-   uncommitted, *never-committed* `docs/BUILD-CHECKLIST.md` (this file). Switched to `develope`
-   per standing rules; this file should be added to git tracking so it stops silently drifting.
+1. ~~**Editor auth**~~ — CLOSED 2026-08-03: all write endpoints use `require_editor_key`.
+2. **Production deploy not confirmed** — Coolify deploy (not Vercel/Railway) is the
+   target; DNS and health checks not yet verified. See Phase 7.
+3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02).
+4. **Custom domain** — confirm final domain for LOC (`loctravels.com` per Phase 7 plan
+   vs. subdomain under `impactorsacademy.com`).
+5. ~~**CSV export (LEAD-3)**~~ — CLOSED 2026-08-03: `GET /api/v1/leads/export.csv`
+   returns `text/csv` StreamingResponse.
+6. ~~**Editor CRUD gap**~~ — CLOSED: POST/PUT/DELETE exist for experiences, properties,
+   products, and blog posts — all behind `require_editor_key`.
+7. **Working branch note** — `docs/BUILD-CHECKLIST.md` should be committed to git so it
+   tracks with the code; currently untracked.
