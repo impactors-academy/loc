@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql+psycopg2://postgres:199922@localhost:5432/loc"
+    database_url: str = "postgresql+psycopg2://loc:loc@localhost:5432/loc"
     redis_url: str = "redis://localhost:6379"
     cors_origins: list[str] = ["http://localhost:3000"]
 
