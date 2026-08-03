@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-02
+**Last updated:** 2026-08-03
 
 ---
 
@@ -15,9 +15,9 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 | Project | Status | Priority | Blocker / Next action |
 |---|---|---|---|
 | impactors-academy | LAUNCHED · Phase 9 | High | Real-device 3D perf check; changelog process |
-| ia-pro | ~70% · Phase 7 live | High | Postgres for blog/projects → hero video → Cal.com |
-| loc | ~85% · R4 active | High | Hero search bar (DISC-1) → country filters → deploy verify |
-| prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → CSRF fix → backup script → team seed |
+| ia-pro | ~80% · Phase 8 done | High | Postgres for blog/projects → hero video → Cal.com |
+| loc | ~90% · R4 + LEAD-3 done | High | Deploy to Coolify (Coolify config, DNS, env vars) |
+| prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → backup script → team seed |
 | grindbuddy | Frontend done · PAUSED | Low | Resume only after backend stack decision |
 
 ---
@@ -62,9 +62,11 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ### Security Gaps (close before team onboarding)
 > **Run `/senior-secops` on each item below.**
-- [ ] **LOC** — gate `POST /api/v1/products` and all editor endpoints with API key or session token
-- [ ] **prospectbuddy** — add CSRF protection on all POST forms (status updates, notes)
-- [ ] **ia-pro** — implement admin auth (currently unprotected at `/admin`)
+- [x] **LOC** — all editor endpoints (experiences, stays, products, blog) gated behind
+      `X-API-Key` header (`require_editor_key` dep); confirmed in code audit 2026-08-03
+- [x] **prospectbuddy** — CSRF protection implemented 2026-08-03 (session token,
+      hmac.compare_digest, X-CSRF-Token header on all POST/PATCH API routes + login form)
+- [x] **ia-pro** — admin auth implemented 2026-08-03 (NextAuth v4 credentials, JWT cookie)
 - [ ] **prospectbuddy** — rate limit Google Places API calls to avoid quota burn
 
 ---
