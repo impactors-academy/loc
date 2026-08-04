@@ -36,6 +36,200 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ---
 
+## Phase 0B — DevOps Foundations *(apply to every project, every repo)*
+
+> These are not optional polish — they are the rules that make the rest of the
+> DevOps lifecycle work. Without them, monitoring is useless, releases are
+> invisible, and the team can't collaborate safely as it grows.
+>
+> Status: **partially in place** — CI/CD deploy exists, tests exist on 2 of 5
+> projects, but branch strategy, release management, staging workflow, and test
+> gates are missing across the board.
+
+---
+
+### 0B-1 — Branch Strategy (all repos)
+
+**The rule: no one pushes directly to `main`. Ever.**
+
+```
+main        → production (what users see)
+develop     → staging (what gets tested before users see it)
+feature/*   → individual features, branch off develop
+hotfix/*    → urgent production fixes only, branch off main
+```
+
+**Workflow:**
+```
+1. Branch off develop:    git checkout -b feature/my-thing develop
+2. Build the thing locally
+3. Push + open PR to develop
+4. CI runs (tests + build must pass — see 0B-3)
+5. Merge to develop → auto-deploys to Coolify staging
+6. Test on staging.yourdomain.com
+7. When confident → PR from develop to main
+8. Merge to main → auto-deploys to Coolify production
+```
+
+**Hotfix exception (production is broken right now):**
+```
+1. Branch off main:       git checkout -b hotfix/critical-bug main
+2. Fix it
+3. PR to main (fast-track review)
+4. Merge to main → deploys to production
+5. Immediately merge main back into develop so develop has the fix too
+```
+
+- [ ] **impactors-academy** — branch protection on `main` and `develop` enabled
+      in GitHub (require PR, require CI to pass, no direct push)
+- [ ] **ia-pro** — same branch protection rules
+- [ ] **loc** — already has `develope` branch; rename to `develop` for consistency;
+      add branch protection on both `main` and `develop`
+- [ ] **prospectbuddy** — create `develop` branch; add branch protection
+- [ ] **grindbuddy** — create `develop` branch; add branch protection (even while paused)
+- [ ] All team members briefed on this workflow (Docmost onboarding doc)
+
+---
+
+### 0B-2 — Coolify Environments: Staging vs Production
+
+**You already have both environments in Coolify. Here is the exact rule for using them:**
+
+| Environment | Coolify service | Tracks branch | URL pattern | DB |
+|---|---|---|---|---|
+| Staging | `ia-pro-staging` etc. | `develop` | `staging.pro.impactorsacademy.com` | Separate staging DB |
+| Production | `ia-pro` etc. | `main` | `pro.impactorsacademy.com` | Production DB |
+
+**When to use staging:**
+- Any new feature before it reaches users
+- DB schema changes (run migration on staging DB first, verify, then prod)
+- Any third-party integration (Cal.com, n8n webhooks) — test the full flow on staging
+- Design changes that need sign-off before going live
+- Dependency upgrades
+
+**When to use production:**
+- Only after staging has been verified
+- Hotfixes (fast-track, but still deploy to staging first if time allows)
+- Config-only changes (env var updates with no code change)
+
+**Staging DB rule:** staging must have its own `DATABASE_URL` pointing to a
+separate database (or separate schema). Never point staging at the production DB —
+a bad migration on staging must not destroy prod data.
+
+- [ ] **ia-pro** — Coolify staging service wired to `develop` branch;
+      `DATABASE_URL` points to separate `ia_pro_staging` database
+- [ ] **impactors-academy** — staging service wired to `develop` branch
+- [ ] **loc** — staging service wired to `develop` branch; separate staging DB on Railway
+      (or Coolify once LOC moves there)
+- [ ] **prospectbuddy** — staging service created; separate SQLite volume for staging
+- [ ] All staging URLs added to Uptime Kuma monitoring (so you know if staging is broken too)
+- [ ] DNS: `staging.*` subdomains added in Cloudflare (same VPS, different Coolify port/domain)
+
+---
+
+### 0B-3 — CI: Test Gates (nothing merges without passing tests)
+
+Right now tests exist on impactors-academy and ia-pro but they don't block merges.
+A GitHub Actions workflow must run on every PR and block the merge if tests fail.
+
+**Standard CI workflow for every repo (`.github/workflows/ci.yml`):**
+```yaml
+on: [pull_request]
+jobs:
+  ci:
+    steps:
+      - checkout
+      - install deps
+      - type check (tsc --noEmit)
+      - lint (eslint)
+      - test (npm test)
+      - build (npm run build)  ← catches import errors CI won't catch otherwise
+```
+
+- [ ] **impactors-academy** — GitHub Actions CI workflow created; tests + build gate on PRs
+- [ ] **ia-pro** — same; Turborepo-aware (`turbo run test build --filter=pro`)
+- [ ] **loc** — CI workflow for FastAPI backend (`pytest`) + frontend if applicable
+- [ ] **prospectbuddy** — CI workflow (`pytest` or equivalent)
+- [ ] All repos: CI badge added to README so status is visible at a glance
+
+---
+
+### 0B-4 — Release Management (versioning + changelog)
+
+**Every project must be versionable.** When something goes wrong in production,
+you need to know exactly what version is running and what changed since the last one.
+
+**Convention: Semantic Versioning + Conventional Commits**
+
+Commit message format (already partially in use — standardise it):
+```
+feat: add CSV export to LOC leads        → bumps MINOR (1.x.0)
+fix: posts admin 500 on list page        → bumps PATCH (1.0.x)
+chore: update dependencies               → no version bump
+BREAKING CHANGE: restructure DB schema   → bumps MAJOR (x.0.0)
+```
+
+**Release process (when a feature set is ready to ship):**
+```
+1. Merge develop → main (PR)
+2. Tag the release:   git tag v1.3.0
+3. Push the tag:      git push origin v1.3.0
+4. Update CHANGELOG.md with what shipped
+5. Coolify deploys main → production
+```
+
+- [ ] **All repos** — `CHANGELOG.md` created with initial entry for current state
+- [ ] **All repos** — first git tag applied reflecting current production version
+      (start at `v1.0.0` for launched projects, `v0.x.0` for pre-launch)
+- [ ] **All repos** — release tagging added to session-end protocol in each `CLAUDE.md`
+- [ ] Consider: `release-it` or `standard-version` npm package to automate
+      tag + changelog generation from conventional commits (optional but saves time)
+
+---
+
+### 0B-5 — Security Scanning in CI
+
+Dependency vulnerabilities should be caught automatically, not discovered manually.
+
+- [ ] **All Node.js repos** — `npm audit --audit-level=high` added to CI workflow;
+      fails the build on HIGH or CRITICAL severities
+- [ ] **LOC / prospectbuddy (Python)** — `pip audit` or `safety check` added to CI
+- [ ] **All repos** — GitHub Dependabot enabled (auto-PRs for dependency updates)
+- [ ] **All repos** — GitHub secret scanning enabled (catches accidentally committed tokens)
+
+---
+
+### 0B-6 — Test Coverage by Project
+
+Current honest state and what's needed:
+
+| Project | Tests now | Gap | Target |
+|---|---|---|---|
+| impactors-academy | ✅ 13 Vitest API tests, Playwright cross-browser | Missing: test gate in CI | Add CI workflow |
+| ia-pro | ✅ 8 Vitest API tests | Missing: test gate in CI | Add CI workflow |
+| loc | ❓ Unknown | Need to audit; FastAPI should have pytest suite | Add pytest + CI |
+| prospectbuddy | ❓ Unknown | Need to audit Flask routes | Add pytest + CI |
+| grindbuddy | ❌ None (paused) | N/A until resumed | — |
+
+- [ ] **loc** — audit existing tests; if none, add `pytest` for core API routes
+      (experience CRUD, stay CRUD, lead submission, CSV export, editor auth)
+- [ ] **prospectbuddy** — audit existing tests; add `pytest` for scrape, search,
+      cache clear, CSRF protection, auth routes
+- [ ] All projects: test coverage report in CI output (not enforced, just visible)
+
+---
+
+### 0B-7 — Environment Variables Discipline
+
+- [ ] **All repos** — `.env.example` up to date with every required variable,
+      no actual values, clear comments on where to get each value
+- [ ] **All repos** — `.env*.local` and `.env.production` in `.gitignore` (verify)
+- [ ] **Coolify** — all env vars set in Coolify UI, never hardcoded in Dockerfiles
+- [ ] **Vaultwarden** — once deployed (Phase 1), all secrets migrated from Coolify
+      UI into Vaultwarden and referenced via Coolify's secret injection
+
+---
+
 ## Phase 1 — Infra Foundation *(all self-hosted via Coolify on Hostinger VPS)*
 
 > **Run `/senior-devops` + `/senior-architect` before deploying any container.**
