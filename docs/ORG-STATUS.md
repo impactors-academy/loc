@@ -36,6 +36,87 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ---
 
+## Phase 0D — Platform Architecture Standards
+
+> Full reference: `docs/PLATFORM-STANDARDS.md` — read the section for your
+> platform type before writing any code. This checklist tracks org-wide
+> compliance, not the per-project details.
+
+### Platform Types Covered
+
+| Type | Stack summary | Example in org |
+|---|---|---|
+| Marketing website | Next.js + Tailwind + Lenis + GA4 | impactors-academy, ia-pro |
+| Web app / SaaS | Next.js + Postgres + Redis + NextAuth v5 + Stripe | grindbuddy, prospectbuddy |
+| E-commerce | Medusa.js + Next.js + Stripe + R2 | future |
+| Learning platform | Next.js + Supabase + Cloudflare Stream + Stripe | future |
+| Mobile app | React Native + Expo + Supabase Auth + EAS | future |
+| API / backend | FastAPI or Hono + Postgres + Redis + Celery/BullMQ | LOC backend |
+| Community | Discourse self-hosted + Authentik SSO + R2 | future |
+| Internal tool | Next.js + Authentik SSO + TanStack Table + Cloudflare Access | admin dashboards |
+
+### Standards Compliance (verify per project at start of every session)
+
+- [ ] Platform type identified and correct section of `PLATFORM-STANDARDS.md` read
+- [ ] Stack matches the quick reference — deviations documented with reason
+- [ ] Performance baseline targeted: LCP < 2.5s, CLS < 0.1, Lighthouse ≥ 90
+- [ ] Accessibility baseline: WCAG 2.1 AA, keyboard nav, `prefers-reduced-motion`
+- [ ] Analytics wired: Umami (all platforms) + platform-specific (PostHog for apps,
+      GA4 for websites, PostHog RN for mobile)
+- [ ] New project launch checklist (bottom of PLATFORM-STANDARDS.md) run before
+      first line of code
+
+### Email Stack (org-wide standard)
+
+All transactional email goes through **Resend**. No exceptions. No SendGrid,
+no Mailchimp for transactional, no SMTP credentials in app code.
+
+- [ ] Resend account configured with `impactorsacademy.com` sending domain
+- [ ] DKIM + SPF + DMARC records in Cloudflare DNS
+- [ ] Unsubscribe header on all non-critical emails (legal requirement)
+- [ ] Email templates: plain HTML + text fallback (no image-only emails)
+- [ ] Email domains per venture:
+      ```
+      pro@impactorsacademy.com     → ia-pro enquiries
+      hello@impactorsacademy.com   → mother site contact
+      noreply@impactorsacademy.com → automated system emails
+      loc@impactorsacademy.com     → LOC inquiries (future)
+      ```
+
+### Payments Stack (org-wide standard)
+
+All payments go through **Stripe**. No PayPal, no manual bank transfer handling
+in code, no other processor unless Stripe explicitly does not serve a market.
+
+- [ ] One Stripe account for the org (multiple products, not multiple accounts)
+- [ ] Separate products per venture in Stripe dashboard
+- [ ] Stripe Tax enabled when selling to EU customers
+- [ ] Stripe Radar fraud protection enabled
+- [ ] Webhook endpoints: one per platform, signature verified server-side
+- [ ] Test mode confirmed working before any live key is set
+
+### File Storage Stack (org-wide standard)
+
+All user-uploaded files and media go to **Cloudflare R2**. No exceptions.
+No storing files in Postgres, no storing files in the Docker container volume.
+
+- [ ] R2 bucket per project: `ia-media`, `loc-media`, `platform-media`, `ia-backups`
+- [ ] Public bucket for publicly accessible assets (product images, course thumbnails)
+- [ ] Private bucket for user files (documents, certificates) — signed URLs only
+- [ ] Cloudflare Images enabled for automatic resizing on public image buckets
+- [ ] Lifecycle rules: auto-delete temp upload files after 24 hours
+
+### Search Stack (org-wide standard)
+
+**Meilisearch** self-hosted for all full-text search needs. One instance, multiple indexes.
+
+- [ ] Meilisearch deployed on Coolify (Horizon 2 — when first search need arises)
+- [ ] One index per searchable entity: `courses`, `experiences`, `blog_posts`, `products`
+- [ ] API key per application (not shared master key)
+- [ ] Re-index webhook: content update → trigger Meilisearch re-index
+
+---
+
 ## Phase 0C — Security Architecture *(org-wide, applies to every platform)*
 
 > Security is not a phase you do once. It is a permanent layer built into every
