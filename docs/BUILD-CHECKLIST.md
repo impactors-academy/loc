@@ -95,11 +95,16 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       reads `EDITOR_API_KEY` env var, fail-closed if unset) applied to all write routes:
       POST/PUT/DELETE on experiences, stays, products, blog posts; all of /leads/.
       Verified in code 2026-08-03.
-- [ ] Rate limiting on inquiry form — prevent spam submissions
+- [ ] Rate limiting on inquiry form — prevent spam submissions (slowapi)
 - [ ] CORS locked to production origin only (not `*` or `localhost` in production config)
 - [ ] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
       `git log --all -- .env` returns empty
-- [ ] `NEXTAUTH_SECRET` rotation plan documented
+- [ ] **HTTP security headers** — FastAPI middleware: `X-Content-Type-Options`,
+      `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `HSTS`
+- [ ] **Cloudflare Access on editor/admin routes** — any `/admin*` or editor-only
+      routes protected by Cloudflare Zero Trust (team emails only). Use
+      `/cloudflare-access` skill.
+- [ ] **CSP header** — Content Security Policy on the Next.js frontend
 
 ## Phase 7 — Deployment & DevOps
 
