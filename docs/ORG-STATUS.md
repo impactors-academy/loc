@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 ---
 
@@ -190,6 +190,140 @@ When resumed:
 
 ---
 
+## Phase 6 — Observability & Dashboards
+
+> Goal: a single place to see the health and performance of every venture —
+> technical metrics (infra) AND business metrics (growth) — before you need it,
+> not after something breaks.
+
+### 6A — Technical Observability Stack *(self-hosted via Coolify)*
+
+- [ ] **Prometheus** deployed — scrapes metrics from all apps and VPS host
+      - [ ] Node Exporter on VPS (CPU, RAM, disk, network)
+      - [ ] Postgres Exporter (query perf, connections, slow queries)
+      - [ ] Each Next.js app exposes `/metrics` endpoint (prom-client)
+      - [ ] LOC FastAPI exposes `/metrics` (prometheus-fastapi-instrumentator)
+- [ ] **Grafana** deployed — single pane of glass for all metrics
+      - [ ] Connected to Prometheus, Loki, Uptime Kuma
+      - [ ] Infra dashboard: VPS health, per-service CPU/RAM/response time
+      - [ ] DB dashboard: query latency, active connections, table sizes
+      - [ ] Gated behind Authentik SSO (admin-group only)
+- [ ] **Loki** deployed — centralised log aggregation
+      - [ ] All app logs (Next.js, FastAPI, Coolify services) shipped to Loki
+      - [ ] Grafana log explorer wired up
+- [ ] **Sentry** self-hosted — error tracking with full stack traces
+      - [ ] ia-pro Next.js wired (`@sentry/nextjs`)
+      - [ ] impactors-academy wired
+      - [ ] LOC FastAPI wired (`sentry-sdk`)
+      - [ ] Alerts: Slack/email on new error or spike
+
+### 6B — Business Metrics Dashboard *(mother admin at /admin)*
+
+The mother dashboard at `impactorsacademy.com/admin` is the founder-facing view.
+It should show the health of the org as a business, not as an infra stack.
+
+**Per-venture cards (real-time, pulled from each project's DB/analytics):**
+- [ ] **IA Pro** — enquiries this week, total enquiries, services breakdown,
+      conversion rate (enquiry → booked call)
+- [ ] **LOC** — new inquiries, active stays/experiences, top destinations,
+      referral link click-through rates (when EXP-5 ships)
+- [ ] **impactors-academy** — contact form submissions, page views (Umami),
+      blog post count + last published
+- [ ] **prospectbuddy** — prospects scraped this week, cache freshness, cities covered
+- [ ] **Org-wide** — total team size, active ventures, uptime summary (Uptime Kuma API)
+
+**Implementation path:**
+- Phase 1: static links out to Grafana + GA4 (already done for IA analytics tab)
+- Phase 2: embed Umami widgets directly in the dashboard iframes
+- Phase 3: server-side API calls to each project's DB → real numbers rendered
+  server-side in the mother dashboard (no extra API needed, same pattern as
+  the existing Contacts tab)
+
+### 6C — Alerting
+
+- [ ] Uptime Kuma alerts → email + WhatsApp when any service goes down
+- [ ] Grafana alerts → email when VPS RAM > 80% or response time > 2s
+- [ ] Sentry alerts → email on new error types or error rate spike
+- [ ] Weekly digest (n8n cron) → summary of all venture metrics to founder email
+
+---
+
+## Phase 7 — Scaling Plan *(1–3 year horizon, millions of users)*
+
+> This is a forward plan, not current work. Items activate when triggered by
+> real load — not on a calendar. Each horizon has clear trigger conditions.
+
+### Horizon 1 — 0 to 50K users *(current VPS, no changes needed)*
+
+**Infrastructure:** Current Hostinger VPS + Coolify handles this comfortably.
+**Database:** Single Postgres instance on VPS. Monitor via Grafana (Phase 6).
+**Files/media:** Cloudflare R2 for any video/image uploads (zero egress cost).
+**Caching:** Redis already on LOC — extend session/query caching to ia-pro.
+**Trigger to move to Horizon 2:** VPS CPU/RAM consistently > 70% under normal load,
+OR Postgres query latency > 100ms at p95.
+
+- [ ] R2 bucket provisioned for media uploads
+- [ ] Redis added to ia-pro (session caching, rate limiting)
+- [ ] Grafana alerting live (Phase 6C) so you know when triggers are hit
+
+### Horizon 2 — 50K to 500K users *(VPS upgrade + DB separation)*
+
+**Infrastructure:** Upgrade VPS to higher RAM/CPU tier (vertical scale first —
+cheapest path, no architecture change).
+**Database:** Move Postgres to its own dedicated VPS ($10-20/month extra).
+Apps get a new `DATABASE_URL` — one afternoon of work, zero code changes.
+Add a Postgres read replica for heavy read traffic (course content, blog, LOC listings).
+**Auth:** Introduce Supabase self-hosted for the learning platform — its built-in
+auth, row-level security, and real-time are worth it at this scale for multi-tenant
+student data. Existing apps stay on NextAuth.
+**Search:** Meilisearch self-hosted — fast full-text search for courses, LOC
+experiences, blog content. Single Coolify service, minimal RAM.
+**Trigger to move to Horizon 3:** Multiple app servers needed OR DB read replica
+at > 80% utilisation.
+
+- [ ] VPS upgrade plan confirmed with Hostinger (know your options before you need them)
+- [ ] Postgres migration runbook documented:
+      `pg_dump` on old instance → `pg_restore` on new dedicated server →
+      update `DATABASE_URL` in Coolify env vars → verify → cut over
+- [ ] Meilisearch deployed and indexed for LOC + ia-pro blog
+- [ ] Supabase self-hosted deployed for learning platform (when that project starts)
+
+### Horizon 3 — 500K to millions *(distributed, edge-ready)*
+
+**Infrastructure:** Multiple app server instances. Cloudflare Load Balancing
+(already on Cloudflare — just enable it) distributes traffic across servers.
+**Database:** Postgres with replication (primary + 2 replicas) OR migrate to
+managed Neon/Supabase cloud for automatic scaling and connection pooling (PgBouncer).
+Evaluate per-venture DB separation if one venture dominates load.
+**Caching:** Redis Cluster for distributed session and query caching.
+**Jobs:** Background job queues for async work — BullMQ (Node) + Celery (Python/LOC).
+Examples: video processing, bulk email, report generation, scraping jobs.
+**Storage:** R2 stays — it scales infinitely. Add Cloudflare Images for
+on-the-fly image resizing/optimisation.
+**Monitoring:** Upgrade Grafana to Grafana Cloud (or keep self-hosted with
+more retention). Add distributed tracing (Tempo) for cross-service request tracing.
+**Trigger:** Any single component becomes a bottleneck visible in Grafana.
+
+- [ ] Cloudflare Load Balancing evaluated (pricing, failover config)
+- [ ] Connection pooling added to Postgres (PgBouncer via Coolify)
+- [ ] BullMQ queue service added to ia-pro for background tasks
+- [ ] Celery worker added to LOC for async jobs
+- [ ] DR plan documented: what happens if the VPS goes down (backup VPS, restore time)
+
+### Standing DB rules (apply across all horizons)
+
+- Postgres is the primary DB for all structured data — do not introduce a second
+  DB engine without a specific, justified use case
+- MongoDB only if: unstructured document storage at > 1M writes/day with no
+  relational requirements (logging, event streams) — add alongside Postgres, never replace
+- Videos, images, PDFs, course files → Cloudflare R2 always. Never in Postgres.
+- All schema changes go through Drizzle migrations committed to git — no manual
+  ALTER TABLE in production
+- Backups: `pg_dump` cron job → R2 bucket, retained 30 days. Set this up before
+  Horizon 2 begins.
+
+---
+
 ## Tool Roster
 
 | Tool | Role | Status | Deploy when |
@@ -204,6 +338,14 @@ When resumed:
 | Umami | Analytics (multi-site) | ⬜ Not deployed | Phase 1-2 |
 | Docmost | Team wiki | ⬜ Not deployed | Phase 2 (after Authentik) |
 | Chatwoot | Shared inbox (contact leads) | ⬜ Not deployed | Phase 3 |
+| Prometheus | Metrics collection | ⬜ Not deployed | Phase 6 |
+| Grafana | Metrics + log dashboard | ⬜ Not deployed | Phase 6 |
+| Loki | Log aggregation | ⬜ Not deployed | Phase 6 |
+| Sentry (self-hosted) | Error tracking | ⬜ Not deployed | Phase 6 |
+| Meilisearch | Full-text search | ⬜ Not deployed | Horizon 2 |
+| Supabase (self-hosted) | Auth + DB for learning platform | ⬜ Not deployed | Horizon 2 / learning platform |
+| Redis Cluster | Distributed caching | ⬜ Not deployed | Horizon 3 |
+| BullMQ / Celery | Background job queues | ⬜ Not deployed | Horizon 3 |
 
 ---
 
