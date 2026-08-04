@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-04 (Phase 0C security architecture added)
 
 ---
 
@@ -33,6 +33,366 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 - [ ] `AGENTS.md` in each sub-repo — OpenClaw/generic-agent parity with CLAUDE.md
 - [ ] `scripts/sync-org-checklist.sh` committed and tested
 - [ ] Each sub-repo CLAUDE.md updated with ORG-STATUS.md sync-check line
+
+---
+
+## Phase 0C — Security Architecture *(org-wide, applies to every platform)*
+
+> Security is not a phase you do once. It is a permanent layer built into every
+> decision — infrastructure, code, auth, data, and process. This section covers
+> every mandatory security measure for current and future Impactors Academy
+> platforms. Nothing here is optional.
+>
+> Rule: **defence in depth** — no single point of failure. Every resource is
+> protected by at least two independent layers. If one fails, the next holds.
+
+---
+
+### 0C-1 — VPS & Infrastructure Hardening
+
+The VPS is the foundation. If it falls, everything falls.
+
+- [ ] **SSH hardening**
+      - [ ] Password authentication disabled — SSH key only (`PasswordAuthentication no` in `/etc/ssh/sshd_config`)
+      - [ ] Root login disabled (`PermitRootLogin no`)
+      - [ ] SSH port changed from 22 to a non-standard port (e.g. 2222)
+      - [ ] Only whitelisted IPs can reach the SSH port (Cloudflare firewall or UFW)
+- [ ] **UFW firewall** configured on VPS
+      - [ ] Only ports 80, 443, and SSH port open inbound
+      - [ ] All other inbound ports blocked by default
+      - [ ] Coolify internal ports (3000, DB ports) NOT exposed to public internet —
+            only reachable within the Docker private network
+- [ ] **Fail2ban** installed — auto-bans IPs after repeated failed SSH/HTTP attempts
+- [ ] **Unattended upgrades** enabled — OS security patches auto-apply
+- [ ] **Docker security baseline**
+      - [ ] No containers run as root unless unavoidable
+      - [ ] DB containers have no public port binding (internal network only)
+      - [ ] Container images pinned to specific digests in production (not `:latest`)
+- [ ] **Coolify admin panel** protected
+      - [ ] Coolify itself accessible only from your IP (Cloudflare firewall rule)
+      - [ ] Coolify admin account uses a strong unique password + 2FA enabled
+- [ ] VPS snapshot/backup scheduled weekly in Hostinger panel
+
+---
+
+### 0C-2 — Network & Edge Security (Cloudflare)
+
+Cloudflare sits in front of everything. Use it as a security layer, not just DNS.
+
+- [ ] **WAF (Web Application Firewall)** enabled on all domains
+      - [ ] OWASP Core Ruleset enabled (blocks SQLi, XSS, path traversal, RFI)
+      - [ ] Sensitivity set to Medium; tune to High once false positives are confirmed zero
+- [ ] **Bot Fight Mode** enabled — blocks known bad bots at the edge
+- [ ] **DDoS protection** — Cloudflare's automatic DDoS mitigation active (default on Pro/free)
+- [ ] **Rate limiting rules** (Cloudflare, not app-level — faster and cheaper)
+      - [ ] `/api/enquiry`, `/api/contact` — max 10 requests/minute per IP
+      - [ ] `/admin/login`, `*/auth/*` — max 5 requests/minute per IP; block for 1 hour on breach
+      - [ ] All other API routes — max 60 requests/minute per IP
+- [ ] **Firewall rules for admin routes** (applies to ALL projects)
+      ```
+      Rule: Block /admin* from non-whitelisted IPs
+      (http.request.uri.path wildcard "/admin*")
+      AND NOT (ip.src in {YOUR_IP_1 YOUR_IP_2})
+      → Action: Block
+      ```
+      Add this rule for: `impactorsacademy.com`, `pro.impactorsacademy.com`,
+      and every future platform that has an `/admin` or internal route.
+- [ ] **Cloudflare Access (Zero Trust)** — the real admin protection layer
+      - [ ] Cloudflare Access application created for each admin route:
+            `impactorsacademy.com/admin*`, `pro.impactorsacademy.com/admin*`,
+            `loc.impactorsacademy.com/admin*` (when deployed), all future platforms
+      - [ ] Access policy: allow only `@impactorsacademy.com` email domain (or specific emails)
+      - [ ] Method: email OTP (immediate) → upgrade to Authentik OIDC when Authentik is live
+      - [ ] Service tokens created for any CI/CD or automated access to protected routes
+      - [ ] Access audit logs enabled — every admin login is logged with IP + timestamp
+- [ ] **SSL/TLS** mode set to Full (Strict) on all domains — not just Flexible
+- [ ] **HSTS** enabled with `includeSubDomains` and `preload` (after verifying all subdomains are HTTPS)
+- [ ] **Hotlink protection** enabled (prevents image leeching)
+
+---
+
+### 0C-3 — Team Authentication & Identity (Authentik)
+
+Every person on the team touches internal tools. Authentik is the single identity
+provider for all of them — one login, role-based access to everything.
+
+- [ ] **Authentik deployed** via Coolify (Phase 1 dependency)
+- [ ] **Multi-Factor Authentication enforced for ALL team members**
+      - [ ] TOTP (Google Authenticator / Authy) — required for all accounts
+      - [ ] FIDO2 / WebAuthn (hardware key or passkey) — required for `admin` group
+      - [ ] No account can access internal tools without MFA active
+- [ ] **Groups and roles defined:**
+      ```
+      ia-core      → Coolify, Grafana, Docmost, Vaultwarden, all dashboards
+      ia-pro-team  → ia-pro admin, Docmost (IA Pro space)
+      loc-team     → LOC admin, Docmost (LOC space)
+      admin        → everything + Authentik management, Vaultwarden full access
+      ```
+- [ ] **OIDC/OAuth2 configured** — Authentik acts as IdP for:
+      - [ ] Coolify (OIDC login)
+      - [ ] Grafana (OIDC login)
+      - [ ] Docmost (OIDC login)
+      - [ ] n8n (OIDC login)
+      - [ ] Cloudflare Access (Authentik as identity provider — replaces email OTP)
+      - [ ] All future internal tools added here as they deploy
+- [ ] **Session policy:**
+      - [ ] Sessions expire after 8 hours of inactivity
+      - [ ] Maximum session length 24 hours (force re-auth daily)
+      - [ ] Concurrent session limit: 3 devices per user
+- [ ] **Offboarding procedure documented in Docmost:**
+      When a team member leaves → disable Authentik account → revoke Vaultwarden access →
+      rotate any secrets they had access to → audit their recent actions in logs
+- [ ] **Privileged account policy:**
+      - [ ] `admin` group has ≤ 3 members (Emmanuel + 2 max)
+      - [ ] Admin actions logged — Authentik audit log + Grafana Loki
+      - [ ] No shared accounts — every person has their own named account
+
+---
+
+### 0C-4 — External User Authentication (per platform)
+
+Every platform that has public users needs its own auth strategy.
+"External users" = anyone who is not on the IA team.
+
+#### ia-pro (current: enquiry form, no accounts)
+- [ ] Enquiry form: no auth needed — public form ✅
+- [ ] **Client portal** (future): when clients need to log in to see project progress
+      - [ ] NextAuth v5 (Auth.js) — Google OAuth + email magic link
+      - [ ] Session stored in DB (not JWT-only) for revocability
+      - [ ] Client accounts isolated — each client sees only their own data
+      - [ ] Cloudflare Access does NOT apply here (public-facing, not internal)
+
+#### impactors-academy (current: no public accounts)
+- [ ] Contact form: no auth needed — public form ✅
+- [ ] **Community member accounts** (future, if IA builds a member portal):
+      - [ ] NextAuth v5 — Google OAuth + GitHub OAuth + email magic link
+      - [ ] Email verification required before account activation
+      - [ ] Profile completion step after first login
+
+#### LOC (current: inquiry form, no accounts)
+- [ ] Inquiry form: no auth needed — public form ✅
+- [ ] **Traveller accounts** (future, when booking is implemented):
+      - [ ] NextAuth v5 — Google OAuth + email magic link
+      - [ ] Booking history per account
+      - [ ] Data export / delete (GDPR — see 0C-7)
+- [ ] **Partner/property owner accounts** (future):
+      - [ ] Separate auth flow from traveller accounts
+      - [ ] Email + password with email verification
+      - [ ] 2FA optional for partners, mandatory for property managers
+
+#### Learning Platform (future — highest-stakes auth)
+- [ ] **Student accounts:**
+      - [ ] Supabase Auth (self-hosted) — email/password + Google OAuth + Apple Sign In
+      - [ ] Email verification required
+      - [ ] Password reset via email
+      - [ ] 2FA optional (encourage, don't force for students)
+      - [ ] Row-level security: students see ONLY their own progress, purchases, certificates
+- [ ] **Instructor accounts:**
+      - [ ] Invited by admin only (no self-signup)
+      - [ ] 2FA mandatory
+      - [ ] Instructors see student progress only for their own courses
+- [ ] **Admin of learning platform:**
+      - [ ] Via Authentik SSO (same as team) — not a separate login
+- [ ] **Payment auth:** Stripe handles payment auth — never store card details
+
+#### GrindBuddy (future)
+- [ ] **User accounts:**
+      - [ ] NextAuth v5 — email/password + Google OAuth
+      - [ ] Email verification required
+      - [ ] Password strength enforced (min 12 chars, breach check via HaveIBeenPwned API)
+
+#### ProspectBuddy (internal tool)
+- [ ] Single-password access (current) → migrate to Authentik SSO when team grows
+- [ ] No external user accounts — internal only
+
+---
+
+### 0C-5 — Application Security Headers
+
+Every Next.js and FastAPI app must ship these headers. No exceptions.
+
+**Required headers (add to `next.config.ts` for Next.js, response middleware for FastAPI):**
+
+- [ ] `Content-Security-Policy` — the most important missing header
+      ```
+      default-src 'self';
+      script-src 'self' 'nonce-{NONCE}' https://www.googletagmanager.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https:;
+      font-src 'self';
+      connect-src 'self' https://www.google-analytics.com;
+      frame-ancestors 'none';
+      ```
+      Implementation: Next.js middleware generates a nonce per request; nonce added
+      to every `<script>` tag via `next/headers`. Add after staging is confirmed working.
+- [ ] `X-Content-Type-Options: nosniff` ✅ done on ia-pro + impactors-academy
+- [ ] `X-Frame-Options: DENY` ✅ done — upgrade to CSP `frame-ancestors` once CSP ships
+- [ ] `Referrer-Policy: strict-origin-when-cross-origin` ✅ done
+- [ ] `Permissions-Policy` ✅ done
+- [ ] `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+      — add to all apps (Cloudflare also sends this, belt-and-suspenders)
+- [ ] `Cross-Origin-Opener-Policy: same-origin`
+- [ ] `Cross-Origin-Resource-Policy: same-origin`
+- [ ] **LOC FastAPI** — add all above headers via FastAPI middleware (currently missing entirely)
+- [ ] **ProspectBuddy Flask** — add all above headers via Flask `after_request` hook
+
+**Verify all headers:** run `securityheaders.com` on every public domain after shipping.
+
+---
+
+### 0C-6 — API Security
+
+Every API route — public or internal — must be defended.
+
+- [ ] **Input validation on all routes** — never trust client input
+      - [ ] Next.js API routes: validate with Zod schemas (not manual `if` checks)
+      - [ ] FastAPI (LOC): Pydantic models enforce type + length on every endpoint ✅ (verify)
+      - [ ] Flask (prospectbuddy): `marshmallow` or manual validation on all routes
+      - [ ] Max field lengths enforced (truncation already done on some routes — verify all)
+- [ ] **Rate limiting** — see Cloudflare rules in 0C-2 (edge) PLUS app-level as backup
+      - [ ] Next.js: `upstash/ratelimit` with Redis (or simple in-memory for low traffic)
+      - [ ] FastAPI: `slowapi` (already standard for FastAPI rate limiting)
+      - [ ] Flask: `flask-limiter`
+- [ ] **CORS policy locked down** — no wildcard `*` in production
+      - [ ] Next.js: CORS headers only on routes that need them; default is same-origin
+      - [ ] FastAPI (LOC): `CORSMiddleware` with explicit `allow_origins` list (verify — not `*`)
+      - [ ] Flask (prospectbuddy): `flask-cors` with explicit origins
+- [ ] **CSRF protection**
+      - [ ] prospectbuddy: ✅ done (session token + `hmac.compare_digest`)
+      - [ ] Next.js apps: Server Actions are CSRF-safe by default (verify Next.js version behaviour)
+      - [ ] LOC FastAPI: add CSRF token to state-changing endpoints if browser forms are used
+- [ ] **Authentication on every sensitive route**
+      - [ ] All `/admin/*` routes: NextAuth session check on every request ✅ (verify)
+      - [ ] LOC editor endpoints: `require_editor_key` on all write routes ✅ confirmed
+      - [ ] No route returns sensitive data (emails, IDs, internal state) to unauthenticated requests
+- [ ] **Error responses never leak internals**
+      - [ ] `500` responses return `{"error": "Internal server error"}` — no stack traces in prod
+      - [ ] `404` and `403` responses are identical in timing (prevent user enumeration)
+- [ ] **SQL injection** — Drizzle ORM parameterises all queries ✅; verify LOC raw queries if any
+- [ ] **API versioning** — LOC already uses `/api/v1/`; all future APIs follow this pattern
+
+---
+
+### 0C-7 — Data Security & Privacy
+
+- [ ] **Data at rest encryption**
+      - [ ] Postgres data directory on VPS: enable filesystem-level encryption (LUKS or
+            Hostinger encrypted volume) — or accept that Coolify volume is unencrypted and
+            compensate with strict network access control
+      - [ ] Vaultwarden: encrypted by default (uses AES-256) ✅ once deployed
+      - [ ] Backups encrypted before upload to R2:
+            `pg_dump | gzip | openssl enc -aes-256-cbc | upload to R2`
+- [ ] **Data in transit** — HTTPS everywhere ✅ (Cloudflare + HSTS)
+- [ ] **PII handling (GDPR — applies because EU users will visit)**
+      - [ ] Data inventory documented: what PII is collected on each platform, where stored
+            (contacts.json → name/email/message; LOC inquiries → same; future: student accounts)
+      - [ ] Privacy policy page on impactors-academy + ia-pro + LOC
+      - [ ] Cookie consent banner (required for GA4 analytics in EU)
+      - [ ] Data deletion: user can request deletion — documented process per platform
+      - [ ] Data export: user can request their data — documented process
+      - [ ] Retention policy: contacts.json entries older than 2 years auto-purged (or documented)
+      - [ ] No PII in logs (Loki/Grafana must not log email addresses or names in request paths)
+- [ ] **Backup strategy**
+      - [ ] `pg_dump` cron: daily encrypted backup → Cloudflare R2 bucket `ia-backups`
+      - [ ] Retention: 30 daily, 12 monthly, 3 yearly
+      - [ ] Restore test: quarterly — actually restore from backup to verify it works
+      - [ ] prospectbuddy SQLite: daily backup script (`sqlite3 db .dump | gzip → R2`)
+      - [ ] LOC Railway DB: enable Railway automatic backups (verify it is on)
+- [ ] **Secrets hygiene**
+      - [ ] All secrets in Vaultwarden once deployed; Coolify env vars reference them
+      - [ ] Secret rotation schedule: every 90 days for auth secrets, annually for API keys
+      - [ ] `git log --all --full-history -- .env*` — run quarterly to confirm no secret leaks
+      - [ ] `.env.example` files never contain real values (enforce via CI secret scanning)
+
+---
+
+### 0C-8 — Dependency & Supply Chain Security
+
+- [ ] **npm audit** in CI for all Node.js projects — fails build on HIGH/CRITICAL ✅ (to add)
+- [ ] **pip audit / safety** in CI for LOC and prospectbuddy Python projects
+- [ ] **GitHub Dependabot** enabled on all repos — auto-PRs for security updates
+- [ ] **GitHub secret scanning** enabled on all repos — alerts on committed tokens
+- [ ] **License compliance** — no GPL-licensed packages in commercial products
+      (MIT, Apache-2.0, BSD are fine; GPL requires open-sourcing your code)
+- [ ] **Docker image scanning** — Trivy or Docker Scout on all custom images in CI
+- [ ] **Subresource Integrity (SRI)** — any externally loaded script (CDN) gets
+      `integrity` + `crossorigin` attributes; prefer self-hosting critical scripts
+- [ ] **Third-party review policy:** any new npm package with > 1M weekly downloads
+      or with access to auth/crypto/DB gets a manual security review before merging
+
+---
+
+### 0C-9 — Audit Logs & Incident Response
+
+**Audit logs — who did what, when:**
+- [ ] Authentik: audit log for all logins, failed attempts, group changes — retained 90 days
+- [ ] Coolify: deployment history retained — know exactly what deployed when
+- [ ] Grafana/Loki: all app logs centralised, searchable, retained 30 days minimum
+- [ ] Sentry: all errors with user context (no PII in error payloads — just user ID)
+- [ ] Admin actions in each app logged: post created/deleted, enquiry read, project updated
+      (log to Loki via structured JSON — `{action, actor, resource_id, timestamp}`)
+- [ ] Cloudflare Access: every admin login logged with IP, time, outcome
+
+**Incident response plan:**
+- [ ] **Runbook documented in Docmost:** "Security Incident Response"
+      ```
+      Step 1 — Contain:   Take affected service offline or block traffic via Cloudflare
+      Step 2 — Assess:    What was accessed? What data was exposed? For how long?
+      Step 3 — Eradicate: Remove attacker access; rotate all secrets; patch vulnerability
+      Step 4 — Restore:   Redeploy clean service; restore from last clean backup if needed
+      Step 5 — Notify:    If PII was exposed → notify affected users within 72 hours (GDPR)
+      Step 6 — Review:    Root cause analysis; update checklist to prevent recurrence
+      ```
+- [ ] Emergency contacts documented: Hostinger support, Cloudflare support, GitHub security
+- [ ] **Break-glass procedure:** if Authentik/Vaultwarden is down, how do you still access
+      critical systems? Document the fallback credentials location (offline, encrypted)
+
+---
+
+### 0C-10 — Security Testing Schedule
+
+Security is not set-and-forget. It requires regular testing.
+
+- [ ] **Pre-launch security check** (before any new platform goes live)
+      - [ ] `securityheaders.com` — all headers A or A+
+      - [ ] `observatory.mozilla.org` — score B+ minimum
+      - [ ] `testssl.sh` — TLS configuration clean
+      - [ ] OWASP Top 10 manual check (or automated via OWASP ZAP)
+      - [ ] `git log --all --full-history -- .env*` — confirm no secret ever committed
+      - [ ] Dependency audit clean (`npm audit`, `pip audit`)
+- [ ] **Quarterly security review** (all platforms)
+      - [ ] Rotate secrets (NEXTAUTH_SECRET, ADMIN_PASSWORD, API keys)
+      - [ ] Review Cloudflare Access audit logs for anomalies
+      - [ ] Review Authentik logs for suspicious logins
+      - [ ] Run `npm audit` + `pip audit` across all projects; patch what is found
+      - [ ] Verify all backups are intact and restorable
+      - [ ] Review team access: does everyone who has access still need it?
+- [ ] **Annual penetration test** (once platforms have real users)
+      - [ ] Engage a third-party pen tester OR use `/security-pen-testing` skill for
+            a structured self-assessment
+      - [ ] Document findings + remediation in Docmost
+      - [ ] All CRITICAL and HIGH findings fixed before result is filed
+
+---
+
+### Auth Method Summary (quick reference for any new platform)
+
+```
+Who             What they access           Auth method
+─────────────   ──────────────────────     ─────────────────────────────────
+IA team         Internal tools             Authentik SSO + MFA (mandatory)
+IA team         Admin routes on apps       Cloudflare Access → Authentik OIDC
+ia-pro clients  Enquiry form               No auth (public form)
+ia-pro clients  Client portal (future)     NextAuth v5 — Google OAuth + magic link
+LOC travellers  Inquiry form               No auth (public form)
+LOC travellers  Booking account (future)   NextAuth v5 — Google OAuth + magic link
+LOC partners    Property management (fut.) Email + password + 2FA mandatory
+Students        Learning platform (future) Supabase Auth — Google OAuth + email/pw
+Students        Content (future)           Row-level security in Supabase Postgres
+GrindBuddy      App (future)               NextAuth v5 — Google OAuth + email/pw
+Public          Any public page            No auth; Cloudflare WAF + bot fight mode
+Automated CI    Protected routes           Cloudflare Access service tokens
+```
 
 ---
 
