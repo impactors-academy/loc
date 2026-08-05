@@ -64,6 +64,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 | Next.js pages, components, Tailwind | `/senior-frontend` |
 | Experience/stay card UI, grid, filters | `/senior-frontend` · `/ui-ux-pro-max` |
 | Search bar (DISC-1), destination tiles (DISC-2) | `/senior-frontend` · `/gsap-scrolltrigger` for animations |
+| **Any color decision** — brand, accent, CTA, states, chart/category colors | `/color-combinations` |
 | Design decisions, palette, typography | `/ui-ux-pro-max` |
 
 ### Search & Discovery (R4)
