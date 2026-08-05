@@ -177,8 +177,16 @@ Key namespacing: `experiences:{slug}`, `properties:list`, `blog:{slug}` — no c
 
 ## Boundaries / non-goals (current phase)
 
-- No user auth yet — public platform first; `(dashboard)` route group and auth come later.
+- No public user accounts yet — travellers and property partners are future work
+  (`/account` and `/partners` are reserved for them). The staff CMS at `/admin` is
+  gated by a shared editor API key plus Cloudflare Access, not per-user login.
 - No payment processing — external links only.
 - No dedicated vector DB (Pinecone/Weaviate) — pgvector inside Postgres is sufficient at this scale.
-- Postgres runs on Railway; frontend on Vercel. No Coolify/VPS in current deployment plan.
-- `next.config.ts` has conditional `output: standalone` — enabled only when `NEXT_BUILD_STANDALONE=true` (Docker builds), disabled for Vercel native pipeline.
+- **Deployment: Hostinger VPS via Coolify, DNS on Cloudflare, `loctravels.com`.**
+  Postgres and Redis run as containers in the same compose stack, not managed
+  services. Railway and Vercel were both used earlier and are being retired —
+  `railway.toml` and the SSH deploy workflow are already removed. See
+  `docs/DEPLOYMENT.md`.
+- `next.config.ts` has conditional `output: standalone` — enabled by
+  `NEXT_BUILD_STANDALONE=true`, which `frontend/Dockerfile` sets. Required for the
+  Docker/Coolify image; harmless elsewhere.
