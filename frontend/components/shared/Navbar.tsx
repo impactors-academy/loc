@@ -3,6 +3,7 @@
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import Image from "next/image"
 import { Menu, X } from "lucide-react"
 import { useState, useEffect } from "react"
 
@@ -26,14 +27,24 @@ export function Navbar() {
       )}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link
-          href="/"
-          className={cn(
-            "font-heading font-bold text-2xl tracking-tight transition-colors",
-            scrolled ? "text-loc-night" : "text-white"
-          )}
-        >
-          {SITE_NAME}
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image
+            src="/icons/loc-mark.png"
+            alt=""
+            aria-hidden
+            width={36}
+            height={36}
+            priority
+            className="rounded-md w-8 h-8 md:w-9 md:h-9 flex-none"
+          />
+          <span
+            className={cn(
+              "font-heading font-bold text-2xl tracking-tight transition-colors",
+              scrolled ? "text-loc-night" : "text-white"
+            )}
+          >
+            {SITE_NAME}
+          </span>
         </Link>
 
         {/* Desktop nav */}

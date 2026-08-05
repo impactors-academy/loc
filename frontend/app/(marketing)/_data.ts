@@ -13,7 +13,7 @@ export const FEATURED_EXPERIENCES: Experience[] = [
     duration: "2 hours",
     priceMin: 45,
     priceMax: 65,
-    images: ["https://images.unsplash.com/photo-1568393691622-c7ba131d1b16?w=800"],
+    images: ["https://images.unsplash.com/photo-1743515483156-6bf698521774?w=800"],
     isFeatured: true,
     providerName: "Kyoto Tea House",
     providerContact: null,
@@ -143,7 +143,7 @@ export const CATEGORIES = [
     href: "/experiences?category=culture",
     gradient: "from-purple-950 via-indigo-900 to-purple-800",
     icon: "🏯",
-    imageUrl: "https://images.unsplash.com/photo-1568393691622-c7ba131d1b16?w=800",
+    imageUrl: "https://images.unsplash.com/photo-1743515483156-6bf698521774?w=800",
   },
 ]
 

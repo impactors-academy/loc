@@ -26,7 +26,7 @@ const pool: Record<string, string[]> = {
     "photo-1539037116277-4db20889f2d4", // historic alley
     "photo-1555396273-367ea4eb4db5", // food market
     "photo-1558618666-fcd25c85cd64", // architecture detail
-    "photo-1568393691622-c7ba131d1b16", // temple japan
+    "photo-1578469645742-46cae010e5d4", // temple japan
     "photo-1519677584237-752f8853252e", // european square
     "photo-1581351721010-8cf859cb14a4", // museum gallery
   ],
@@ -57,7 +57,7 @@ const pool: Record<string, string[]> = {
   ],
   villa: [
     "photo-1566073771259-6a8506099945", // infinity pool villa
-    "photo-1613490493576-4196e2f1a788", // modern villa
+    "photo-1613490493576-7fde63acd811", // modern villa
     "photo-1520250497591-112f2f40a3f4", // villa terrace
   ],
   apartment: [
