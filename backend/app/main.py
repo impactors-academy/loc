@@ -37,6 +37,29 @@ app.add_middleware(
 app.include_router(v1_router, prefix="/api/v1")
 
 
+@app.get("/", tags=["meta"])
+def root():
+    """Index for anyone who opens the API host directly.
+
+    Without this, `GET /` returns a bare {"detail":"Not Found"}, which reads
+    like the service is broken when it is simply the wrong path.
+    """
+    return {
+        "service": app.title,
+        "version": app.version,
+        "status": "ok",
+        "docs": "/docs",
+        "health": "/health",
+        "endpoints": {
+            "experiences": "/api/v1/experiences/",
+            "stays": "/api/v1/properties/",
+            "products": "/api/v1/products/",
+            "blog": "/api/v1/blog/",
+            "contact": "/api/v1/contact/",
+        },
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

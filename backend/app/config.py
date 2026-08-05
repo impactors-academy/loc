@@ -28,7 +28,10 @@ class Settings(BaseSettings):
     email_from: str = "noreply@loctravels.com"
     email_to: str = ""
 
-    model_config = {"env_file": ".env"}
+    # extra="ignore": the repo root .env is shared with docker-compose, which defines
+    # vars this app does not consume (PGADMIN_*, POSTGRES_*). Without this, any such
+    # var raises "Extra inputs are not permitted" and the API refuses to boot.
+    model_config = {"env_file": ".env", "extra": "ignore"}
 
     @property
     def embeddings_enabled(self) -> bool:
