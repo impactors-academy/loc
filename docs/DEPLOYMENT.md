@@ -2,10 +2,18 @@
 
 **Target:** Hostinger VPS via Coolify · DNS on Cloudflare · `loctravels.com`
 
-Coolify builds from `docker-compose.yml` + `docker-compose.prod.yml` and manages the
-containers itself. There is no deploy workflow in `.github/` — Coolify deploys from its
-own git integration. Do not add one back; two systems managing the same containers will
-fight each other.
+Coolify builds from **`docker-compose.coolify.yml`** and manages the containers itself.
+There is no deploy workflow in `.github/` — Coolify deploys from its own git
+integration. Do not add one back; two systems managing the same containers will fight
+each other.
+
+> **Use `docker-compose.coolify.yml`, not `docker-compose.yml`.** Coolify's Docker
+> Compose resource takes a single file path and cannot apply an override, so pointing it
+> at `docker-compose.yml` would deploy the **dev** stack — hot reload, source mounts,
+> published database ports and pgAdmin, all on a public host.
+>
+> `docker-compose.yml` + `docker-compose.prod.yml` remain the local dev setup. A change
+> to service topology has to be made in both places.
 
 ---
 
@@ -113,18 +121,72 @@ phone numbers — on the public internet.
 
 ---
 
-## First deploy — order matters
+## First deploy — step by step
 
-1. **Merge `develope` → `main`.** `main` does not have editor auth. Deploying it as it
-   stands ships an unauthenticated write API.
-2. Create the Coolify project, pointed at this repo, branch `main`, using
-   `docker-compose.yml` + `docker-compose.prod.yml`.
-3. Set every env var above.
-4. Add both domains in Coolify; add the matching DNS records in Cloudflare (proxied).
-5. Configure Cloudflare Access on both admin paths.
-6. Deploy.
-7. Verify (below).
-8. Add `loctravels.com` and `api.loctravels.com/health` to Uptime Kuma.
+DNS already exists: `loctravels.com`, `www.loctravels.com` and `api.loctravels.com` all
+resolve to Cloudflare proxy IPs. No records need creating for production.
+
+**1 — Generate the two secrets** (do this locally, never commit them):
+
+```bash
+openssl rand -hex 32   # EDITOR_API_KEY
+openssl rand -hex 24   # POSTGRES_PASSWORD
+```
+
+Store both in Vaultwarden once it exists (Phase 1). Until then, treat this as the only
+copy — losing `POSTGRES_PASSWORD` after the volume is created means losing the database.
+
+**2 — Create the Coolify resource**
+
+- New Resource → **Docker Compose** (not Dockerfile, not Nixpacks)
+- Source: this repo, branch **`main`**
+- Compose file path: **`docker-compose.coolify.yml`**
+
+**3 — Set environment variables** in Coolify (Environment Variables tab)
+
+Every one of these is required; the stack refuses to start if any is missing:
+
+```
+POSTGRES_USER=loc
+POSTGRES_PASSWORD=<generated above>
+POSTGRES_DB=loc
+EDITOR_API_KEY=<generated above>
+CORS_ORIGINS=["https://loctravels.com"]
+NEXT_PUBLIC_API_URL=https://api.loctravels.com
+EMAIL_FROM=noreply@loctravels.com
+```
+
+Optional, blank is fine: `OPENAI_API_KEY` (keyword-only search without it),
+`SMTP_*` and `EMAIL_TO` (inquiries logged but no email sent).
+
+**4 — Map the domains** to services in Coolify
+
+| Domain | Service | Container port |
+|---|---|---|
+| `https://loctravels.com` | `frontend` | 3000 |
+| `https://api.loctravels.com` | `backend` | 8000 |
+
+Leave `db` and `redis` with no domain. They must stay internal.
+
+**5 — Cloudflare**
+
+- SSL/TLS mode: **Full (Strict)**
+- Both hostnames proxied (orange cloud)
+- **Access applications on `loctravels.com/admin*` and `loctravels.com/api/admin/*`** —
+  see the section above. Do this *before* deploying, not after.
+
+**6 — Deploy**, then seed the database once (fresh DB only — migrations run
+automatically on every deploy, seeding does not):
+
+```bash
+docker compose exec backend sh -c "PYTHONPATH=. uv run python scripts/seed.py"
+```
+
+**7 — Verify** using the block below. Any `200`/`201` where a `403` is expected means
+stop and fix before announcing the site.
+
+**8 — Afterwards:** disconnect the Vercel project, and add `loctravels.com` plus
+`api.loctravels.com/health` to Uptime Kuma.
 
 Migrations run automatically — the backend command is
 `alembic upgrade head && uvicorn ...`. On a fresh database run the seed manually once:
