@@ -51,6 +51,9 @@ services:
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-loc}:${POSTGRES_PASSWORD:-loc}@db:5432/${POSTGRES_DB:-loc}
       REDIS_URL: redis://redis:6379/0
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      # Gates every write endpoint and all /leads routes. Fails closed: unset
+      # means 503, not open access. Must be set in every environment.
+      EDITOR_API_KEY: ${EDITOR_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
@@ -78,6 +81,9 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
       API_INTERNAL_URL: http://backend:8000
+      # Server-side only — the /api/admin/* proxy attaches this. Never
+      # NEXT_PUBLIC_*, which would bake it into the browser bundle.
+      EDITOR_API_KEY: ${EDITOR_API_KEY:-}
       NODE_ENV: development
       WATCHPACK_POLLING: "true"
     volumes:

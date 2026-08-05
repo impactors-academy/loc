@@ -26,6 +26,8 @@ services:
              uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"
     environment:
       ENV: production
+      # Refuse to start rather than silently serve 503s on every editor route.
+      EDITOR_API_KEY: ${EDITOR_API_KEY:?EDITOR_API_KEY must be set — editor endpoints fail closed without it}
     volumes: []                  # no source mount in prod
     restart: always
 
@@ -41,6 +43,10 @@ services:
     environment:
       NODE_ENV: production
       API_INTERNAL_URL: http://backend:8000   # server-side proxy route hits this, not the public URL
+      # Runtime env, deliberately NOT a build arg: build args are baked into the
+      # image and NEXT_PUBLIC_* vars into the bundle. This key must stay
+      # server-side — the /api/admin/* proxy reads it per request.
+      EDITOR_API_KEY: ${EDITOR_API_KEY:?EDITOR_API_KEY must be set — the admin CMS cannot publish without it}
     volumes: []
     restart: always
 
