@@ -22,8 +22,20 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 ## Phase 2 — Design & Content
 
-- [x] Brand palette defined — terracotta `#C4714A`, sand `#F7EDD8`, amber `#D4A44C`,
-      teal `#2D6A6A`, night `#1A1A2E`, stone `#8B7355`
+- [x] Brand palette defined — **rebuilt 2026-08-05 from the logo.** `Loc.png` samples to
+      `#C9885C`, byte-identical to the Impactors Academy mark, so Loc is in the parent
+      family. `loc-copper #C9885C` is the logo value (mark + dark grounds, 7.03:1 on
+      black); `loc-terracotta` retuned `#C4714A` → `#A16036` — same hue as the logo (24°,
+      was 18°) at a lightness that clears AA (4.95:1 white, 4.75:1 `--background`).
+      The old value failed AA at 3.62:1 everywhere it was used as text, as did
+      `--primary` at 3.67:1. Remaining: sand `#F7EDD8`, amber `#D4A44C`, teal `#2D6A6A`,
+      night `#1A1A2E`, stone `#8B7355`. Derivation: `/color-combinations` skill.
+- [x] Logo shipped — mark cropped square from `Loc.png`, wired into the navbar lockup
+      (`public/icons/loc-mark.png`), favicon (`app/icon.png`) and touch icon.
+      `public/icons/` previously held only a `.gitkeep`.
+- [x] Dead demo images fixed — `photo-1568393691622` returned 404 in 4 places incl. the
+      Kyoto tea ceremony card; audit found a second (`photo-1613490493576`) with a stale
+      hash. Every Unsplash URL in `_data.ts`, `images.ts` and `seed.py` now returns 200.
 - [ ] Design tokens established as CSS custom properties — no hardcoded hex values
       in components; palette, type scale, spacing, and easing all tokenised
 - [ ] Restraint/hierarchy pass on all key pages — `/ui-ux-pro-max`
