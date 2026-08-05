@@ -6,9 +6,17 @@ data) work normally.
 Usage:
     uv run python scripts/local_setup.py
 """
-from sqlalchemy import create_engine, text
+import sys
+from pathlib import Path
 
-from app.config import settings
+# Run directly (`python scripts/local_setup.py`) and `backend/` is not on
+# sys.path — only `scripts/` is — so `import app` fails. Add the repo's backend
+# dir explicitly so the documented command above works as written.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from sqlalchemy import create_engine, text  # noqa: E402
+
+from app.config import settings  # noqa: E402
 
 engine = create_engine(settings.database_url)
 
@@ -25,6 +33,7 @@ CREATE TABLE IF NOT EXISTS experiences (
     category        VARCHAR NOT NULL,
     country         VARCHAR,
     location        VARCHAR,
+    duration        VARCHAR,
     price_min       FLOAT,
     price_max       FLOAT,
     images          JSONB NOT NULL DEFAULT '[]',
@@ -73,6 +82,13 @@ CREATE TABLE IF NOT EXISTS products (
     purchase_url    VARCHAR NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS referral_clicks (
+    id              VARCHAR PRIMARY KEY,
+    experience_slug VARCHAR NOT NULL,
+    referral_url    VARCHAR NOT NULL,
+    clicked_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS inquiries (
     id              VARCHAR PRIMARY KEY,
     name            VARCHAR NOT NULL,
@@ -98,6 +114,9 @@ CREATE INDEX IF NOT EXISTS ix_properties_location ON properties (location);
 
 CREATE INDEX IF NOT EXISTS ix_blog_posts_slug ON blog_posts (slug);
 CREATE INDEX IF NOT EXISTS ix_products_slug   ON products (slug);
+
+CREATE INDEX IF NOT EXISTS ix_referral_clicks_experience_slug
+    ON referral_clicks (experience_slug);
 
 -- ── FTS — search_vector generated column (requires pg_trgm) ───────────────
 DO $$
@@ -132,8 +151,11 @@ CREATE TABLE IF NOT EXISTS alembic_version (
     CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num)
 );
 
+-- Must match the latest revision in alembic/versions/. If you add a migration,
+-- mirror its DDL above and bump this stamp, or `seed.py` will fail against a
+-- schema that is missing the new columns.
 INSERT INTO alembic_version (version_num)
-VALUES ('004global')
+VALUES ('006exp5ref')
 ON CONFLICT DO NOTHING;
 """
 
