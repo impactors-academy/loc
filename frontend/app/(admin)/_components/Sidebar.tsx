@@ -5,12 +5,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const NAV = [
-  { label: "Overview", href: "/dashboard" },
-  { label: "Experiences", href: "/dashboard/experiences" },
-  { label: "Properties", href: "/dashboard/properties" },
-  { label: "Blog", href: "/dashboard/blog" },
-  { label: "Products", href: "/dashboard/products" },
-  { label: "Inquiries", href: "/dashboard/inquiries" },
+  { label: "Overview", href: "/admin" },
+  { label: "Experiences", href: "/admin/experiences" },
+  { label: "Properties", href: "/admin/properties" },
+  { label: "Blog", href: "/admin/blog" },
+  { label: "Products", href: "/admin/products" },
+  { label: "Inquiries", href: "/admin/inquiries" },
 ]
 
 export function Sidebar() {
@@ -25,8 +25,8 @@ export function Sidebar() {
       <nav className="flex-1 p-3 space-y-0.5">
         {NAV.map((item) => {
           const active =
-            item.href === "/dashboard"
-              ? path === "/dashboard"
+            item.href === "/admin"
+              ? path === "/admin"
               : path.startsWith(item.href)
           return (
             <Link

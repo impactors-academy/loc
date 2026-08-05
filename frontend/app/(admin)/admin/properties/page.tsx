@@ -28,7 +28,7 @@ export default function PropertiesPage() {
           <h1 className="font-heading text-2xl font-bold text-loc-night">Properties</h1>
           <p className="text-loc-stone text-sm mt-0.5">{items.length} total</p>
         </div>
-        <Link href="/dashboard/properties/new" className="px-4 py-2 bg-loc-terracotta text-white text-sm font-semibold rounded-lg hover:bg-loc-terracotta/90 transition-colors">
+        <Link href="/admin/properties/new" className="px-4 py-2 bg-loc-terracotta text-white text-sm font-semibold rounded-lg hover:bg-loc-terracotta/90 transition-colors">
           + New property
         </Link>
       </div>
@@ -50,7 +50,7 @@ export default function PropertiesPage() {
                   <td className="px-4 py-3 text-loc-stone capitalize">{item.listingTier}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
-                      <Link href={`/dashboard/properties/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>
+                      <Link href={`/admin/properties/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>
                       <button onClick={() => handleDelete(item.slug, item.title)} className="text-red-500 hover:underline text-xs font-medium">Delete</button>
                     </div>
                   </td>

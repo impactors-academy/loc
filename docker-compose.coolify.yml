@@ -1,0 +1,94 @@
+# LOC — Coolify production stack (loctravels.com)
+#
+# Deploy this as a single Coolify "Docker Compose" resource, same VPS/Coolify
+# instance already running impactors-academy + ia-pro. This file replaces the
+# older SSH + docker-compose.prod.yml + manual nginx/certbot path
+# (.github/workflows/deploy.yml, nginx/loc.conf) — Coolify's own Traefik proxy
+# handles TLS + routing instead, so those files should be retired once this is
+# live (see docs/BUILD-CHECKLIST.md Phase 7 notes).
+#
+# In the Coolify dashboard, after adding this repo as a "Docker Compose" resource:
+#   - frontend  -> Domains tab -> loctravels.com, www.loctravels.com  (port 3000)
+#   - backend   -> Domains tab -> api.loctravels.com                 (port 8000)
+#   - Set all ${VARS} below as Environment Variables on the resource (see the
+#     table in the deploy guide) — do NOT rely on the defaults in production.
+#   - db / redis get no public domain — internal network only.
+#
+# pgadmin is intentionally NOT included here — it's a local dev convenience only
+# (docker-compose.yml). Do not expose a DB admin UI on the public VPS.
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-loc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set a strong password in Coolify}
+      POSTGRES_DB: ${POSTGRES_DB:-loc}
+    volumes:
+      - loc_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-loc} -d ${POSTGRES_DB:-loc}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # No `ports:` — never expose Postgres on the public VPS interface.
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    # No `ports:` — internal network only.
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    command: >
+      sh -c "uv run alembic upgrade head &&
+             uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"
+    environment:
+      ENV: production
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-loc}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-loc}
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: https://loctravels.com,https://www.loctravels.com
+      EDITOR_API_KEY: ${EDITOR_API_KEY:?set a strong editor key in Coolify}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@loctravels.com}
+      EMAIL_TO: ${EMAIL_TO:?set the LOC team inbox in Coolify}
+    expose:
+      - "8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://api.loctravels.com
+    restart: always
+    command: node server.js
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://backend:8000
+    expose:
+      - "3000"
+    depends_on:
+      - backend
+
+volumes:
+  loc_pgdata:

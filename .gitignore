@@ -7,8 +7,10 @@
 *.ppt
 
 # Agents
-*.claude
 *.SKILL.md
+# Allow .claude/CLAUDE.md — session protocol is version-controlled
+!.claude/
+!.claude/CLAUDE.md
 
 # OS files
 .DS_Store

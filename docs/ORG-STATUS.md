@@ -6,7 +6,13 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-02
+**Last updated:** 2026-08-05 (audit pass — corrected against actual repo state, see notes below)
+
+> **Auditing this file — read first.** The 2026-08-05 audit initially produced several
+> false findings because it inspected each repo's *checked-out* branch. loc's active
+> branch is `develope`, which is 13 commits ahead of `main`; work that exists there
+> was reported as missing. **Always check the active branch, and check whether it has
+> been merged.** A feature existing on a dev branch is not the same as it being live.
 
 ---
 
@@ -14,10 +20,10 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 | Project | Status | Priority | Blocker / Next action |
 |---|---|---|---|
-| impactors-academy | LAUNCHED · Phase 9 | High | Real-device 3D perf check; changelog process |
-| ia-pro | ~10% · Phase 1-4 | High | Services copy → token drift fix → hero video → Cal.com |
-| loc | ~85% · R4 active | High | Hero search bar (DISC-1) → country filters → deploy verify |
-| prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → CSRF fix → backup script → team seed |
+| impactors-academy | LAUNCHED · Phase 9 | High | Real-device 3D perf check; changelog process; Playwright is manual-only, not an automated suite |
+| ia-pro | ~85% · Phase 8 done | High | Postgres/blog/projects already shipped (2026-08-04) — remaining: hero video → Cal.com |
+| loc | ~90% · R4 + LEAD-3 done on `develope` | High | **Not yet live** — `loctravels.com` returns 503 (Cloudflare DNS up, no origin). Deploy target: **Hostinger VPS via Coolify**. Order matters: merge PR #1 → merge `develope`→`main` → configure Cloudflare Access → deploy. Do **not** deploy `main` as it stands (no editor auth) |
+| prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → backup script → team seed |
 | grindbuddy | Frontend done · PAUSED | Low | Resume only after backend stack decision |
 
 ---
@@ -27,12 +33,719 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 - [x] Workspace bootstrap repo created — `impactors-academy/workspace` on GitHub;
       `setup.sh` clones all 5 sub-repos on a fresh machine
 - [x] `.gitignore` at workspace root — all 5 sub-repos excluded from workspace git
-- [x] `CLAUDE.md` in each sub-repo — session start/end checklist protocol
-- [x] `docs/BUILD-CHECKLIST.md` in each sub-repo — project-specific phase tracker
+- [x] `CLAUDE.md` in each sub-repo — confirmed 2026-08-05: exists in all 5, at
+      **`.claude/CLAUDE.md`** (not repo root). loc's is on `develope`.
+      (An earlier pass this same day wrongly reported these as missing — it looked for
+      a root-level `CLAUDE.md` on the checked-out branch only.)
+- [ ] `docs/BUILD-CHECKLIST.md` in each sub-repo — confirmed 2026-08-05: exists in
+      impactors-academy, ia-pro, prospectbuddy, **and loc (on `develope`)**.
+      **Genuinely missing in grindbuddy only.**
 - [x] Root `CLAUDE.md` (this file's companion) — workspace orchestrator protocol
-- [ ] `AGENTS.md` in each sub-repo — OpenClaw/generic-agent parity with CLAUDE.md
-- [ ] `scripts/sync-org-checklist.sh` committed and tested
-- [ ] Each sub-repo CLAUDE.md updated with ORG-STATUS.md sync-check line
+- [x] `AGENTS.md` in each sub-repo — **CORRECTED 2026-08-05: confirmed exists in all
+      5 sub-repos.** Was wrongly marked not done.
+- [x] `scripts/sync-org-checklist.sh` committed and tested — **CORRECTED 2026-08-05:
+      exists, fully implemented (writes MASTER-CHECKLIST.md into each project's
+      docs/ORG-STATUS.md), test-run confirmed working against all 5 projects. Was
+      wrongly marked not done.** Note: loc's `ORG-STATUS.md` was found significantly
+      stale (786 lines of drift) — needs a re-sync run.
+- [ ] Each sub-repo CLAUDE.md updated with ORG-STATUS.md sync-check line — blocked on
+      the CLAUDE.md-per-sub-repo item above (can't add a line to a file that doesn't exist)
+
+---
+
+## Phase 0D — Platform Architecture Standards
+
+> Full reference: `docs/PLATFORM-STANDARDS.md` — read the section for your
+> platform type before writing any code. This checklist tracks org-wide
+> compliance, not the per-project details.
+
+### Platform Types Covered
+
+| Type | Stack summary | Example in org |
+|---|---|---|
+| Marketing website | Next.js + Tailwind + Lenis + GA4 | impactors-academy, ia-pro |
+| Web app / SaaS | Next.js + Postgres + Redis + NextAuth v5 + Stripe | grindbuddy, prospectbuddy |
+| E-commerce | Medusa.js + Next.js + Stripe + R2 | future |
+| Learning platform | Next.js + Supabase + Cloudflare Stream + Stripe | future |
+| Mobile app | React Native + Expo + Supabase Auth + EAS | future |
+| API / backend | FastAPI or Hono + Postgres + Redis + Celery/BullMQ | LOC backend |
+| Community | Discourse self-hosted + Authentik SSO + R2 | future |
+| Internal tool | Next.js + Authentik SSO + TanStack Table + Cloudflare Access | admin dashboards |
+
+### Standards Compliance (verify per project at start of every session)
+
+- [ ] Platform type identified and correct section of `PLATFORM-STANDARDS.md` read
+- [ ] Stack matches the quick reference — deviations documented with reason
+- [ ] Performance baseline targeted: LCP < 2.5s, CLS < 0.1, Lighthouse ≥ 90
+- [ ] Accessibility baseline: WCAG 2.1 AA, keyboard nav, `prefers-reduced-motion`
+- [ ] Analytics wired: Umami (all platforms) + platform-specific (PostHog for apps,
+      GA4 for websites, PostHog RN for mobile)
+- [ ] New project launch checklist (bottom of PLATFORM-STANDARDS.md) run before
+      first line of code
+
+### Email Stack (org-wide standard)
+
+All transactional email goes through **Resend**. No exceptions. No SendGrid,
+no Mailchimp for transactional, no SMTP credentials in app code.
+
+- [ ] Resend account configured with `impactorsacademy.com` sending domain
+- [ ] DKIM + SPF + DMARC records in Cloudflare DNS
+- [ ] Unsubscribe header on all non-critical emails (legal requirement)
+- [ ] Email templates: plain HTML + text fallback (no image-only emails)
+- [ ] Email domains per venture:
+      ```
+      pro@impactorsacademy.com     → ia-pro enquiries
+      hello@impactorsacademy.com   → mother site contact
+      noreply@impactorsacademy.com → automated system emails
+      loc@impactorsacademy.com     → LOC inquiries (future)
+      ```
+
+### Payments Stack (org-wide standard)
+
+All payments go through **Stripe**. No PayPal, no manual bank transfer handling
+in code, no other processor unless Stripe explicitly does not serve a market.
+
+- [ ] One Stripe account for the org (multiple products, not multiple accounts)
+- [ ] Separate products per venture in Stripe dashboard
+- [ ] Stripe Tax enabled when selling to EU customers
+- [ ] Stripe Radar fraud protection enabled
+- [ ] Webhook endpoints: one per platform, signature verified server-side
+- [ ] Test mode confirmed working before any live key is set
+
+### File Storage Stack (org-wide standard)
+
+All user-uploaded files and media go to **Cloudflare R2**. No exceptions.
+No storing files in Postgres, no storing files in the Docker container volume.
+
+- [ ] R2 bucket per project: `ia-media`, `loc-media`, `platform-media`, `ia-backups`
+- [ ] Public bucket for publicly accessible assets (product images, course thumbnails)
+- [ ] Private bucket for user files (documents, certificates) — signed URLs only
+- [ ] Cloudflare Images enabled for automatic resizing on public image buckets
+- [ ] Lifecycle rules: auto-delete temp upload files after 24 hours
+
+### Search Stack (org-wide standard)
+
+**Meilisearch** self-hosted for all full-text search needs. One instance, multiple indexes.
+
+- [ ] Meilisearch deployed on Coolify (Horizon 2 — when first search need arises)
+- [ ] One index per searchable entity: `courses`, `experiences`, `blog_posts`, `products`
+- [ ] API key per application (not shared master key)
+- [ ] Re-index webhook: content update → trigger Meilisearch re-index
+
+---
+
+## Phase 0C — Security Architecture *(org-wide, applies to every platform)*
+
+> Security is not a phase you do once. It is a permanent layer built into every
+> decision — infrastructure, code, auth, data, and process. This section covers
+> every mandatory security measure for current and future Impactors Academy
+> platforms. Nothing here is optional.
+>
+> Rule: **defence in depth** — no single point of failure. Every resource is
+> protected by at least two independent layers. If one fails, the next holds.
+
+---
+
+### 0C-1 — VPS & Infrastructure Hardening
+
+The VPS is the foundation. If it falls, everything falls.
+
+- [ ] **SSH hardening**
+      - [ ] Password authentication disabled — SSH key only (`PasswordAuthentication no` in `/etc/ssh/sshd_config`)
+      - [ ] Root login disabled (`PermitRootLogin no`)
+      - [ ] SSH port changed from 22 to a non-standard port (e.g. 2222)
+      - [ ] Only whitelisted IPs can reach the SSH port (Cloudflare firewall or UFW)
+- [ ] **UFW firewall** configured on VPS
+      - [ ] Only ports 80, 443, and SSH port open inbound
+      - [ ] All other inbound ports blocked by default
+      - [ ] Coolify internal ports (3000, DB ports) NOT exposed to public internet —
+            only reachable within the Docker private network
+- [ ] **Fail2ban** installed — auto-bans IPs after repeated failed SSH/HTTP attempts
+- [ ] **Unattended upgrades** enabled — OS security patches auto-apply
+- [ ] **Docker security baseline**
+      - [ ] No containers run as root unless unavoidable
+      - [ ] DB containers have no public port binding (internal network only)
+      - [ ] Container images pinned to specific digests in production (not `:latest`)
+- [ ] **Coolify admin panel** protected
+      - [ ] Coolify itself accessible only from your IP (Cloudflare firewall rule)
+      - [ ] Coolify admin account uses a strong unique password + 2FA enabled
+- [ ] VPS snapshot/backup scheduled weekly in Hostinger panel
+
+---
+
+### 0C-2 — Network & Edge Security (Cloudflare)
+
+Cloudflare sits in front of everything. Use it as a security layer, not just DNS.
+
+- [ ] **WAF (Web Application Firewall)** enabled on all domains
+      - [ ] OWASP Core Ruleset enabled (blocks SQLi, XSS, path traversal, RFI)
+      - [ ] Sensitivity set to Medium; tune to High once false positives are confirmed zero
+- [ ] **Bot Fight Mode** enabled — blocks known bad bots at the edge
+- [ ] **DDoS protection** — Cloudflare's automatic DDoS mitigation active (default on Pro/free)
+- [ ] **Rate limiting rules** (Cloudflare, not app-level — faster and cheaper)
+      - [ ] `/api/enquiry`, `/api/contact` — max 10 requests/minute per IP
+      - [ ] `/admin/login`, `*/auth/*` — max 5 requests/minute per IP; block for 1 hour on breach
+      - [ ] All other API routes — max 60 requests/minute per IP
+- [ ] **Firewall rules for admin routes** (applies to ALL projects)
+      ```
+      Rule: Block /admin* from non-whitelisted IPs
+      (http.request.uri.path wildcard "/admin*")
+      AND NOT (ip.src in {YOUR_IP_1 YOUR_IP_2})
+      → Action: Block
+      ```
+      Add this rule for: `impactorsacademy.com`, `pro.impactorsacademy.com`,
+      and every future platform that has an `/admin` or internal route.
+- [ ] **Cloudflare Access (Zero Trust)** — the real admin protection layer
+      - [ ] Cloudflare Access application created for each admin route:
+            `impactorsacademy.com/admin*`, `pro.impactorsacademy.com/admin*`,
+            `loctravels.com/admin*` (when deployed — LOC has its own domain, it is
+            NOT a subdomain of impactorsacademy.com; the code already uses
+            loctravels.com for canonical/OG/sitemap), all future platforms
+      - [ ] **LOC also needs `loctravels.com/api/admin/*` covered**, not just
+            `/admin*`. That path is the Next.js proxy that attaches `EDITOR_API_KEY`
+            server-side; it carries no auth of its own, so anyone who can reach it
+            can write. Protecting the page but not the proxy leaves the hole open.
+      - [ ] Access policy: allow only `@impactorsacademy.com` email domain (or specific emails)
+      - [ ] Method: email OTP (immediate) → upgrade to Authentik OIDC when Authentik is live
+      - [ ] Service tokens created for any CI/CD or automated access to protected routes
+      - [ ] Access audit logs enabled — every admin login is logged with IP + timestamp
+- [ ] **SSL/TLS** mode set to Full (Strict) on all domains — not just Flexible
+- [ ] **HSTS** enabled with `includeSubDomains` and `preload` (after verifying all subdomains are HTTPS)
+- [ ] **Hotlink protection** enabled (prevents image leeching)
+
+---
+
+### 0C-3 — Team Authentication & Identity (Authentik)
+
+Every person on the team touches internal tools. Authentik is the single identity
+provider for all of them — one login, role-based access to everything.
+
+- [ ] **Authentik deployed** via Coolify (Phase 1 dependency)
+- [ ] **Multi-Factor Authentication enforced for ALL team members**
+      - [ ] TOTP (Google Authenticator / Authy) — required for all accounts
+      - [ ] FIDO2 / WebAuthn (hardware key or passkey) — required for `admin` group
+      - [ ] No account can access internal tools without MFA active
+- [ ] **Groups and roles defined:**
+      ```
+      ia-core      → Coolify, Grafana, Docmost, Vaultwarden, all dashboards
+      ia-pro-team  → ia-pro admin, Docmost (IA Pro space)
+      loc-team     → LOC admin, Docmost (LOC space)
+      admin        → everything + Authentik management, Vaultwarden full access
+      ```
+- [ ] **OIDC/OAuth2 configured** — Authentik acts as IdP for:
+      - [ ] Coolify (OIDC login)
+      - [ ] Grafana (OIDC login)
+      - [ ] Docmost (OIDC login)
+      - [ ] n8n (OIDC login)
+      - [ ] Cloudflare Access (Authentik as identity provider — replaces email OTP)
+      - [ ] All future internal tools added here as they deploy
+- [ ] **Session policy:**
+      - [ ] Sessions expire after 8 hours of inactivity
+      - [ ] Maximum session length 24 hours (force re-auth daily)
+      - [ ] Concurrent session limit: 3 devices per user
+- [ ] **Offboarding procedure documented in Docmost:**
+      When a team member leaves → disable Authentik account → revoke Vaultwarden access →
+      rotate any secrets they had access to → audit their recent actions in logs
+- [ ] **Privileged account policy:**
+      - [ ] `admin` group has ≤ 3 members (Emmanuel + 2 max)
+      - [ ] Admin actions logged — Authentik audit log + Grafana Loki
+      - [ ] No shared accounts — every person has their own named account
+
+---
+
+### 0C-4 — External User Authentication (per platform)
+
+Every platform that has public users needs its own auth strategy.
+"External users" = anyone who is not on the IA team.
+
+#### ia-pro (current: enquiry form, no accounts)
+- [ ] Enquiry form: no auth needed — public form ✅
+- [ ] **Client portal** (future): when clients need to log in to see project progress
+      - [ ] NextAuth v5 (Auth.js) — Google OAuth + email magic link
+      - [ ] Session stored in DB (not JWT-only) for revocability
+      - [ ] Client accounts isolated — each client sees only their own data
+      - [ ] Cloudflare Access does NOT apply here (public-facing, not internal)
+
+#### impactors-academy (current: no public accounts)
+- [ ] Contact form: no auth needed — public form ✅
+- [ ] **Community member accounts** (future, if IA builds a member portal):
+      - [ ] NextAuth v5 — Google OAuth + GitHub OAuth + email magic link
+      - [ ] Email verification required before account activation
+      - [ ] Profile completion step after first login
+
+#### LOC (current: inquiry form, no accounts)
+- [ ] Inquiry form: no auth needed — public form ✅
+- [ ] **Traveller accounts** (future, when booking is implemented):
+      - [ ] NextAuth v5 — Google OAuth + email magic link
+      - [ ] Booking history per account
+      - [ ] Data export / delete (GDPR — see 0C-7)
+- [ ] **Partner/property owner accounts** (future):
+      - [ ] Separate auth flow from traveller accounts
+      - [ ] Email + password with email verification
+      - [ ] 2FA optional for partners, mandatory for property managers
+
+#### Learning Platform (future — highest-stakes auth)
+- [ ] **Student accounts:**
+      - [ ] Supabase Auth (self-hosted) — email/password + Google OAuth + Apple Sign In
+      - [ ] Email verification required
+      - [ ] Password reset via email
+      - [ ] 2FA optional (encourage, don't force for students)
+      - [ ] Row-level security: students see ONLY their own progress, purchases, certificates
+- [ ] **Instructor accounts:**
+      - [ ] Invited by admin only (no self-signup)
+      - [ ] 2FA mandatory
+      - [ ] Instructors see student progress only for their own courses
+- [ ] **Admin of learning platform:**
+      - [ ] Via Authentik SSO (same as team) — not a separate login
+- [ ] **Payment auth:** Stripe handles payment auth — never store card details
+
+#### GrindBuddy (future)
+- [ ] **User accounts:**
+      - [ ] NextAuth v5 — email/password + Google OAuth
+      - [ ] Email verification required
+      - [ ] Password strength enforced (min 12 chars, breach check via HaveIBeenPwned API)
+
+#### ProspectBuddy (internal tool)
+- [ ] Single-password access (current) → migrate to Authentik SSO when team grows
+- [ ] No external user accounts — internal only
+
+---
+
+### 0C-5 — Application Security Headers
+
+Every Next.js and FastAPI app must ship these headers. No exceptions.
+
+**Required headers (add to `next.config.ts` for Next.js, response middleware for FastAPI):**
+
+- [ ] `Content-Security-Policy` — the most important missing header
+      ```
+      default-src 'self';
+      script-src 'self' 'nonce-{NONCE}' https://www.googletagmanager.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https:;
+      font-src 'self';
+      connect-src 'self' https://www.google-analytics.com;
+      frame-ancestors 'none';
+      ```
+      Implementation: Next.js middleware generates a nonce per request; nonce added
+      to every `<script>` tag via `next/headers`. Add after staging is confirmed working.
+- [x] `X-Content-Type-Options: nosniff` — confirmed 2026-08-05 on ia-pro + impactors-academy
+- [x] `X-Frame-Options: DENY` — confirmed 2026-08-05 on both — upgrade to CSP `frame-ancestors` once CSP ships
+- [x] `Referrer-Policy: strict-origin-when-cross-origin` — confirmed 2026-08-05 on both
+- [x] `Permissions-Policy` — confirmed 2026-08-05 on both
+- [ ] `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+      — **corrected 2026-08-05: ia-pro already has this** (`next.config.ts`); still
+      needed on impactors-academy and any other app (Cloudflare also sends this,
+      belt-and-suspenders)
+- [ ] `Cross-Origin-Opener-Policy: same-origin` — confirmed missing on both, still open
+- [ ] `Cross-Origin-Resource-Policy: same-origin` — confirmed missing on both, still open
+- [ ] CSP — confirmed missing on both ia-pro and impactors-academy, still the biggest gap here
+- [ ] **LOC FastAPI** — add all above headers via FastAPI middleware — confirmed
+      2026-08-05 still missing entirely, no header middleware in `main.py`
+- [ ] **ProspectBuddy Flask** — add all above headers via Flask `after_request` hook —
+      confirmed 2026-08-05 still missing, no `after_request` hook exists
+
+**Verify all headers:** run `securityheaders.com` on every public domain after shipping.
+
+---
+
+### 0C-6 — API Security
+
+Every API route — public or internal — must be defended.
+
+- [ ] **Input validation on all routes** — never trust client input
+      - [ ] Next.js API routes: validate with Zod schemas (not manual `if` checks) —
+            **confirmed 2026-08-05: impactors-academy has no `zod` dependency at all**;
+            `api/contact/route.ts` uses manual `if` checks + `.slice()` truncation
+            (200/320/2000 chars) as a stopgap, not schema validation
+      - [x] FastAPI (LOC): Pydantic models enforce type + length on every endpoint —
+            **confirmed 2026-08-05**, all routes use typed `*Create`/`*Update` schema
+            models, no raw dicts
+      - [ ] Flask (prospectbuddy): `marshmallow` or manual validation on all routes — still open
+      - [ ] Max field lengths enforced (truncation already done on some routes — verify all)
+- [ ] **Rate limiting** — see Cloudflare rules in 0C-2 (edge) PLUS app-level as backup
+      - [ ] Next.js: `upstash/ratelimit` with Redis (or simple in-memory for low traffic)
+      - [x] FastAPI (LOC): `slowapi` wired on `develope` (`app/core/rate_limit.py`,
+            limiter + `RateLimitExceeded` handler registered in `main.py`) — **not on
+            `main`**; per-route limits still need to be applied
+      - [ ] Flask: `flask-limiter` — confirmed 2026-08-05, still not present in prospectbuddy
+- [ ] **CORS policy locked down** — no wildcard `*` in production
+      - [ ] Next.js: CORS headers only on routes that need them; default is same-origin
+      - [x] FastAPI (LOC): `CORSMiddleware` with explicit `allow_origins` list —
+            **confirmed 2026-08-05**, defaults to `["http://localhost:3000"]`,
+            config-driven via `Settings`, not wildcard
+      - [ ] Flask (prospectbuddy): `flask-cors` with explicit origins
+- [ ] **CSRF protection**
+      - [ ] prospectbuddy: ✅ done (session token + `hmac.compare_digest`)
+      - [ ] Next.js apps: Server Actions are CSRF-safe by default (verify Next.js version behaviour)
+      - [ ] LOC FastAPI: add CSRF token to state-changing endpoints if browser forms are used
+- [ ] **Authentication on every sensitive route**
+      - [ ] All `/admin/*` routes: NextAuth session check on every request ✅ (verify)
+      - [ ] LOC editor endpoints: `require_editor_key` on all write routes ✅ confirmed
+      - [ ] No route returns sensitive data (emails, IDs, internal state) to unauthenticated requests
+- [ ] **Error responses never leak internals**
+      - [ ] `500` responses return `{"error": "Internal server error"}` — no stack traces in prod
+      - [ ] `404` and `403` responses are identical in timing (prevent user enumeration)
+- [ ] **SQL injection** — Drizzle ORM parameterises all queries ✅; verify LOC raw queries if any
+- [ ] **API versioning** — LOC already uses `/api/v1/`; all future APIs follow this pattern
+
+---
+
+### 0C-7 — Data Security & Privacy
+
+- [ ] **Data at rest encryption**
+      - [ ] Postgres data directory on VPS: enable filesystem-level encryption (LUKS or
+            Hostinger encrypted volume) — or accept that Coolify volume is unencrypted and
+            compensate with strict network access control
+      - [ ] Vaultwarden: encrypted by default (uses AES-256) ✅ once deployed
+      - [ ] Backups encrypted before upload to R2:
+            `pg_dump | gzip | openssl enc -aes-256-cbc | upload to R2`
+- [ ] **Data in transit** — HTTPS everywhere ✅ (Cloudflare + HSTS)
+- [ ] **PII handling (GDPR — applies because EU users will visit)**
+      - [ ] Data inventory documented: what PII is collected on each platform, where stored
+            (contacts.json → name/email/message; LOC inquiries → same; future: student accounts)
+      - [ ] Privacy policy page on impactors-academy + ia-pro + LOC
+      - [ ] Cookie consent banner (required for GA4 analytics in EU)
+      - [ ] Data deletion: user can request deletion — documented process per platform
+      - [ ] Data export: user can request their data — documented process
+      - [ ] Retention policy: contacts.json entries older than 2 years auto-purged (or documented)
+      - [ ] No PII in logs (Loki/Grafana must not log email addresses or names in request paths)
+- [ ] **Backup strategy**
+      - [ ] `pg_dump` cron: daily encrypted backup → Cloudflare R2 bucket `ia-backups`
+      - [ ] Retention: 30 daily, 12 monthly, 3 yearly
+      - [ ] Restore test: quarterly — actually restore from backup to verify it works
+      - [ ] prospectbuddy SQLite: daily backup script (`sqlite3 db .dump | gzip → R2`)
+      - [ ] LOC Railway DB: enable Railway automatic backups (verify it is on)
+- [ ] **Secrets hygiene**
+      - [ ] All secrets in Vaultwarden once deployed; Coolify env vars reference them
+      - [ ] Secret rotation schedule: every 90 days for auth secrets, annually for API keys
+      - [ ] `git log --all --full-history -- .env*` — run quarterly to confirm no secret leaks
+      - [ ] `.env.example` files never contain real values (enforce via CI secret scanning)
+
+---
+
+### 0C-8 — Dependency & Supply Chain Security
+
+- [ ] **npm audit** in CI for all Node.js projects — fails build on HIGH/CRITICAL ✅ (to add)
+- [ ] **pip audit / safety** in CI for LOC and prospectbuddy Python projects
+- [ ] **GitHub Dependabot** enabled on all repos — auto-PRs for security updates
+- [ ] **GitHub secret scanning** enabled on all repos — alerts on committed tokens
+- [ ] **License compliance** — no GPL-licensed packages in commercial products
+      (MIT, Apache-2.0, BSD are fine; GPL requires open-sourcing your code)
+- [ ] **Docker image scanning** — Trivy or Docker Scout on all custom images in CI
+- [ ] **Subresource Integrity (SRI)** — any externally loaded script (CDN) gets
+      `integrity` + `crossorigin` attributes; prefer self-hosting critical scripts
+- [ ] **Third-party review policy:** any new npm package with > 1M weekly downloads
+      or with access to auth/crypto/DB gets a manual security review before merging
+
+---
+
+### 0C-9 — Audit Logs & Incident Response
+
+**Audit logs — who did what, when:**
+- [ ] Authentik: audit log for all logins, failed attempts, group changes — retained 90 days
+- [ ] Coolify: deployment history retained — know exactly what deployed when
+- [ ] Grafana/Loki: all app logs centralised, searchable, retained 30 days minimum
+- [ ] Sentry: all errors with user context (no PII in error payloads — just user ID)
+- [ ] Admin actions in each app logged: post created/deleted, enquiry read, project updated
+      (log to Loki via structured JSON — `{action, actor, resource_id, timestamp}`)
+- [ ] Cloudflare Access: every admin login logged with IP, time, outcome
+
+**Incident response plan:**
+- [ ] **Runbook documented in Docmost:** "Security Incident Response"
+      ```
+      Step 1 — Contain:   Take affected service offline or block traffic via Cloudflare
+      Step 2 — Assess:    What was accessed? What data was exposed? For how long?
+      Step 3 — Eradicate: Remove attacker access; rotate all secrets; patch vulnerability
+      Step 4 — Restore:   Redeploy clean service; restore from last clean backup if needed
+      Step 5 — Notify:    If PII was exposed → notify affected users within 72 hours (GDPR)
+      Step 6 — Review:    Root cause analysis; update checklist to prevent recurrence
+      ```
+- [ ] Emergency contacts documented: Hostinger support, Cloudflare support, GitHub security
+- [ ] **Break-glass procedure:** if Authentik/Vaultwarden is down, how do you still access
+      critical systems? Document the fallback credentials location (offline, encrypted)
+
+---
+
+### 0C-10 — Security Testing Schedule
+
+Security is not set-and-forget. It requires regular testing.
+
+- [ ] **Pre-launch security check** (before any new platform goes live)
+      - [ ] `securityheaders.com` — all headers A or A+
+      - [ ] `observatory.mozilla.org` — score B+ minimum
+      - [ ] `testssl.sh` — TLS configuration clean
+      - [ ] OWASP Top 10 manual check (or automated via OWASP ZAP)
+      - [ ] `git log --all --full-history -- .env*` — confirm no secret ever committed
+      - [ ] Dependency audit clean (`npm audit`, `pip audit`)
+- [ ] **Quarterly security review** (all platforms)
+      - [ ] Rotate secrets (NEXTAUTH_SECRET, ADMIN_PASSWORD, API keys)
+      - [ ] Review Cloudflare Access audit logs for anomalies
+      - [ ] Review Authentik logs for suspicious logins
+      - [ ] Run `npm audit` + `pip audit` across all projects; patch what is found
+      - [ ] Verify all backups are intact and restorable
+      - [ ] Review team access: does everyone who has access still need it?
+- [ ] **Annual penetration test** (once platforms have real users)
+      - [ ] Engage a third-party pen tester OR use `/security-pen-testing` skill for
+            a structured self-assessment
+      - [ ] Document findings + remediation in Docmost
+      - [ ] All CRITICAL and HIGH findings fixed before result is filed
+
+---
+
+### Route Naming Convention (org-wide — decided 2026-08-05)
+
+`/admin` and `/dashboard` are not interchangeable. Pick by **who it serves**:
+
+```
+/admin       Administering the system — content, users, settings, moderation.
+             Staff only. Elevated privilege over things that are not yours.
+             → Cloudflare Access + Authentik SSO. Always noindex.
+
+/dashboard   A signed-in user's overview of their OWN data.
+/account     Preferred over /dashboard on consumer-facing products, where
+             people look for "my account" / "my bookings" rather than a
+             SaaS-style dashboard.
+             → Platform-appropriate external auth (NextAuth / Supabase).
+
+/partners    Third-party business users (property owners, suppliers) — separate
+             from both staff and customers; own auth flow and 2FA policy.
+```
+
+Rule of thumb: if a customer could ever log in and land there, it is not `/admin`.
+
+Reserved per project so future work does not collide:
+
+| Project | `/admin` (staff) | Customer area | Third-party |
+|---|---|---|---|
+| loc | ✅ live (moved from `/dashboard` 2026-08-05) | `/account` — reserved, unbuilt (traveller bookings, 0C-4) | `/partners` — reserved, unbuilt (property owners, 0C-4) |
+| impactors-academy | ✅ `/admin` | — | — |
+| ia-pro | ✅ `/admin` | `/account` if a client portal ships (0C-4) | — |
+| prospectbuddy | internal tool — whole app is staff-only | — | — |
+
+Do not build a customer or partner area before that audience actually has
+accounts — an empty authenticated shell is code to maintain and secure for
+users who cannot sign in.
+
+---
+
+### Auth Method Summary (quick reference for any new platform)
+
+```
+Who             What they access           Auth method
+─────────────   ──────────────────────     ─────────────────────────────────
+IA team         Internal tools             Authentik SSO + MFA (mandatory)
+IA team         Admin routes on apps       Cloudflare Access → Authentik OIDC
+ia-pro clients  Enquiry form               No auth (public form)
+ia-pro clients  Client portal (future)     NextAuth v5 — Google OAuth + magic link
+LOC travellers  Inquiry form               No auth (public form)
+LOC travellers  Booking account (future)   NextAuth v5 — Google OAuth + magic link
+LOC partners    Property management (fut.) Email + password + 2FA mandatory
+Students        Learning platform (future) Supabase Auth — Google OAuth + email/pw
+Students        Content (future)           Row-level security in Supabase Postgres
+GrindBuddy      App (future)               NextAuth v5 — Google OAuth + email/pw
+Public          Any public page            No auth; Cloudflare WAF + bot fight mode
+Automated CI    Protected routes           Cloudflare Access service tokens
+```
+
+---
+
+## Phase 0B — DevOps Foundations *(apply to every project, every repo)*
+
+> These are not optional polish — they are the rules that make the rest of the
+> DevOps lifecycle work. Without them, monitoring is useless, releases are
+> invisible, and the team can't collaborate safely as it grows.
+>
+> Status: **partially in place** — CI/CD deploy exists, tests exist on 2 of 5
+> projects, but branch strategy, release management, staging workflow, and test
+> gates are missing across the board.
+
+---
+
+### 0B-1 — Branch Strategy (all repos)
+
+**The rule: no one pushes directly to `main`. Ever.**
+
+```
+main        → production (what users see)
+develop     → staging (what gets tested before users see it)
+feature/*   → individual features, branch off develop
+hotfix/*    → urgent production fixes only, branch off main
+```
+
+**Workflow:**
+```
+1. Branch off develop:    git checkout -b feature/my-thing develop
+2. Build the thing locally
+3. Push + open PR to develop
+4. CI runs (tests + build must pass — see 0B-3)
+5. Merge to develop → auto-deploys to Coolify staging
+6. Test on staging.yourdomain.com
+7. When confident → PR from develop to main
+8. Merge to main → auto-deploys to Coolify production
+```
+
+**Hotfix exception (production is broken right now):**
+```
+1. Branch off main:       git checkout -b hotfix/critical-bug main
+2. Fix it
+3. PR to main (fast-track review)
+4. Merge to main → deploys to production
+5. Immediately merge main back into develop so develop has the fix too
+```
+
+- [ ] **impactors-academy** — branch protection on `main` and `develop` enabled
+      in GitHub (require PR, require CI to pass, no direct push)
+- [ ] **ia-pro** — same branch protection rules
+- [ ] **loc** — already has `develope` branch; rename to `develop` for consistency;
+      add branch protection on both `main` and `develop`
+- [ ] **prospectbuddy** — create `develop` branch; add branch protection
+- [ ] **grindbuddy** — create `develop` branch; add branch protection (even while paused)
+- [ ] All team members briefed on this workflow (Docmost onboarding doc)
+
+---
+
+### 0B-2 — Coolify Environments: Staging vs Production
+
+**You already have both environments in Coolify. Here is the exact rule for using them:**
+
+| Environment | Coolify service | Tracks branch | URL pattern | DB |
+|---|---|---|---|---|
+| Staging | `ia-pro-staging` etc. | `develop` | `staging.pro.impactorsacademy.com` | Separate staging DB |
+| Production | `ia-pro` etc. | `main` | `pro.impactorsacademy.com` | Production DB |
+
+**When to use staging:**
+- Any new feature before it reaches users
+- DB schema changes (run migration on staging DB first, verify, then prod)
+- Any third-party integration (Cal.com, n8n webhooks) — test the full flow on staging
+- Design changes that need sign-off before going live
+- Dependency upgrades
+
+**When to use production:**
+- Only after staging has been verified
+- Hotfixes (fast-track, but still deploy to staging first if time allows)
+- Config-only changes (env var updates with no code change)
+
+**Staging DB rule:** staging must have its own `DATABASE_URL` pointing to a
+separate database (or separate schema). Never point staging at the production DB —
+a bad migration on staging must not destroy prod data.
+
+- [ ] **ia-pro** — Coolify staging service wired to `develop` branch;
+      `DATABASE_URL` points to separate `ia_pro_staging` database
+- [ ] **impactors-academy** — staging service wired to `develop` branch
+- [ ] **loc** — staging service wired to `develop` branch; separate staging DB on Railway
+      (or Coolify once LOC moves there)
+- [ ] **prospectbuddy** — staging service created; separate SQLite volume for staging
+- [ ] All staging URLs added to Uptime Kuma monitoring (so you know if staging is broken too)
+- [ ] DNS: `staging.*` subdomains added in Cloudflare (same VPS, different Coolify port/domain)
+
+---
+
+### 0B-3 — CI: Test Gates (nothing merges without passing tests)
+
+Right now tests exist on impactors-academy and ia-pro but they don't block merges.
+A GitHub Actions workflow must run on every PR and block the merge if tests fail.
+
+**Standard CI workflow for every repo (`.github/workflows/ci.yml`):**
+```yaml
+on: [pull_request]
+jobs:
+  ci:
+    steps:
+      - checkout
+      - install deps
+      - type check (tsc --noEmit)
+      - lint (eslint)
+      - test (npm test)
+      - build (npm run build)  ← catches import errors CI won't catch otherwise
+```
+
+- [ ] **impactors-academy** — has Coolify auto-deploy on push to `main`, but no GitHub
+      Actions test gate — `.github/` doesn't exist. Deploy ≠ CI; still needed.
+- [ ] **ia-pro** — same gap; Turborepo-aware (`turbo run test build --filter=pro`) when added
+- [x] **loc** — CORRECTED 2026-08-05: CI already exists —
+      `.github/workflows/ci.yml` runs ruff+pytest (with Postgres+Redis services) and
+      eslint+tsc+build, on push/PR to `develope`/`main`; `deploy.yml` also present.
+      Was wrongly marked not done. (Test coverage behind it is still thin — see 0B-6.)
+- [ ] **prospectbuddy** — CI workflow (`pytest` or equivalent) — confirmed still missing,
+      no test suite exists to gate on yet either
+- [ ] All repos: CI badge added to README so status is visible at a glance
+
+---
+
+### 0B-4 — Release Management (versioning + changelog)
+
+**Every project must be versionable.** When something goes wrong in production,
+you need to know exactly what version is running and what changed since the last one.
+
+**Convention: Semantic Versioning + Conventional Commits**
+
+Commit message format (already partially in use — standardise it):
+```
+feat: add CSV export to LOC leads        → bumps MINOR (1.x.0)
+fix: posts admin 500 on list page        → bumps PATCH (1.0.x)
+chore: update dependencies               → no version bump
+BREAKING CHANGE: restructure DB schema   → bumps MAJOR (x.0.0)
+```
+
+**Release process (when a feature set is ready to ship):**
+```
+1. Merge develop → main (PR)
+2. Tag the release:   git tag v1.3.0
+3. Push the tag:      git push origin v1.3.0
+4. Update CHANGELOG.md with what shipped
+5. Coolify deploys main → production
+```
+
+- [ ] **All repos** — `CHANGELOG.md` created with initial entry for current state
+- [ ] **All repos** — first git tag applied reflecting current production version
+      (start at `v1.0.0` for launched projects, `v0.x.0` for pre-launch)
+- [ ] **All repos** — release tagging added to session-end protocol in each `CLAUDE.md`
+- [ ] Consider: `release-it` or `standard-version` npm package to automate
+      tag + changelog generation from conventional commits (optional but saves time)
+
+---
+
+### 0B-5 — Security Scanning in CI
+
+Dependency vulnerabilities should be caught automatically, not discovered manually.
+
+- [ ] **All Node.js repos** — `npm audit --audit-level=high` added to CI workflow;
+      fails the build on HIGH or CRITICAL severities
+- [ ] **LOC / prospectbuddy (Python)** — `pip audit` or `safety check` added to CI
+- [ ] **All repos** — GitHub Dependabot enabled (auto-PRs for dependency updates)
+- [ ] **All repos** — GitHub secret scanning enabled (catches accidentally committed tokens)
+
+---
+
+### 0B-6 — Test Coverage by Project
+
+Current honest state and what's needed:
+
+| Project | Tests now | Gap | Target |
+|---|---|---|---|
+| impactors-academy | ✅ 13 Vitest API tests confirmed. **Corrected 2026-08-05: "Playwright cross-browser" is NOT an automated suite** — no `playwright` dependency, no config, no `.spec.ts` files. It was used ad-hoc for manual QA screenshots only. | Missing: test gate in CI; no real e2e suite | Add CI workflow; add an actual Playwright suite if e2e coverage is wanted |
+| ia-pro | ✅ 8 Vitest API tests confirmed | Missing: test gate in CI | Add CI workflow |
+| loc | ⚠️ **Corrected 2026-08-05: not unknown — 4 pytest tests exist** (`backend/tests/`), covering only GET-list-empty and GET-404 for experiences + properties. No coverage for CRUD writes, editor auth, lead submission, or CSV export. | CI already exists (see 0B-3) but gates almost nothing meaningful | Expand pytest coverage to CRUD/auth/leads/CSV export |
+| prospectbuddy | ❌ **Corrected 2026-08-05: confirmed None** — no test files anywhere, no pytest in requirements.txt (was "❓ Unknown") | Need pytest for scrape, search, cache clear, CSRF, auth | Add pytest + CI |
+| grindbuddy | ❌ None (paused) — confirmed 2026-08-05 | N/A until resumed | — |
+
+- [ ] **loc** — audit existing tests; if none, add `pytest` for core API routes
+      (experience CRUD, stay CRUD, lead submission, CSV export, editor auth)
+- [ ] **prospectbuddy** — audit existing tests; add `pytest` for scrape, search,
+      cache clear, CSRF protection, auth routes
+- [ ] All projects: test coverage report in CI output (not enforced, just visible)
+
+---
+
+### 0B-7 — Environment Variables Discipline
+
+- [ ] **All repos** — `.env.example` up to date with every required variable,
+      no actual values, clear comments on where to get each value
+- [ ] **All repos** — `.env*.local` and `.env.production` in `.gitignore` (verify)
+- [ ] **Coolify** — all env vars set in Coolify UI, never hardcoded in Dockerfiles
+- [ ] **Vaultwarden** — once deployed (Phase 1), all secrets migrated from Coolify
+      UI into Vaultwarden and referenced via Coolify's secret injection
 
 ---
 
@@ -62,9 +775,32 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ### Security Gaps (close before team onboarding)
 > **Run `/senior-secops` on each item below.**
-- [ ] **LOC** — gate `POST /api/v1/products` and all editor endpoints with API key or session token
-- [ ] **prospectbuddy** — add CSRF protection on all POST forms (status updates, notes)
-- [ ] **ia-pro** — implement admin auth (currently unprotected at `/admin`)
+- [x] **LOC — editor auth IS implemented** (`require_editor_key` in
+      `backend/app/core/deps.py`, `APIKeyHeader` on `X-API-Key`, fail-closed: 503 when
+      `EDITOR_API_KEY` is unset, 403 on bad key). Applied to POST/PUT/DELETE on
+      experiences, properties, products, blog, and router-wide on `/leads`. Landed
+      2026-08-03 in commit `a39af2a` — the original "confirmed in code audit" note was
+      accurate.
+      ⚠️ **BUT: this lives only on `develope`. `main` does not have it.**
+      **The fix is not to write new code — it is to merge `develope` → `main`** (13
+      commits stranded, see the loc section in Phase 4).
+      Scope check 2026-08-05: `loctravels.com` returns 503 — Cloudflare DNS resolves
+      but no origin is serving, so this is **not currently exposed to the public**. It
+      becomes a live hole the moment `main` is deployed as it stands. Deploy the merged
+      code, never `main` on its own.
+      Correction note: an audit pass on 2026-08-05 initially reported this as "not
+      implemented anywhere." That was wrong — the audit inspected the checked-out
+      `main` branch instead of loc's active `develope` branch. No code change was made.
+- [ ] **LOC** — no test coverage for the editor-auth code on either branch. Add
+      401/403/503 tests for the `require_editor_key` dependency and the gated routes.
+- [x] **prospectbuddy** — CSRF protection implemented 2026-08-03 (session token,
+      hmac.compare_digest, X-CSRF-Token header on all POST/PATCH API routes + login form) —
+      re-confirmed 2026-08-05, applied to all 3 state-changing routes, no gaps found
+- [x] **ia-pro** — admin auth implemented 2026-08-03 (NextAuth v4 credentials, JWT cookie) —
+      re-confirmed 2026-08-05. Noted risk: `apps/pro/src/lib/auth.ts` accepts *any*
+      password if `ADMIN_PASSWORD` is unset or literally `"dev-admin"` — fine for local
+      dev, dangerous if that env var is ever missing in production. Verify it's always
+      set in Coolify prod env.
 - [ ] **prospectbuddy** — rate limit Google Places API calls to avoid quota burn
 
 ---
@@ -111,45 +847,102 @@ See `impactors-academy/docs/BUILD-CHECKLIST.md` for full detail.
 - [ ] Google Search Console rich result check (structured data) — after 2026-08-16
 - [ ] OG link preview verified on WhatsApp/LinkedIn
 
-### ia-pro (~10% · Phase 1–9)
-See `ia-pro/docs/BUILD-CHECKLIST.md` for full detail.
+### ia-pro (~85% · Phase 8 done)
+See `ia-pro/docs/BUILD-CHECKLIST.md` for full detail. (Header % corrected 2026-08-05 —
+was internally inconsistent with the Org Health Snapshot above, which already said ~80%.)
 
-**Token drift to fix first** (discovered during exploration):
-- `--ia-black`: ia-pro has `#0a0a0a`, impactors-academy canonical is `#030303`
-- ia-pro missing: `--ia-terra`, `--ia-terra-light`, `--ia-terra-dark`, `--ia-amber`
-- Font body deliberately differs: ia-pro uses Source Serif 4 (editorial); IA uses General Sans — **keep as is**
-- Fix: update `ia-pro/apps/pro/src/app/globals.css` `--ia-black` to `#030303`; add terra/amber tokens if needed for shared components
+**Token drift — RESOLVED, confirmed 2026-08-05:**
+`ia-pro/apps/pro/src/app/globals.css` has `--ia-black: #030303` (canonical) and all of
+`--ia-terra`, `--ia-terra-light`, `--ia-terra-dark`, `--ia-amber` present. No drift remains.
+Font body still deliberately differs (ia-pro: Source Serif 4, IA: General Sans) — keep as is.
 
+**Postgres/blog/projects — DONE, confirmed 2026-08-05 (not a pending item):**
+`packages/db` + `apps/pro/src/lib/db/schema.ts` define `projects`/`posts` tables with
+migrations; full admin CRUD at `/admin/posts` and `/admin/projects`; public `/blog` pages
+live. `ia-pro-db` Postgres 18 service running in Coolify since 2026-08-04.
+
+- [x] Token drift fixed (above)
+- [x] Postgres + Drizzle wired, blog/projects admin CRUD live (2026-08-04)
+- [x] Admin auth implemented (Phase 1 security item) — see risk note in Phase 1 re: `ADMIN_PASSWORD`
 - [ ] Services list + copy finalized (what IA Pro offers, pricing or "request a quote")
-- [ ] Token drift fixed (above)
 - [ ] 2D motion suite confirmed: ClipReveal ✓, Marquee ✓, SplitText ✓, Lenis scroll — check
 - [ ] Hero video produced and wired (Veo image-to-video → WebM+MP4 + `prefers-reduced-motion`)
 - [ ] Cal.com hosting decided (self-hosted Coolify vs. cloud free tier) + embed on `/book`
 - [ ] n8n webhook from Cal.com → team notification (ties into Phase 3)
-- [ ] Admin auth implemented (Phase 1 security item)
 - [ ] Services page built with real copy
 - [ ] Tests, SEO, deploy verification
+- [ ] CSP header — still missing (HSTS + the other 4 standard headers are already shipped,
+      confirmed 2026-08-05, ahead of the org-wide 0C-5 rollout)
 
-### loc (~85% · R4 active)
-See `loc/docs/BUILD-CHECKLIST.md` and `loc/docs/WORKFLOW.md` for full detail.
-Active branch: `develope`.
+### loc (~90% · R4 + LEAD-3 complete on `develope`)
+See `loc/docs/BUILD-CHECKLIST.md` (exists on `develope`), plus `ARCHITECTURE.md`,
+`WORKFLOW.md`, `SEARCH_STRATEGY.md`, `USER_STORIES.md`.
+Active branch: still `develope` (typo) — rename to `develop` per 0B-1 is still outstanding;
+`ci.yml`/`deploy.yml` both still trigger on `develope` too, so the rename needs a
+coordinated CI update.
 
-**R4 — GYG-inspired Discovery (in progress):**
-- [ ] DISC-1 — Hero search bar (destination + category, routes to filtered grid)
-- [ ] DISC-2 — Popular destinations section on homepage (top 6–8 tiles with count)
-- [ ] DISC-3 — Country filter on `/experiences` and `/stays` grids
-- [ ] DISC-4 — Duration shown on experience cards
-- [ ] DISC-5 — Country shown on experience and stay cards
+> 🚨 **`develope` is 13 commits ahead of `main` and the gap is security-relevant.**
+> Stranded on `develope`: editor API-key auth (`a39af2a`), slowapi rate limiting,
+> LEAD-3 CSV export (`6f8b04c`), the hardcoded-DB-password fix, CORS-origins parsing,
+> `.claude/CLAUDE.md`, `docs/BUILD-CHECKLIST.md`, and 5 ORG-STATUS syncs.
+> **Merging `develope` → `main` is the single highest-value action on this project.**
+> Everything below is already done on `develope` unless noted.
+>
+> ⚠️ Before/with that merge: `EDITOR_API_KEY` must be set in the deployment env, or
+> every editor route returns 503 (fail-closed by design).
+
+**R4 — GYG-inspired Discovery — largely built, confirmed 2026-08-05 (was marked all-todo):**
+- [x] DISC-1 — Hero search bar exists (`components/shared/HeroSearchBar.tsx`), routes to
+      `/experiences?q=` — partial: free-text query only, no separate category param yet
+- [x] DISC-2 — Popular destinations — `app/(marketing)/destinations/page.tsx` exists
+- [x] DISC-3 — Country filter — `destinations/[country]/page.tsx` dynamic route exists
+- [x] DISC-4 — Duration shown on experience cards — confirmed in `ExperienceCard.tsx`
+- [x] DISC-5 — Country shown on experience/stay cards — confirmed in `ExperienceCard.tsx`
 
 **Pending stories:**
-- [ ] EXP-5 — Trackable referral links (commission attribution, click logged to DB)
-- [ ] STAY-4 — `notify_partner()` emails property owner on inquiry; lead stored
-- [ ] LEAD-3 — `source_type + source_id` on all inquiries; CSV export endpoint
+- [ ] EXP-5 — Trackable referral links (commission attribution, click logged to DB) — not re-verified
+- [ ] STAY-4 — `notify_partner()` emails property owner on inquiry; lead stored — not re-verified
+- [x] LEAD-3a — `source_type + source_id` filtering on `GET /leads/` — done
+- [x] LEAD-3b — CSV export endpoint — **done on `develope`** (`GET /leads/export.csv`,
+      StreamingResponse, timestamped filename, commit `6f8b04c`). An earlier 2026-08-05
+      pass reported this missing; it had searched `main` only.
 
-**Production health:**
-- [ ] Vercel frontend URL confirmed live + health-checked in Uptime Kuma
-- [ ] Railway backend + PostgreSQL + Redis confirmed live
-- [ ] Editor API endpoints gated (Phase 1 security item)
+**Deployment — target confirmed 2026-08-05: Hostinger VPS via Coolify, DNS on Cloudflare.**
+
+`loctravels.com` currently returns **503** — Cloudflare nameservers (`sue`/`syeef.ns.cloudflare.com`)
+resolve to proxied IPs `188.114.96.3` / `188.114.97.3`, but no origin is serving. Not live yet.
+
+Two deployment paths are wired that will conflict with Coolify — resolve before deploying:
+
+- [ ] **`.github/workflows/deploy.yml` is NOT Coolify.** It SSHes to the VPS and runs
+      `git pull` + `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+      directly. Coolify manages its own containers and deploys from its own git
+      integration — both running means two systems owning the same containers.
+      Remove this workflow (or repoint it at a Coolify deploy webhook) once Coolify is wired.
+- [ ] **Vercel is connected and auto-deploying.** No `vercel.json` in the repo, so the
+      integration lives on Vercel's side; it built a preview for PR #1. It is a second
+      live copy of the frontend tracking `main` — which has no editor auth.
+      Disconnect the Vercel project, or explicitly decide Vercel is the frontend host
+      and drop the Coolify plan. Do not leave both.
+- [ ] `railway.toml` is also still in the repo — legacy from the Railway era; remove if
+      Railway is no longer used.
+
+**Deploy order (do not reorder — each step depends on the one above):**
+1. [ ] Merge PR #1 → `develope` (green; also fixes `develope`'s red CI)
+2. [ ] Merge `develope` → `main` (brings editor auth, rate limiting, CSV export)
+3. [ ] Cloudflare Access on `loctravels.com/admin*` **and** `/api/admin/*`
+4. [ ] `EDITOR_API_KEY` set in Coolify for both backend and web services
+5. [ ] Then deploy. Deploying before step 2 ships an unauthenticated write API.
+
+- [ ] Frontend URL confirmed live + health-checked in Uptime Kuma
+- [ ] Backend + PostgreSQL + Redis confirmed live on Coolify
+- [x] Editor API endpoints gated — done on `develope` (see Phase 1); **not yet on `main`**
+- [ ] pytest suite: still only 4 tests (GET-list/404 for experiences + properties) on
+      both branches. No coverage for the editor-auth dependency, CRUD writes, lead
+      submission, or the new CSV export. This is the gap that let the `main`/`develope`
+      auth discrepancy go unnoticed.
+- [x] `config.py` hardcoded DB password fallback — fixed on `develope`
+      (`loc:loc` placeholder, was `postgres:199922`); **still present on `main`**
 
 ### prospectbuddy (built · NOT deployed)
 See `prospectbuddy/docs/BUILD-CHECKLIST.md` for full detail.
@@ -165,12 +958,20 @@ See `prospectbuddy/docs/BUILD-CHECKLIST.md` for full detail.
 - [ ] Instagram/TikTok scraping — second discovery provider (backlog)
 
 ### grindbuddy (frontend done · PAUSED — do not action yet)
-See `grindbuddy/docs/BUILD-CHECKLIST.md` for full detail.
+**grindbuddy has no `docs/BUILD-CHECKLIST.md`** (corrected 2026-08-05 — file doesn't exist,
+only `docs/ORG-STATUS.md`). Should be created per the org's Phase 0 standard when work resumes.
+Confirmed 2026-08-05: paused status is clean — no backend code exists, all recent commits
+are chore-only (checklist sync). Current stack is React 18 + Vite (not Next.js), deployed
+to GitHub Pages — a mismatch with the org's Coolify-everywhere standard to revisit at
+the backend-decision point below.
 When resumed:
 - Decide backend (Supabase self-hosted via Coolify is the leaning recommendation)
 - Lock v1 scope (mock vs. real at launch)
-- Design DB schema, replace localStorage auth
-- Complete FR/Chinese i18n, design-token + accessibility pass
+- Design DB schema, replace localStorage auth (confirmed still localStorage-only)
+- i18n: FR is complete (209/208 keys); Chinese is ~97% (206/208, 7 keys outstanding) —
+  corrected 2026-08-05, this was previously treated as not-started
+- Design-token + accessibility pass — not yet done
+- Decide whether to move off GitHub Pages onto Coolify to match org deployment standard
 
 ---
 
@@ -188,6 +989,140 @@ When resumed:
 
 ---
 
+## Phase 6 — Observability & Dashboards
+
+> Goal: a single place to see the health and performance of every venture —
+> technical metrics (infra) AND business metrics (growth) — before you need it,
+> not after something breaks.
+
+### 6A — Technical Observability Stack *(self-hosted via Coolify)*
+
+- [ ] **Prometheus** deployed — scrapes metrics from all apps and VPS host
+      - [ ] Node Exporter on VPS (CPU, RAM, disk, network)
+      - [ ] Postgres Exporter (query perf, connections, slow queries)
+      - [ ] Each Next.js app exposes `/metrics` endpoint (prom-client)
+      - [ ] LOC FastAPI exposes `/metrics` (prometheus-fastapi-instrumentator)
+- [ ] **Grafana** deployed — single pane of glass for all metrics
+      - [ ] Connected to Prometheus, Loki, Uptime Kuma
+      - [ ] Infra dashboard: VPS health, per-service CPU/RAM/response time
+      - [ ] DB dashboard: query latency, active connections, table sizes
+      - [ ] Gated behind Authentik SSO (admin-group only)
+- [ ] **Loki** deployed — centralised log aggregation
+      - [ ] All app logs (Next.js, FastAPI, Coolify services) shipped to Loki
+      - [ ] Grafana log explorer wired up
+- [ ] **Sentry** self-hosted — error tracking with full stack traces
+      - [ ] ia-pro Next.js wired (`@sentry/nextjs`)
+      - [ ] impactors-academy wired
+      - [ ] LOC FastAPI wired (`sentry-sdk`)
+      - [ ] Alerts: Slack/email on new error or spike
+
+### 6B — Business Metrics Dashboard *(mother admin at /admin)*
+
+The mother dashboard at `impactorsacademy.com/admin` is the founder-facing view.
+It should show the health of the org as a business, not as an infra stack.
+
+**Per-venture cards (real-time, pulled from each project's DB/analytics):**
+- [ ] **IA Pro** — enquiries this week, total enquiries, services breakdown,
+      conversion rate (enquiry → booked call)
+- [ ] **LOC** — new inquiries, active stays/experiences, top destinations,
+      referral link click-through rates (when EXP-5 ships)
+- [ ] **impactors-academy** — contact form submissions, page views (Umami),
+      blog post count + last published
+- [ ] **prospectbuddy** — prospects scraped this week, cache freshness, cities covered
+- [ ] **Org-wide** — total team size, active ventures, uptime summary (Uptime Kuma API)
+
+**Implementation path:**
+- Phase 1: static links out to Grafana + GA4 (already done for IA analytics tab)
+- Phase 2: embed Umami widgets directly in the dashboard iframes
+- Phase 3: server-side API calls to each project's DB → real numbers rendered
+  server-side in the mother dashboard (no extra API needed, same pattern as
+  the existing Contacts tab)
+
+### 6C — Alerting
+
+- [ ] Uptime Kuma alerts → email + WhatsApp when any service goes down
+- [ ] Grafana alerts → email when VPS RAM > 80% or response time > 2s
+- [ ] Sentry alerts → email on new error types or error rate spike
+- [ ] Weekly digest (n8n cron) → summary of all venture metrics to founder email
+
+---
+
+## Phase 7 — Scaling Plan *(1–3 year horizon, millions of users)*
+
+> This is a forward plan, not current work. Items activate when triggered by
+> real load — not on a calendar. Each horizon has clear trigger conditions.
+
+### Horizon 1 — 0 to 50K users *(current VPS, no changes needed)*
+
+**Infrastructure:** Current Hostinger VPS + Coolify handles this comfortably.
+**Database:** Single Postgres instance on VPS. Monitor via Grafana (Phase 6).
+**Files/media:** Cloudflare R2 for any video/image uploads (zero egress cost).
+**Caching:** Redis already on LOC — extend session/query caching to ia-pro.
+**Trigger to move to Horizon 2:** VPS CPU/RAM consistently > 70% under normal load,
+OR Postgres query latency > 100ms at p95.
+
+- [ ] R2 bucket provisioned for media uploads
+- [ ] Redis added to ia-pro (session caching, rate limiting)
+- [ ] Grafana alerting live (Phase 6C) so you know when triggers are hit
+
+### Horizon 2 — 50K to 500K users *(VPS upgrade + DB separation)*
+
+**Infrastructure:** Upgrade VPS to higher RAM/CPU tier (vertical scale first —
+cheapest path, no architecture change).
+**Database:** Move Postgres to its own dedicated VPS ($10-20/month extra).
+Apps get a new `DATABASE_URL` — one afternoon of work, zero code changes.
+Add a Postgres read replica for heavy read traffic (course content, blog, LOC listings).
+**Auth:** Introduce Supabase self-hosted for the learning platform — its built-in
+auth, row-level security, and real-time are worth it at this scale for multi-tenant
+student data. Existing apps stay on NextAuth.
+**Search:** Meilisearch self-hosted — fast full-text search for courses, LOC
+experiences, blog content. Single Coolify service, minimal RAM.
+**Trigger to move to Horizon 3:** Multiple app servers needed OR DB read replica
+at > 80% utilisation.
+
+- [ ] VPS upgrade plan confirmed with Hostinger (know your options before you need them)
+- [ ] Postgres migration runbook documented:
+      `pg_dump` on old instance → `pg_restore` on new dedicated server →
+      update `DATABASE_URL` in Coolify env vars → verify → cut over
+- [ ] Meilisearch deployed and indexed for LOC + ia-pro blog
+- [ ] Supabase self-hosted deployed for learning platform (when that project starts)
+
+### Horizon 3 — 500K to millions *(distributed, edge-ready)*
+
+**Infrastructure:** Multiple app server instances. Cloudflare Load Balancing
+(already on Cloudflare — just enable it) distributes traffic across servers.
+**Database:** Postgres with replication (primary + 2 replicas) OR migrate to
+managed Neon/Supabase cloud for automatic scaling and connection pooling (PgBouncer).
+Evaluate per-venture DB separation if one venture dominates load.
+**Caching:** Redis Cluster for distributed session and query caching.
+**Jobs:** Background job queues for async work — BullMQ (Node) + Celery (Python/LOC).
+Examples: video processing, bulk email, report generation, scraping jobs.
+**Storage:** R2 stays — it scales infinitely. Add Cloudflare Images for
+on-the-fly image resizing/optimisation.
+**Monitoring:** Upgrade Grafana to Grafana Cloud (or keep self-hosted with
+more retention). Add distributed tracing (Tempo) for cross-service request tracing.
+**Trigger:** Any single component becomes a bottleneck visible in Grafana.
+
+- [ ] Cloudflare Load Balancing evaluated (pricing, failover config)
+- [ ] Connection pooling added to Postgres (PgBouncer via Coolify)
+- [ ] BullMQ queue service added to ia-pro for background tasks
+- [ ] Celery worker added to LOC for async jobs
+- [ ] DR plan documented: what happens if the VPS goes down (backup VPS, restore time)
+
+### Standing DB rules (apply across all horizons)
+
+- Postgres is the primary DB for all structured data — do not introduce a second
+  DB engine without a specific, justified use case
+- MongoDB only if: unstructured document storage at > 1M writes/day with no
+  relational requirements (logging, event streams) — add alongside Postgres, never replace
+- Videos, images, PDFs, course files → Cloudflare R2 always. Never in Postgres.
+- All schema changes go through Drizzle migrations committed to git — no manual
+  ALTER TABLE in production
+- Backups: `pg_dump` cron job → R2 bucket, retained 30 days. Set this up before
+  Horizon 2 begins.
+
+---
+
 ## Tool Roster
 
 | Tool | Role | Status | Deploy when |
@@ -202,6 +1137,14 @@ When resumed:
 | Umami | Analytics (multi-site) | ⬜ Not deployed | Phase 1-2 |
 | Docmost | Team wiki | ⬜ Not deployed | Phase 2 (after Authentik) |
 | Chatwoot | Shared inbox (contact leads) | ⬜ Not deployed | Phase 3 |
+| Prometheus | Metrics collection | ⬜ Not deployed | Phase 6 |
+| Grafana | Metrics + log dashboard | ⬜ Not deployed | Phase 6 |
+| Loki | Log aggregation | ⬜ Not deployed | Phase 6 |
+| Sentry (self-hosted) | Error tracking | ⬜ Not deployed | Phase 6 |
+| Meilisearch | Full-text search | ⬜ Not deployed | Horizon 2 |
+| Supabase (self-hosted) | Auth + DB for learning platform | ⬜ Not deployed | Horizon 2 / learning platform |
+| Redis Cluster | Distributed caching | ⬜ Not deployed | Horizon 3 |
+| BullMQ / Celery | Background job queues | ⬜ Not deployed | Horizon 3 |
 
 ---
 

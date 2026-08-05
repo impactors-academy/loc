@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
-import { API_BASE_URL } from "@/lib/constants"
+
+const BACKEND_URL = process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const res = await fetch(`${API_BASE_URL}/api/v1/contact`, {
+  const res = await fetch(`${BACKEND_URL}/api/v1/contact`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
