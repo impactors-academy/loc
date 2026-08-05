@@ -11,6 +11,22 @@ async function fetcher<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
+/**
+ * Dashboard calls go through the same-origin proxy at /api/admin/*, which
+ * attaches EDITOR_API_KEY server-side. Calling the backend directly from here
+ * would mean shipping that key to the browser — see the note in
+ * app/api/admin/[...path]/route.ts.
+ */
+async function adminFetcher<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`/api/admin${path}`, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  })
+  if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`)
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
+}
+
 export const api = {
   experiences: {
     list: (category?: string, country?: string, q?: string) => {
@@ -72,43 +88,43 @@ export const api = {
 
   admin: {
     experiences: {
-      list: () => fetcher<Experience[]>("/api/v1/experiences?limit=100"),
+      list: () => adminFetcher<Experience[]>("/experiences?limit=100"),
       create: (body: Record<string, unknown>) =>
-        fetcher<Experience>("/api/v1/experiences", { method: "POST", body: JSON.stringify(body) }),
+        adminFetcher<Experience>("/experiences", { method: "POST", body: JSON.stringify(body) }),
       update: (slug: string, body: Record<string, unknown>) =>
-        fetcher<Experience>(`/api/v1/experiences/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
+        adminFetcher<Experience>(`/experiences/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
       delete: (slug: string) =>
-        fetcher<void>(`/api/v1/experiences/${slug}`, { method: "DELETE" }),
+        adminFetcher<void>(`/experiences/${slug}`, { method: "DELETE" }),
     },
     properties: {
-      list: () => fetcher<Property[]>("/api/v1/properties?limit=100"),
+      list: () => adminFetcher<Property[]>("/properties?limit=100"),
       create: (body: Record<string, unknown>) =>
-        fetcher<Property>("/api/v1/properties", { method: "POST", body: JSON.stringify(body) }),
+        adminFetcher<Property>("/properties", { method: "POST", body: JSON.stringify(body) }),
       update: (slug: string, body: Record<string, unknown>) =>
-        fetcher<Property>(`/api/v1/properties/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
+        adminFetcher<Property>(`/properties/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
       delete: (slug: string) =>
-        fetcher<void>(`/api/v1/properties/${slug}`, { method: "DELETE" }),
+        adminFetcher<void>(`/properties/${slug}`, { method: "DELETE" }),
     },
     blog: {
-      list: () => fetcher<BlogPost[]>("/api/v1/blog?limit=100"),
+      list: () => adminFetcher<BlogPost[]>("/blog?limit=100"),
       create: (body: Record<string, unknown>) =>
-        fetcher<BlogPost>("/api/v1/blog", { method: "POST", body: JSON.stringify(body) }),
+        adminFetcher<BlogPost>("/blog", { method: "POST", body: JSON.stringify(body) }),
       update: (slug: string, body: Record<string, unknown>) =>
-        fetcher<BlogPost>(`/api/v1/blog/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
+        adminFetcher<BlogPost>(`/blog/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
       delete: (slug: string) =>
-        fetcher<void>(`/api/v1/blog/${slug}`, { method: "DELETE" }),
+        adminFetcher<void>(`/blog/${slug}`, { method: "DELETE" }),
     },
     products: {
-      list: () => fetcher<Product[]>("/api/v1/products?limit=100"),
+      list: () => adminFetcher<Product[]>("/products?limit=100"),
       create: (body: Record<string, unknown>) =>
-        fetcher<Product>("/api/v1/products", { method: "POST", body: JSON.stringify(body) }),
+        adminFetcher<Product>("/products", { method: "POST", body: JSON.stringify(body) }),
       update: (slug: string, body: Record<string, unknown>) =>
-        fetcher<Product>(`/api/v1/products/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
+        adminFetcher<Product>(`/products/${slug}`, { method: "PUT", body: JSON.stringify(body) }),
       delete: (slug: string) =>
-        fetcher<void>(`/api/v1/products/${slug}`, { method: "DELETE" }),
+        adminFetcher<void>(`/products/${slug}`, { method: "DELETE" }),
     },
     leads: {
-      list: () => fetcher<Record<string, unknown>[]>("/api/v1/leads?limit=100"),
+      list: () => adminFetcher<Record<string, unknown>[]>("/leads?limit=100"),
     },
   },
 }

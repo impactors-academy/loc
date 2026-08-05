@@ -5,10 +5,10 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 
 const CARDS = [
-  { label: "Experiences", href: "/dashboard/experiences", fetch: () => api.admin.experiences.list() },
-  { label: "Properties",  href: "/dashboard/properties",  fetch: () => api.admin.properties.list() },
-  { label: "Blog Posts",  href: "/dashboard/blog",        fetch: () => api.admin.blog.list() },
-  { label: "Products",    href: "/dashboard/products",    fetch: () => api.admin.products.list() },
+  { label: "Experiences", href: "/admin/experiences", fetch: () => api.admin.experiences.list() },
+  { label: "Properties",  href: "/admin/properties",  fetch: () => api.admin.properties.list() },
+  { label: "Blog Posts",  href: "/admin/blog",        fetch: () => api.admin.blog.list() },
+  { label: "Products",    href: "/admin/products",    fetch: () => api.admin.products.list() },
 ]
 
 export default function DashboardPage() {

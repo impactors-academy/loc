@@ -20,7 +20,7 @@ export default function DestinationsPage() {
             Explore Destinations
           </h1>
           <p className="text-loc-stone text-lg leading-relaxed">
-            Curated experiences and handpicked stays across the world's most rewarding destinations.
+            Curated experiences and handpicked stays across the world&rsquo;s most rewarding destinations.
           </p>
         </div>
 

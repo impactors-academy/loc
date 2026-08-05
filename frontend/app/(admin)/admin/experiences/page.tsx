@@ -29,7 +29,7 @@ export default function ExperiencesPage() {
           <h1 className="font-heading text-2xl font-bold text-loc-night">Experiences</h1>
           <p className="text-loc-stone text-sm mt-0.5">{items.length} total</p>
         </div>
-        <Link href="/dashboard/experiences/new"
+        <Link href="/admin/experiences/new"
           className="px-4 py-2 bg-loc-terracotta text-white text-sm font-semibold rounded-lg hover:bg-loc-terracotta/90 transition-colors">
           + New experience
         </Link>
@@ -56,7 +56,7 @@ export default function ExperiencesPage() {
                   <td className="px-4 py-3">{item.isFeatured ? <span className="text-xs bg-loc-amber/20 text-loc-amber font-medium px-2 py-0.5 rounded-full">Yes</span> : <span className="text-loc-stone">No</span>}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
-                      <Link href={`/dashboard/experiences/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>
+                      <Link href={`/admin/experiences/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>
                       <button onClick={() => handleDelete(item.slug, item.title)} className="text-red-500 hover:underline text-xs font-medium">Delete</button>
                     </div>
                   </td>
