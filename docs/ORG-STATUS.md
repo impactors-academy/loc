@@ -50,6 +50,17 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
       stale (786 lines of drift) — needs a re-sync run.
 - [ ] Each sub-repo CLAUDE.md updated with ORG-STATUS.md sync-check line — blocked on
       the CLAUDE.md-per-sub-repo item above (can't add a line to a file that doesn't exist)
+- [x] Global skills backed up to `impactors-academy/claude-config` (public) — flat
+      mirror of `~/.claude/skills/`, 486 skills. Pushed 2026-08-05.
+- [x] `/color-combinations` skill built and pushed — Sanzo Wada's 348 combinations as
+      queryable data + CIEDE2000/WCAG tooling + `references/brands/` for per-brand
+      palettes. Wired into all 6 CLAUDE.md files and the 8 colour-adjacent skills.
+      **This is the single entry point for every colour decision, org-wide.**
+- [x] `setup.sh` syncs claude-config into `~/.claude/skills/` on a fresh machine —
+      added 2026-08-05. Mirrors to `~/.claude/.claude-config-mirror`, rsyncs without
+      `--delete` so machine-local skills survive. **Not yet run on a second machine.**
+- [ ] Remaining projects migrated to the canonical copper tokens — ia-pro,
+      prospectbuddy, loc (see Design Token Canonical Values → Adoption status)
 
 ---
 
@@ -1152,24 +1163,75 @@ more retention). Add distributed tracing (Tempo) for cross-service request traci
 
 One source of truth. All repos mirror these manually. No shared npm package.
 
+**Brand = the logo: copper on black.** `#C9885C` is sampled from the logo mark, not
+approximated. Derivation, WCAG ratios and reasoning: `/color-combinations` skill →
+`references/impactors-academy.md`. Never add a colour here without running it through
+that skill first.
+
 ```css
---ia-black:        #030303;   /* impactors-academy canonical — ia-pro was #0a0a0a (DRIFT) */
---ia-obsidian:     #161616;
+/* Ground */
+--ia-black:        #030303;   /* logo ground */
+--ia-obsidian:     #15110E;   /* elevated dark, warmed toward copper */
 --ia-white:        #fafafa;
---ia-cream:        #F2EDE4;
---ia-acid:         #C8F135;
---ia-terra:        #C87B3F;
---ia-terra-light:  #E8A87A;
---ia-terra-dark:   #8B4E22;
---ia-amber:        #D4A84B;
+--ia-cream:        #F2EDE4;   /* paper — 17.7:1 on black */
+
+/* Copper — the brand. Four values because one hex cannot serve two grounds. */
+--ia-copper:       #C9885C;   /* 7.03:1 on black — AAA. Accent/CTA on dark.     */
+--ia-copper-light: #D99E73;   /* 8.93:1 on black — hover, emphasis, focus ring  */
+--ia-copper-pale:  #F2AD78;   /* 10.8:1 on black — quiet copper                 */
+--ia-copper-deep:  #8B4E22;   /* 5.61:1 on cream — AA. USE THIS ON LIGHT.       */
+
+/* Earth + cool anchor — Sanzo Wada combination #296 */
+--ia-umber:        #5E4017;   /* dividers/borders on dark — decorative only */
+--ia-slate:        #1B3644;   /* cool counterweight surface */
+--ia-sand:         #EBD999;   /* 14.7:1 on black — warm muted text */
+
+/* No lime. #C8F135 is retired outright — see the retirement note below. */
+
 --ia-gray-200:     #e5e5e5;
 --ia-gray-400:     #a3a3a3;
 --ia-gray-600:     #525252;
 --ia-gray-900:     #171717;
+
+/* States — two values each; one cannot clear 4.5:1 on both grounds. */
+--color-success:              #40C945;  /* 9.5:1 on black  */
+--color-success-on-light:     #00592E;  /* 7.3:1 on cream  */
+--color-warning:              #E0B81F;  /* 10.9:1 on black */
+--color-warning-on-light:     #8C6510;  /* 4.5:1 on cream  */
+--color-destructive:          #FF616B;  /* 7.1:1 on black  */
+--color-destructive-on-light: #A10B2B;  /* 6.9:1 on cream  */
 ```
+
+**On light surfaces use `--ia-copper-deep`, never `--ia-copper`** — the mid copper
+falls to 2.51:1 on cream and fails outright.
+
+Retired 2026-08-05: `--ia-acid` `#C8F135` — **removed entirely, not demoted.** A
+retained token gets reused until it is the brand again. Also `--ia-terra*` (an
+approximation of the logo — replaced by the sampled `--ia-copper*` ramp) and
+`--ia-amber` (unused).
+
+**Venture colours** — one warm family in the brand's own hue neighbourhood, separated
+by lightness rather than hue (46° arc, even L steps of ~15). All Sanzo Wada values,
+all ≥4.5:1 on `--ia-black`:
+
+```css
+--venture-loc:      #FFB852;  /* 12.01:1 — amber      */
+--venture-btfp:     #A3AD00;  /* 8.38:1  — olive      */
+--venture-finance:  #B85E00;  /* 4.56:1  — burnt orange */
+--venture-iapro:    #F5F5B8;  /* 18.30:1 — pale wheat */
+```
+
+Superseded 2026-08-05: the first pass used Wada plate 282 (magenta / tan / mint /
+violet). It was selected for *maximum* hue separation, which by construction picks the
+least cohesive set in the book — a rainbow. The orbs carry a name label and a fixed
+position, so hue was never doing the work of telling them apart.
 
 Motion, spacing, and radius tokens are identical across both repos — no drift.
 Font bodies differ intentionally: IA uses General Sans, IA Pro uses Source Serif 4.
+
+**Adoption status:** impactors-academy ✅ migrated. ia-pro ⬜, prospectbuddy ⬜
+(already runs a near-brand copper), loc ⬜ (has its own product palette — decide
+whether it inherits the org brand before migrating).
 
 ---
 
