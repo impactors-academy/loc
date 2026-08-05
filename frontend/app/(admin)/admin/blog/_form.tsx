@@ -3,31 +3,28 @@
 import { api } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import type { Product } from "@/lib/types"
+import type { BlogPost } from "@/lib/types"
 
 const input = "w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta"
 const label = "block text-xs font-semibold text-loc-stone uppercase tracking-wide mb-1"
-
-const TYPES = ["guide", "map", "photography", "template"]
 
 function toSlug(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
 }
 
-interface Props { initial?: Product; editSlug?: string }
+interface Props { initial?: BlogPost; editSlug?: string }
 
-export function ProductForm({ initial, editSlug }: Props) {
+export function BlogPostForm({ initial, editSlug }: Props) {
   const router = useRouter()
   const isEdit = !!editSlug
 
   const [form, setForm] = useState({
     title: initial?.title ?? "",
     slug: initial?.slug ?? "",
-    description: initial?.description ?? "",
-    type: initial?.type ?? "guide",
-    price: initial?.price?.toString() ?? "",
+    excerpt: initial?.excerpt ?? "",
+    content: initial?.content ?? "",
     image_url: initial?.imageUrl ?? "",
-    purchase_url: initial?.purchaseUrl ?? "",
+    tags: Array.isArray(initial?.tags) ? (initial.tags as string[]).join(", ") : (initial?.tags ?? ""),
   })
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -41,11 +38,18 @@ export function ProductForm({ initial, editSlug }: Props) {
     e.preventDefault()
     setSaving(true)
     setError("")
-    const body = { ...form, price: parseFloat(form.price) || 0 }
+    const body = {
+      title: form.title,
+      slug: form.slug,
+      excerpt: form.excerpt || null,
+      content: form.content || null,
+      image_url: form.image_url || null,
+      tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+    }
     try {
-      if (isEdit) await api.admin.products.update(editSlug, body)
-      else await api.admin.products.create(body)
-      router.push("/dashboard/products")
+      if (isEdit) await api.admin.blog.update(editSlug, body)
+      else await api.admin.blog.create(body)
+      router.push("/admin/blog")
       router.refresh()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Save failed")
@@ -61,21 +65,15 @@ export function ProductForm({ initial, editSlug }: Props) {
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2"><label className={label}>Title *</label><input className={input} value={form.title} onChange={(e) => handleTitle(e.target.value)} required /></div>
         <div className="col-span-2"><label className={label}>Slug *</label><input className={input} value={form.slug} onChange={(e) => set("slug", e.target.value)} required /></div>
-        <div className="col-span-2"><label className={label}>Description</label><textarea className={`${input} min-h-[100px] resize-y`} value={form.description} onChange={(e) => set("description", e.target.value)} /></div>
-        <div>
-          <label className={label}>Type *</label>
-          <select className={input} value={form.type} onChange={(e) => set("type", e.target.value)}>
-            {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </div>
-        <div><label className={label}>Price (€) *</label><input className={input} type="number" min="0" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} required /></div>
-        <div className="col-span-2"><label className={label}>Image URL</label><input className={input} type="url" value={form.image_url} onChange={(e) => set("image_url", e.target.value)} /></div>
-        <div className="col-span-2"><label className={label}>Purchase URL *</label><input className={input} type="url" value={form.purchase_url} onChange={(e) => set("purchase_url", e.target.value)} required /></div>
+        <div className="col-span-2"><label className={label}>Excerpt</label><textarea className={`${input} min-h-[80px] resize-y`} value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} /></div>
+        <div className="col-span-2"><label className={label}>Content (HTML)</label><textarea className={`${input} min-h-[200px] resize-y font-mono text-xs`} value={form.content} onChange={(e) => set("content", e.target.value)} /></div>
+        <div className="col-span-2"><label className={label}>Cover Image URL</label><input className={input} type="url" value={form.image_url} onChange={(e) => set("image_url", e.target.value)} /></div>
+        <div className="col-span-2"><label className={label}>Tags (comma-separated)</label><input className={input} placeholder="japan, travel, food" value={form.tags} onChange={(e) => set("tags", e.target.value)} /></div>
       </div>
 
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={saving} className="px-6 py-2.5 bg-loc-terracotta text-white text-sm font-semibold rounded-lg hover:bg-loc-terracotta/90 disabled:opacity-50 transition-colors">
-          {saving ? "Saving…" : isEdit ? "Save changes" : "Create product"}
+          {saving ? "Saving…" : isEdit ? "Save changes" : "Publish post"}
         </button>
         <button type="button" onClick={() => router.back()} className="px-6 py-2.5 border border-border text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
       </div>

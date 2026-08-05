@@ -62,7 +62,7 @@ export function ExperienceForm({ initial, editSlug }: Props) {
       } else {
         await api.admin.experiences.create(body)
       }
-      router.push("/dashboard/experiences")
+      router.push("/admin/experiences")
       router.refresh()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Save failed")

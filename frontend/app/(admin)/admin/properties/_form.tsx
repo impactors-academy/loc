@@ -55,7 +55,7 @@ export function PropertyForm({ initial, editSlug }: Props) {
     try {
       if (isEdit) await api.admin.properties.update(editSlug, body)
       else await api.admin.properties.create(body)
-      router.push("/dashboard/properties")
+      router.push("/admin/properties")
       router.refresh()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Save failed")

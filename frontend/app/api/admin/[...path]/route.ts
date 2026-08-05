@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server"
  * IMPORTANT: this proxy attaches the editor key to whatever it forwards, so
  * anything reachable through it is fully writable by anyone who can reach
  * /api/admin/*. It carries no authentication of its own. Both this path and
- * /dashboard must sit behind Cloudflare Access (checklist 0C-2) in every
+ * /admin must sit behind Cloudflare Access (checklist 0C-2) in every
  * deployed environment.
  */
 
