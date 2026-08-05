@@ -51,8 +51,17 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         // LOC brand palette
+        // Brand truth is the logo: black stripe-letterform on copper. Sampled from
+        // Loc.png it is #C9885C exactly — byte-identical to the Impactors Academy
+        // mark, which is why Loc reads as part of the same family.
         loc: {
-          terracotta: "#C4714A",
+          // The logo value. Use for the mark and on dark grounds (7.03:1 on black).
+          // Do NOT use for text on the light theme — it is only 2.93:1 on white.
+          copper: "#C9885C",
+          // The working accent for the light theme: the logo's own hue (24°) taken
+          // down to a lightness that clears AA. Was #C4714A, an approximation of the
+          // logo at 3.62:1 on white — it failed AA everywhere it was used as text.
+          terracotta: "#A16036",
           sand: "#F7EDD8",
           amber: "#D4A44C",
           teal: "#2D6A6A",

@@ -11,8 +11,11 @@
     --card-foreground: 230 20% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 230 20% 10%;
-    --primary: 18 51% 53%;         /* terracotta */
+    /* The logo hue (24°) at a lightness that clears AA. Was 18 51% 53% (#C46F4A),
+       an approximation of the logo that measured 3.67:1 against white text. */
+    --primary: 24 50% 42%;         /* #A16036 — 4.95:1 vs white, 4.75:1 vs --background */
     --primary-foreground: 0 0% 100%;
+    --brand: 24 50% 57%;           /* #C9885C — the sampled logo, for marks and dark grounds */
     --secondary: 37 65% 89%;       /* sand */
     --secondary-foreground: 230 20% 10%;
     --muted: 37 25% 93%;
@@ -23,7 +26,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 37 20% 88%;
     --input: 37 20% 88%;
-    --ring: 18 51% 53%;
+    --ring: 24 50% 42%;
     --radius: 0.75rem;
   }
 
@@ -34,8 +37,12 @@
     --card-foreground: 37 30% 95%;
     --popover: 230 35% 12%;
     --popover-foreground: 37 30% 95%;
-    --primary: 18 47% 60%;
-    --primary-foreground: 0 0% 100%;
+    /* On a dark ground the logo copper works as-is — 7.03:1 on black — so dark
+       mode uses the sampled value directly, with dark ink on top exactly like the
+       mark itself. White on copper would be 2.93:1. */
+    --primary: 24 50% 57%;         /* #C9885C — the logo */
+    --primary-foreground: 230 20% 10%;
+    --brand: 24 50% 57%;
     --secondary: 230 25% 18%;
     --secondary-foreground: 37 30% 95%;
     --muted: 230 25% 18%;
@@ -46,7 +53,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 230 25% 18%;
     --input: 230 25% 18%;
-    --ring: 18 47% 60%;
+    --ring: 24 50% 57%;
   }
 }
 
