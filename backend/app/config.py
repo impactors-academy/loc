@@ -1,17 +1,33 @@
+import json
+from typing import Annotated
+
 from pydantic import field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, NoDecode
 
 
 class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg2://loc:loc@localhost:5432/loc"
     redis_url: str = "redis://localhost:6379"
-    cors_origins: list[str] = ["http://localhost:3000"]
+    # NoDecode is load-bearing. For complex field types pydantic-settings JSON-decodes
+    # the raw env value in EnvSettingsSource *before* any validator runs, so the
+    # comma-separated form used by docker-compose and .env.example raised
+    # SettingsError and the API refused to boot. NoDecode hands the raw string to
+    # parse_cors_origins below instead. Both forms are accepted; see the validator.
+    cors_origins: Annotated[list[str], NoDecode] = ["http://localhost:3000"]
 
     @field_validator("cors_origins", mode="before")
     @classmethod
     def parse_cors_origins(cls, v: object) -> list[str]:
         if isinstance(v, str):
-            return [o.strip() for o in v.split(",") if o.strip()]
+            s = v.strip()
+            # A JSON array is still accepted: it was the only form that worked
+            # before NoDecode, so deployed environments may already be set that way.
+            if s.startswith("["):
+                try:
+                    return [str(o).strip() for o in json.loads(s) if str(o).strip()]
+                except json.JSONDecodeError:
+                    pass
+            return [o.strip() for o in s.split(",") if o.strip()]
         return v  # type: ignore[return-value]
 
     # Editor auth — required for all write endpoints (POST/PUT/DELETE)

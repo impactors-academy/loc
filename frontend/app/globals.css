@@ -79,3 +79,20 @@
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
+
+/* Honour the OS "reduce motion" setting for everything CSS drives: the fade-up
+   and accordion keyframes, the typewriter's blinking caret, the card hover
+   lift/zoom, and the skeleton pulse. Durations are collapsed rather than set to
+   `none` so anything relying on an animation/transition end event still fires.
+   framer-motion is handled separately in app/providers.tsx — it animates inline
+   styles from JS and never sees this rule. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
