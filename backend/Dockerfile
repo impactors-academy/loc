@@ -9,8 +9,13 @@ ENV PYTHONUNBUFFERED=1 \
     UV_LINK_MODE=copy \
     PATH="/app/.venv/bin:$PATH"
 
-# uv binary
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# uv binary, from PyPI rather than `COPY --from=ghcr.io/astral-sh/uv`. The ghcr
+# copy pulls a second registry at build time, so any environment that cannot reach
+# ghcr.io (stale credentials, registry policy, an air-gapped runner) fails the
+# build outright — the base image alone is not enough. PyPI is already required to
+# install the app's dependencies, so this keeps the build on one registry.
+# Pinned: uv is the resolver, so an unpinned build tool can change resolution.
+RUN pip install --no-cache-dir "uv==0.12.1"
 
 WORKDIR /app
 

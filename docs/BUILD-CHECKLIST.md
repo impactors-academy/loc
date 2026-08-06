@@ -29,7 +29,27 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       was 18°) at a lightness that clears AA (4.95:1 white, 4.75:1 `--background`).
       The old value failed AA at 3.62:1 everywhere it was used as text, as did
       `--primary` at 3.67:1. Remaining: sand `#F7EDD8`, amber `#D4A44C`, teal `#2D6A6A`,
-      night `#1A1A2E`, stone `#8B7355`. Derivation: `/color-combinations` skill.
+      night `#1A1A2E`. Derivation: `/color-combinations` skill.
+- [x] **Contrast pass on the two tokens the palette rebuild did not reach (2026-08-05).**
+      `loc-stone` `#8B7355` → `#7F694D`: it measured 4.31:1 on the page background
+      (`--background` 37 50% 98%, `#FCFAF7`) and 4.49:1 on white — under AA both ways,
+      while carrying card descriptions and every meta row across ~40 files. Same hue
+      (33°) and saturation, lowered in lightness only: now 5.02:1 / 5.23:1, so the one
+      token change fixed every usage. `loc-amber` is now documented decorative-only —
+      white on it is 2.28:1, so the three badges using it (experience "Featured",
+      property tier, promote "Most popular") moved to `loc-night` at 7.48:1, matching
+      the palette's own dark-ink-on-copper logic. The admin featured chip was worse at
+      1.96:1; terracotta would not have cleared it either (4.26:1), so that is
+      `loc-night` too.
+- [x] **`prefers-reduced-motion` respected (2026-08-05)** — previously honoured nowhere,
+      while the hero autoplayed a looping video and five grids animated. Three layers,
+      because no single one reaches everything: a media block in `globals.css` for
+      keyframes/transitions; `MotionConfig reducedMotion="user"` in `app/providers.tsx`
+      for framer-motion (it drives inline styles from JS and never sees CSS); and a
+      shared `usePrefersReducedMotion` hook for what neither reaches — the hero's
+      `autoPlay` attribute (now falling back to its poster via `HeroVideo`) and the
+      typewriter (settles on "the World", no caret). The hook listens for changes, so
+      toggling the OS setting applies without a reload.
 - [x] Logo shipped — mark cropped square from `Loc.png`, wired into the navbar lockup
       (`public/icons/loc-mark.png`), favicon (`app/icon.png`) and touch icon.
       `public/icons/` previously held only a `.gitkeep`.
@@ -47,10 +67,36 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 ## Phase 3 — Architecture & Data
 
 - [x] Repo structure: `frontend/` (Next.js) + `backend/` (FastAPI) + `docker-compose.yml`
-- [x] Docker stack: `docker compose up` → all 4 services running locally
+- [x] Docker stack: `docker compose up` → all 4 services running locally.
+      **Two blockers found and fixed 2026-08-05 — the documented path could not
+      have worked for a fresh clone.** (1) `backend/Dockerfile` pulled `uv` via
+      `COPY --from=ghcr.io/astral-sh/uv:latest`, so the build needs a second
+      registry and dies outright wherever ghcr.io is unreachable (stale creds,
+      registry policy, air-gapped runner) — now `pip install uv==0.12.1` from
+      PyPI, which the build already depends on. (2) `CORS_ORIGINS` crashed the API
+      on boot: pydantic-settings JSON-decodes complex types *before* validators
+      run, so the comma-separated value in `docker-compose.yml` and `.env.example`
+      raised `SettingsError` and `parse_cors_origins` was dead code. Fixed with
+      `Annotated[list[str], NoDecode]`; plain, comma-separated, JSON-array and
+      unset forms all parse. `EDITOR_API_KEY` also added to `.env.example` — it is
+      required and fails closed, but was undocumented.
 - [x] FastAPI skeleton — versioned `/api/v1/`, CORS to Next.js origin, Pydantic v2
 - [x] PostgreSQL 16 + pgvector + Redis configured and running in Docker
-- [x] Alembic migrations — `make migrate` runs clean; migration history intact
+- [x] Alembic migrations — `make migrate` runs clean; migration history intact.
+      **Corrected 2026-08-05: this was not true on an empty database.** `001infra4`
+      was the base revision (`down_revision = None`) but only ALTERs `experiences`
+      and `properties` — nothing in the chain ever created them, or `blog_posts`
+      and `products`. Those came from `Base.metadata.create_all()`
+      (`app/db/init_db.py`) and Alembic was adopted afterwards without a baseline,
+      so `alembic upgrade head` on a fresh clone died on the first migration with
+      `UndefinedTable: relation "experiences" does not exist`. Added
+      `000_baseline_schema.py` reconstructing the pre-001 shape (current models
+      minus everything 001-006 add, with the three columns 001 drops restored).
+      Verified: all seven revisions replay on an empty DB, the resulting schema
+      diffs clean against the SQLAlchemy models for all six tables (`search_vector`
+      is db-only by design — the generated tsvector from 002), and `scripts.seed`
+      runs on top. Existing deployments are unaffected: they are stamped at a later
+      revision and Alembic only walks forward.
 - [x] Data models: `Experience`, `Property`, `Product`, `Article`, `Inquiry`,
       `listing_tier`, `country`, `images` (JSONB), `is_featured`
 - [x] CI: ruff, pytest, eslint, tsc --noEmit, next build — all green

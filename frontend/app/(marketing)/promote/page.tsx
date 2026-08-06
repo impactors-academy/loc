@@ -123,7 +123,7 @@ export default function PromotePage() {
               }`}
             >
               {pkg.highlight && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-loc-amber text-white text-xs font-semibold px-4 py-1 rounded-full">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-loc-amber text-loc-night text-xs font-semibold px-4 py-1 rounded-full">
                   Most popular
                 </span>
               )}

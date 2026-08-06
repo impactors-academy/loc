@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
+
 const DESTINATIONS = [
   "Morocco",
   "Paris",
@@ -32,8 +34,14 @@ export function TypewriterTitle() {
   const [text, setText] = useState("")
   const [idx, setIdx] = useState(0)
   const [phase, setPhase] = useState<Phase>("typing")
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
+    // The cycle never ends on its own, so under reduced motion do not start it:
+    // settle on the last destination ("the World"), which is the phrase the
+    // sequence builds to and the one that reads correctly standing alone.
+    if (prefersReducedMotion) return
+
     const dest = DESTINATIONS[idx]
     const isFinal = idx === DESTINATIONS.length - 1
 
@@ -66,17 +74,20 @@ export function TypewriterTitle() {
     }
 
     return () => clearTimeout(timer)
-  }, [text, idx, phase])
+  }, [text, idx, phase, prefersReducedMotion])
 
   return (
     <h1 className="font-heading text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.05] mb-6">
       Discover{" "}
       <span className="text-loc-amber whitespace-nowrap">
-        {text}
-        <span
-          className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
-          aria-hidden="true"
-        />
+        {prefersReducedMotion ? DESTINATIONS[DESTINATIONS.length - 1] : text}
+        {/* The caret only means something while text is being typed. */}
+        {!prefersReducedMotion && (
+          <span
+            className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
+            aria-hidden="true"
+          />
+        )}
       </span>
     </h1>
   )

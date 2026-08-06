@@ -40,7 +40,7 @@ export function PropertyCard({ property }: { property: Property }) {
           {typeLabel}
         </span>
         {tierLabel && (
-          <span className="absolute top-3 right-3 bg-loc-amber text-white text-xs font-medium px-2 py-1 rounded-full">
+          <span className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full">
             {tierLabel}
           </span>
         )}

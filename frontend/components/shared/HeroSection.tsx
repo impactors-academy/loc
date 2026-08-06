@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { HeroSearchBar } from "./HeroSearchBar"
+import { HeroVideo } from "./HeroVideo"
 import { TypewriterTitle } from "./TypewriterTitle"
 
 const CATEGORY_PILLS = [
@@ -40,20 +41,9 @@ export function HeroSection({
 
   return (
     <section className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden">
-      {/* Cinematic video background */}
-      {videoUrl && (
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster={imageUrl}
-          className="absolute inset-0 w-full h-full object-cover scale-105"
-          aria-hidden="true"
-        >
-          <source src={videoUrl} type="video/mp4" />
-        </video>
-      )}
+      {/* Cinematic video background — falls back to the poster as a static
+          backdrop when the visitor has asked for reduced motion. */}
+      {videoUrl && <HeroVideo videoUrl={videoUrl} posterUrl={imageUrl} />}
 
       {/* Static image fallback (shown when no video, or as poster while video loads) */}
       {!videoUrl && imageUrl && (

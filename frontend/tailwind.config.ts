@@ -63,10 +63,18 @@ const config: Config = {
           // logo at 3.62:1 on white — it failed AA everywhere it was used as text.
           terracotta: "#A16036",
           sand: "#F7EDD8",
+          // Decorative only — as text on light grounds amber is 2.28:1. Anything
+          // sitting ON amber must use loc-night (7.48:1), never white (2.28:1).
           amber: "#D4A44C",
           teal: "#2D6A6A",
           night: "#1A1A2E",
-          stone: "#8B7355",
+          // The body/meta text colour, used across ~40 files. Was #8B7355, which
+          // measured 4.31:1 against the page background (--background 37 50% 98%,
+          // #FCFAF7) and 4.49:1 on pure white — under AA's 4.5:1 in both cases,
+          // while carrying card descriptions and every meta row. Same hue (33°)
+          // and saturation, lowered in lightness only: now 5.02:1 on the page
+          // background, 5.23:1 on white.
+          stone: "#7F694D",
           cream: "#FAF5EC",
         },
       },

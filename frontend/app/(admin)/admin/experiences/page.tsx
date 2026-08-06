@@ -53,7 +53,7 @@ export default function ExperiencesPage() {
                   <td className="px-4 py-3 font-medium text-loc-night">{item.title}</td>
                   <td className="px-4 py-3 text-loc-stone capitalize">{item.category}</td>
                   <td className="px-4 py-3 text-loc-stone">{item.country ?? "—"}</td>
-                  <td className="px-4 py-3">{item.isFeatured ? <span className="text-xs bg-loc-amber/20 text-loc-amber font-medium px-2 py-0.5 rounded-full">Yes</span> : <span className="text-loc-stone">No</span>}</td>
+                  <td className="px-4 py-3">{item.isFeatured ? <span className="text-xs bg-loc-amber/20 text-loc-night font-medium px-2 py-0.5 rounded-full">Yes</span> : <span className="text-loc-stone">No</span>}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
                       <Link href={`/admin/experiences/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>
