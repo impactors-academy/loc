@@ -183,17 +183,19 @@ frontend/
 │   ├── (store)/
 │   │   ├── store/page.tsx        # /store product grid
 │   │   └── products/[slug]/      # /products/[slug] detail + buy CTA
-│   ├── (dashboard)/
+│   ├── (admin)/
 │   │   ├── _components/Sidebar.tsx
 │   │   ├── layout.tsx
-│   │   └── dashboard/
+│   │   └── admin/
 │   │       ├── page.tsx          # Overview stats
 │   │       ├── experiences/      # list · new · [slug]/edit
 │   │       ├── properties/       # list · new · [slug]/edit
 │   │       ├── blog/             # list · new · [slug]/edit
 │   │       ├── products/         # list · new · [slug]/edit
 │   │       └── inquiries/        # read-only leads table
-│   ├── api/contact/route.ts      # Inquiry proxy → FastAPI
+│   ├── api/
+│   │   ├── admin/[...path]/route.ts  # Admin proxy → FastAPI (attaches EDITOR_API_KEY)
+│   │   └── contact/route.ts          # Inquiry proxy → FastAPI
 │   ├── layout.tsx                # Root layout (fonts, providers, schema.org)
 │   └── globals.css               # Tailwind base + CSS vars + @keyframes blink
 │
