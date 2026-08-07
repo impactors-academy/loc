@@ -41,6 +41,16 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       the palette's own dark-ink-on-copper logic. The admin featured chip was worse at
       1.96:1; terracotta would not have cleared it either (4.26:1), so that is
       `loc-night` too.
+- [x] **Dead dark theme deleted (2026-08-07).** `.dark` in `frontend/app/globals.css`
+      defined 25 lines of tokens nothing could ever apply: no theme toggle,
+      `next-themes` not in `package.json` at all, no `ThemeProvider`, nothing adding
+      the class, and zero `dark:` utilities in any `.tsx` under `app/`, `components/`
+      or `lib/` — `app/manifest.ts` already said "LOC is a light site." It had also
+      drifted off-brand: a `230°` blue-grey ground, the exact cool neutral the light
+      palette was deliberately warmed away from. Wiring it up would have meant
+      shipping a second palette nobody designed or reviewed, so it was deleted.
+      `darkMode: ["class"]` stays in `tailwind.config.ts` with a comment saying it is
+      the strategy a future dark theme would use, not a live feature.
 - [x] **`prefers-reduced-motion` respected (2026-08-05)** — previously honoured nowhere,
       while the hero autoplayed a looping video and five grids animated. Three layers,
       because no single one reaches everything: a media block in `globals.css` for
@@ -231,6 +241,11 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 1. ~~**Editor auth**~~ — CLOSED 2026-08-03: all write endpoints use `require_editor_key`.
 2. **Production deploy not confirmed** — Coolify deploy (not Vercel/Railway) is the
    target; DNS and health checks not yet verified. See Phase 7.
+   **2026-08-07:** a leftover Vercel GitHub integration is still attached to this
+   repo — PR #14 ran "Vercel" and "Vercel Preview Comments" checks and reported
+   "Deployment has completed". LOC deploys on our own VPS via Coolify + Cloudflare;
+   this Vercel project is not ours to keep. Disconnect it (it builds every PR and
+   may hold stale env vars).
 3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02).
 4. **Custom domain** — confirm final domain for LOC (`loctravels.com` per Phase 7 plan
    vs. subdomain under `impactorsacademy.com`).
