@@ -6,24 +6,43 @@
   :root {
     /* LOC brand semantic tokens */
     --background: 37 50% 98%;
-    --foreground: 230 20% 10%;
+    /* The ink is the logo's own hue (24°) taken almost to black. It was
+       230 20% 10% — a blue-grey, the stock shadcn default, and the only cool
+       thing in a palette where every other token sits between 24° and 38°. On
+       a warm cream ground that reads as unconsidered rather than neutral.
+       Luminance is unchanged: 16.27:1 on the page against the old 16.37:1. */
+    --foreground: 24 25% 11%;
+    /* Pure white stays: on a cream page it is the elevation signal that
+       separates a card from the ground, and warming it collapses that. */
     --card: 0 0% 100%;
-    --card-foreground: 230 20% 10%;
+    --card-foreground: 24 25% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 230 20% 10%;
+    --popover-foreground: 24 25% 11%;
     /* The logo hue (24°) at a lightness that clears AA. Was 18 51% 53% (#C46F4A),
        an approximation of the logo that measured 3.67:1 against white text. */
     --primary: 24 50% 42%;         /* #A16036 — 4.95:1 vs white, 4.75:1 vs --background */
     --primary-foreground: 0 0% 100%;
     --brand: 24 50% 57%;           /* #C9885C — the sampled logo, for marks and dark grounds */
     --secondary: 37 65% 89%;       /* sand */
-    --secondary-foreground: 230 20% 10%;
+    --secondary-foreground: 24 25% 11%;
     --muted: 37 25% 93%;
-    --muted-foreground: 230 10% 45%;
-    --accent: 38 55% 56%;          /* amber */
-    --accent-foreground: 230 20% 10%;
-    --destructive: 0 84.2% 60.2%;
+    /* Matches loc-stone #7F694D, which already carries body and meta copy in
+       ~40 files. There is no reason for the site to run two different muted
+       greys, and the old one was cool. 4.98:1 on the page. */
+    --muted-foreground: 33 25% 40%;
+    --accent: 38 55% 56%;          /* amber — decorative only, 2.32:1 as text */
+    --accent-foreground: 24 25% 11%;
+    /* Was 0 84.2% 60.2% (#EF4444), the stock shadcn red: white on it is
+       3.76:1, under AA on the one token whose whole job is to be noticed.
+       #A10B2B is the org palette's light-surface danger — white on it is
+       8.08:1. Success and warning are its siblings; the site was reaching for
+       raw text-red-500 / bg-red-50 because no token existed. */
+    --destructive: 347 87% 34%;    /* #A10B2B — white on it 8.08:1 */
     --destructive-foreground: 0 0% 100%;
+    --success: 151 100% 17%;       /* #00592E — white on it 8.51:1 */
+    --success-foreground: 0 0% 100%;
+    --warning: 41 79% 31%;         /* #8C6510 — white on it 5.27:1 */
+    --warning-foreground: 0 0% 100%;
     --border: 37 20% 88%;
     --input: 37 20% 88%;
     --ring: 24 50% 42%;

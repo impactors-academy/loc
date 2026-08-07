@@ -73,7 +73,7 @@ export function ExperienceForm({ initial, editSlug }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
-      {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>}
+      {error && <p className="text-sm text-destructive bg-destructive/5 border border-destructive/20 rounded-lg px-4 py-3">{error}</p>}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
@@ -139,7 +139,7 @@ export function ExperienceForm({ initial, editSlug }: Props) {
                 const imgs = [...form.images]; imgs[i] = e.target.value; set("images", imgs)
               }} />
               <button type="button" onClick={() => set("images", form.images.filter((_, j) => j !== i))}
-                className="px-3 py-2 text-sm text-red-500 border border-border rounded-lg hover:bg-red-50">✕</button>
+                className="px-3 py-2 text-sm text-destructive border border-border rounded-lg hover:bg-destructive/5">✕</button>
             </div>
           ))}
           <button type="button" onClick={() => set("images", [...form.images, ""])}

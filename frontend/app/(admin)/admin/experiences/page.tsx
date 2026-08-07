@@ -57,7 +57,7 @@ export default function ExperiencesPage() {
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
                       <Link href={`/admin/experiences/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>
-                      <button onClick={() => handleDelete(item.slug, item.title)} className="text-red-500 hover:underline text-xs font-medium">Delete</button>
+                      <button onClick={() => handleDelete(item.slug, item.title)} className="text-destructive hover:underline text-xs font-medium">Delete</button>
                     </div>
                   </td>
                 </tr>

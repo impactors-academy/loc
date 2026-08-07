@@ -83,7 +83,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
         />
       </div>
       {isError && (
-        <p className="text-red-500 text-sm">Something went wrong. Please try again.</p>
+        <p className="text-destructive text-sm">Something went wrong. Please try again.</p>
       )}
       <button
         type="submit"

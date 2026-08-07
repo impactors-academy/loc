@@ -34,6 +34,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -66,8 +74,19 @@ const config: Config = {
           // Decorative only — as text on light grounds amber is 2.28:1. Anything
           // sitting ON amber must use loc-night (7.48:1), never white (2.28:1).
           amber: "#D4A44C",
-          teal: "#2D6A6A",
-          night: "#1A1A2E",
+          // The cool anchor, from the org palette (Wada combination #296). Replaces
+          // loc-teal #2D6A6A, which sat at 180° — outside the brand's warm family
+          // — and was the only hue in the product not derived from the logo. Slate
+          // keeps the same job (a cool tone that separates *selected* from the
+          // terracotta *primary action*) and is stricter on contrast: white on
+          // slate is 12.67:1 against teal's 5.96:1.
+          slate: "#1B3644",
+          // The heading ink. Was #1A1A2E, a navy at 240° — it carried 65 text
+          // usages, so the site's headlines were the one cool thing on a warm
+          // cream ground. Same value as --foreground: the logo's hue (24°)
+          // taken almost to black. Luminance is effectively unchanged,
+          // 16.27:1 on the page against the old 16.37:1.
+          night: "#231B15",
           // The body/meta text colour, used across ~40 files. Was #8B7355, which
           // measured 4.31:1 against the page background (--background 37 50% 98%,
           // #FCFAF7) and 4.49:1 on pure white — under AA's 4.5:1 in both cases,
