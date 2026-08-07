@@ -5,14 +5,32 @@ description: Use this skill when building, extending, or making decisions about 
 
 ## Project Overview
 
-LOC is a **global digital tourism connector and media brand** operating under Impactor's Academy. It started focused on Morocco and France and has expanded to a worldwide platform covering Japan, France, UK, Belgium, Bali, Greece, Italy, Morocco, and beyond. It is transitioning from a direct short-term rental operator into a scalable tourism-tech platform.
+LOC is a **global travel technology platform** operating under Impactor's Academy. It started as a short-term rental operator in Morocco and France and is evolving into a scalable marketplace that connects travellers with accommodation, experiences, transport, restaurants, and local businesses across multiple countries.
 
-The platform connects tourists with:
+**The model shift:** Traditional travel agencies are agency models (Customer → LOC team → Supplier → Customer) that cap at operational capacity. LOC is building toward a marketplace model (Customer → LOC Platform → Supplier) where technology handles discovery, trust, and transaction while suppliers deliver the service.
+
+**Current stage:** Stage 1 (Directory & Discovery) — suppliers listed and searchable; no automated booking yet. Admin CRUD dashboard live for content management.
+
+**Geographic sequencing:** Morocco → France → Belgium first (diaspora density, language advantage, flight flows). Expand only after Stage 3 automation is proven.
+
+The platform connects travellers with:
 - **Experience providers** (adventure, culinary, wellness, cultural, water, aerial experiences worldwide)
 - **Property owners** (apartments, villas, riads, ryokans, gîtes, hotels, bivouacs)
 - **Digital products** (travel guides, destination itineraries, video courses, experience maps)
 
-LOC earns revenue through referral commissions, featured placements, sponsored promotions, affiliate partnerships, and digital product sales — not by owning or operating properties directly.
+## Strategic Roadmap (Stage-Gated)
+
+Each stage requires a defined revenue or automation milestone before moving to the next.
+
+| Stage | Focus | Exit Criteria |
+|---|---|---|
+| **1 — Directory & Discovery** *(current)* | Suppliers listed, searchable, browsable | Organic traffic + first affiliate/lead revenue |
+| **2 — Lead Gen & Affiliate** | Automated lead capture + affiliate commissions | First revenue generated with zero delivery ops |
+| **3 — Direct Booking Integration** | Customers book without human involvement | Confirmed booking volume without manual intervention |
+| **4 — Full Marketplace** | Automated payments, commission capture at scale | Commission flowing automatically at scale |
+| **5 — AI-Driven Personalisation** | Recommendations, trip planning as the moat | Personalisation measurably improves conversion |
+
+**Key principle:** Technology infrastructure before hiring. Operations teams scale linearly; platforms scale exponentially.
 
 ## Tech Stack
 
@@ -20,7 +38,7 @@ LOC earns revenue through referral commissions, featured placements, sponsored p
 - **Backend:** Python 3.11+ · FastAPI · uv · Uvicorn · Pydantic v2 · python-dotenv
 - **Caching:** Redis · `fastapi-cache2` (service-layer response caching, TTL 5m)
 - **Database:** PostgreSQL 16 · SQLAlchemy 2 · Alembic · psycopg2-binary · **pgvector** (hybrid search)
-- **Search:** Phase 1 — Postgres FTS + pg_trgm · Phase 2 (live) — pgvector cosine + RRF hybrid
+- **Search:** Pure Postgres FTS (`tsvector`) + pgvector cosine RRF hybrid
 - **API:** RESTful, versioned `/api/v1/`, CORS to Next.js origin
 - **Deployment:** Vercel (frontend) · Railway (backend + PostgreSQL + Redis)
 - **Repo structure:**
@@ -42,12 +60,12 @@ LOC earns revenue through referral commissions, featured placements, sponsored p
 ## Core Platform Features (Priority Order)
 
 ### 1. Tourism Experience Discovery
-Pages and components that let tourists browse and filter global experiences by category and country. Each listing shows provider info, pricing, duration, country/location, and a referral/inquiry CTA. LOC earns a commission on referrals — no booking engine, lead generation only.
+Pages and components that let tourists browse and filter global experiences by category and country. Each listing shows provider info, pricing, duration, country/location, and a referral/inquiry CTA. LOC earns a commission on referrals — no booking engine at Stage 1.
 
 **Supported categories:** `adventure` · `wellness` · `culture` · `culinary` · `water` · `aerial`
 
 ### 2. Property Listings
-A global directory of stays where landlords/hosts pay for visibility. Each card links to a contact/inquiry form — not a direct booking system.
+A global directory of stays where landlords/hosts pay for visibility. Each card links to a contact/inquiry form — not a direct booking system at Stage 1.
 
 **Supported types:** `villa` · `apartment` · `riad` · `ryokan` · `gite` · `hotel` · `bivouac`
 
@@ -63,27 +81,33 @@ A simple storefront for downloadable products:
 A blog showcasing travel content, hidden destinations, and destination guides. Builds audience trust and SEO. Related articles powered by pgvector cosine similarity.
 
 ### 5. Business Promotion Packages
-A landing page for tourism businesses to inquire about sponsored placements, social media promotions, and content packages. Flat monthly fees — no booking commissions.
+A landing page for tourism businesses to inquire about sponsored placements, social media promotions, and content packages. Flat monthly fees — no booking commissions at Stage 1.
+
+### 6. Admin Dashboard (`/dashboard`)
+Internal CRUD interface for LOC editors. Full create/update/delete for Experiences, Properties, Blog Posts, and Products. Read-only Inquiries view. No authentication yet — restrict by deployment environment until auth is added at Stage 3.
 
 ## Global Expansion Model
 
-LOC is destination-agnostic. Each entity (`Experience`, `Property`) carries a `country` field. The seed and UI support filtering by country/destination. The discovery layer (R4) adds:
+LOC is destination-agnostic. Each entity (`Experience`, `Property`) carries a `country` field. The discovery layer adds:
 - **Homepage hero search bar** routing to `/experiences?q=...`
 - **Popular Destinations** section with photo cards per country
 - **Country filter** in `ExperienceFilters` and `PropertyFilters`
-- **Destination pages** `/destinations/[country]` (future)
+- **Destination pages** `/destinations/[country]` with curated hero + tabbed listings
 
-### GetYourGuide-inspired patterns (adopted selectively)
+### GetYourGuide/Tripadvisor patterns (adopted selectively)
 
-| Pattern | Adopted | Reason |
-|---|---|---|
-| Search bar in hero | ✅ R4 | Intent-first discovery |
-| Destination browsing cards | ✅ R4 | Country-based navigation |
-| Duration on cards | ✅ R4 | Quick mental filter |
-| Country badge on cards | ✅ R4 | Makes global scope tangible |
-| Star ratings + reviews | ❌ | No review engine planned |
-| Instant booking / checkout | ❌ | LOC = lead-gen, not transactions |
-| "Likely to sell out" urgency | ❌ | Dark pattern, off-brand |
+| Pattern | Adopted | Stage | Reason |
+|---|---|---|---|
+| Search bar in hero | ✅ | S1 | Intent-first discovery |
+| Destination browsing cards | ✅ | S1 | Country-based navigation |
+| Duration on cards | ✅ | S1 | Quick mental filter |
+| Country badge on cards | ✅ | S1 | Makes global scope tangible |
+| Commission-based revenue | ✅ | S3 | Core marketplace mechanic — target Stage 3 |
+| Featured listings / subscriptions | ✅ | S1–S2 | Supplier-funded visibility now |
+| Affiliate commissions | ✅ | S2 | Flights, insurance, car rentals |
+| Automated payment & payout | ⬜ | S4 | Deferred; requires booking infra first |
+| Star ratings + reviews | ❌ | — | No review engine planned (complexity vs. value at this scale) |
+| "Likely to sell out" urgency | ❌ | — | Dark pattern, off-brand |
 
 ## Release History
 
@@ -94,7 +118,9 @@ LOC is destination-agnostic. Each entity (`Experience`, `Property`) carries a `c
 | **R2 — Monetisation** | ✅ Done | Digital store, blog, promote page, FTS search, featured tiers |
 | **R3 — Discovery & scale** | ✅ Done | pgvector hybrid search (RRF), related articles, product POST API, seed, CI green |
 | **Global pivot** | ✅ Done | `country` field, global seed (10 countries), image pool, global copy, typewriter hero |
-| **R4 — GYG-inspired discovery** | 🔵 Next | Hero search, destination cards, country filters, duration on cards |
+| **R4 — GYG-inspired discovery** | ✅ Done | Hero search, destination cards, country filters, duration on cards, destination pages `/destinations/[country]` |
+| **Admin dashboard** | ✅ Done | `/dashboard` with full CRUD for all content types + inquiries view |
+| **R5 — Booking automation** | ⬜ Next | Supplier self-onboarding, availability, first booking flow (Stage 2→3 gate) |
 
 ## Data Model Summary (current)
 
@@ -115,16 +141,18 @@ LOC is destination-agnostic. Each entity (`Experience`, `Property`) carries a `c
 
 ## Revenue Model
 
-| Feature | Revenue model |
-|---|---|
-| Experience listings | Referral commission per booking |
-| Property listings | Monthly subscription or per-lead fee |
-| Sponsored placements | One-time or recurring ad fee |
-| Digital products | Direct sale (PDF/eBook/course) |
-| Affiliate links | Commission on external purchases |
-| Content/media | Sponsored posts, brand partnerships |
+| Feature | Revenue model | Stage |
+|---|---|---|
+| Experience referral CTAs | Commission on outbound referrals | S1 now |
+| Property listings | Monthly subscription or per-lead fee | S1 now |
+| Sponsored/featured placements | One-time or recurring ad fee | S1 now |
+| Digital products | Direct sale (PDF/eBook/course) via Gumroad/Lemon Squeezy | S1 now |
+| Affiliate links | Commission on external purchases (flights, insurance, car rentals) | S2 |
+| Direct booking commissions | 15–25% commission on confirmed accommodation/experience bookings | S3 |
+| Supplier dashboard subscriptions | Monthly SaaS fee for analytics + booking management tools | S3–S4 |
+| Advertising | Supplier-funded visibility to active travellers | S2–S3 |
 
-**Never build a payment/checkout system** — use Gumroad/Lemon Squeezy for digital products; experiences/properties use inquiry + referral links.
+**Stage 1 constraint:** No payment/checkout system — external links only (Gumroad/Lemon Squeezy for products; inquiry + referral links for experiences/properties).
 
 ## Development Principles
 
@@ -149,12 +177,22 @@ frontend/
 │   │   ├── experiences/          # /experiences list + [slug] detail
 │   │   ├── stays/                # /stays list + [slug] detail
 │   │   ├── blog/                 # /blog list + [slug] article
+│   │   ├── destinations/[country]/  # /destinations/[country] hero + tabbed listings
 │   │   ├── promote/              # /promote business packages
 │   │   └── layout.tsx            # Navbar + Footer
 │   ├── (store)/
 │   │   ├── store/page.tsx        # /store product grid
 │   │   └── products/[slug]/      # /products/[slug] detail + buy CTA
-│   ├── (dashboard)/              # Future: partner/admin (auth-gated)
+│   ├── (dashboard)/
+│   │   ├── _components/Sidebar.tsx
+│   │   ├── layout.tsx
+│   │   └── dashboard/
+│   │       ├── page.tsx          # Overview stats
+│   │       ├── experiences/      # list · new · [slug]/edit
+│   │       ├── properties/       # list · new · [slug]/edit
+│   │       ├── blog/             # list · new · [slug]/edit
+│   │       ├── products/         # list · new · [slug]/edit
+│   │       └── inquiries/        # read-only leads table
 │   ├── api/contact/route.ts      # Inquiry proxy → FastAPI
 │   ├── layout.tsx                # Root layout (fonts, providers, schema.org)
 │   └── globals.css               # Tailwind base + CSS vars + @keyframes blink
@@ -171,12 +209,14 @@ frontend/
 │   └── features/
 │       ├── experiences/          # ExperienceCard · ExperienceGrid · ExperienceFilters
 │       ├── stays/                # PropertyCard · PropertyGrid · PropertyFilters
+│       ├── destinations/         # DestinationTabs
 │       ├── store/                # ProductCard · ProductGrid
 │       └── blog/                 # ArticleCard · ArticleGrid · RelatedArticles
 │
 ├── lib/
-│   ├── api.ts                    # Centralised fetch wrapper
+│   ├── api.ts                    # Centralised fetch wrapper + admin namespace
 │   ├── images.ts                 # Unsplash pool by category/type + slug-hash picker
+│   ├── destinations.ts           # DESTINATIONS_META array + DESTINATION_BY_COUNTRY lookup
 │   ├── query-client.ts           # TanStack QueryClient (staleTime 5m)
 │   ├── types.ts                  # Experience · Property · Product · BlogPost · etc.
 │   ├── utils.ts                  # cn() helper
@@ -208,10 +248,11 @@ Alembic migrations live in `backend/alembic/versions/` — every model change re
 
 ## What to Avoid
 
-- Full payment/checkout — external links only (Gumroad/Lemon Squeezy)
-- User authentication in Phase 1 — public platform first
-- Replicating Airbnb — no booking management, only lead generation
-- Admin dashboards before the public platform is live
+- Payment/checkout at Stage 1 — external links only (Gumroad/Lemon Squeezy); booking infra deferred to Stage 3
+- User authentication before booking automation is proven — public platform first; auth gates supplier self-service at Stage 3
+- Replicating Airbnb — no booking management until Stage 3; Stage 1 is lead generation + referral
+- Geographic expansion before Stage 3 automation — expanding to new markets while manual ops dominate just multiplies the bottleneck
 - Standalone vector DB (Pinecone/Weaviate) — Postgres + pgvector is sufficient at this scale
 - Raw `fetch()` in components — always go through `lib/api.ts` + a TanStack Query hook
 - Inline query key strings — always use `QUERY_KEYS.*` from `constants.ts`
+- Trigram (`%%`) operator in raw SQLAlchemy — use pure FTS (`tsvector`) instead; pg_trgm causes type mismatch with psycopg2 bound params

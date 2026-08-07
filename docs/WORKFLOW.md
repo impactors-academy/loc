@@ -90,6 +90,7 @@ Embeddings are generated automatically if `OPENAI_API_KEY` is set; skipped silen
 - [ ] Migration included if the model changed.
 - [ ] Tests for new endpoints (`make test`).
 - [ ] No Morocco-only copy introduced — use global language.
+- [ ] Stage gate: feature belongs to the current stage (S1 = discovery/lead-gen). Stage 2+ work (affiliate automation, booking flows, payments) must be explicitly planned and approved before implementation.
 
 ## 7. CI (GitHub Actions)
 
@@ -137,10 +138,11 @@ Ship the lean, working version of each slice before layering sophistication:
 
 ```
 R0 (foundations) → R1 (core listings + inquiry) → R2 (store + content) → R3 (hybrid search)
-→ Global pivot → R4a (hero search + destinations) → R4b (country filters) → R4c (destination pages)
-→ R5 (auth + partner dashboard)
+→ Global pivot → R4 (GYG-inspired discovery + destination pages) → Admin dashboard (internal CRUD)
+→ R5 (auth gate + referral tracking) → R6 (affiliate + lead gen automation, Stage 2)
+→ R7 (booking MVP, Stage 3) → R8 (full marketplace + payments, Stage 4)
 ```
 
-Don't build admin dashboards or auth before the public platform proves value.
+**Strategic gate rule:** Do not expand to new geographies until Stage 3 booking automation is proven. Adding markets while manual ops dominate multiplies the bottleneck, not the revenue.
 
 See `docs/USER_STORIES.md` for the full backlog and epic-level detail.

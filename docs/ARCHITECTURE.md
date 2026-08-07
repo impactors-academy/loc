@@ -175,12 +175,14 @@ Full detail in `docs/SEARCH_STRATEGY.md`. Summary:
 
 Key namespacing: `experiences:{slug}`, `properties:list`, `blog:{slug}` — no collisions.
 
-## Boundaries / non-goals (current phase)
+## Boundaries / non-goals (Stage 1 — current)
 
 - No public user accounts yet — travellers and property partners are future work
   (`/account` and `/partners` are reserved for them). The staff CMS at `/admin` is
   gated by a shared editor API key plus Cloudflare Access, not per-user login.
-- No payment processing — external links only.
+  Full auth gate (`ADMIN-7`) planned for R5.
+- **No payment processing** — external links only (Gumroad/Lemon Squeezy for products; inquiry + referral links for experiences/properties). Payment infra deferred to Stage 3/4 (Stripe).
+- **No booking engine** — LOC is lead-gen at Stage 1. Booking flow targets Stage 3.
 - No dedicated vector DB (Pinecone/Weaviate) — pgvector inside Postgres is sufficient at this scale.
 - **Deployment: Hostinger VPS via Coolify, DNS on Cloudflare, `loctravels.com`.**
   Postgres and Redis run as containers in the same compose stack, not managed

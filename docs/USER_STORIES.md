@@ -23,7 +23,9 @@ Written as Product Owner. Grounded in the LOC brief and skill: a **global** tour
 | **R2 — Monetisation** | ✅ Done | Digital store, blog, promote page, FTS search, featured tiers |
 | **R3 — Discovery & scale** | ✅ Done | pgvector hybrid search (RRF), related articles (vector), product POST API, global seed, CI green |
 | **Global pivot** | ✅ Done | `country` field on experiences+properties, global seed (10 destinations), Unsplash image pool, all copy globalised, typewriter hero |
-| **R4 — GYG-inspired discovery** | 🔵 Active | Hero search, popular destinations, country filters, duration on cards, country on cards |
+| **R4 — GYG-inspired discovery** | ✅ Done | Hero search, popular destinations, country filters, duration on cards, country on cards, destination pages `/destinations/[country]` |
+| **Admin dashboard** | ✅ Done | `/dashboard` full CRUD for Experiences, Properties, Blog, Products + read-only Inquiries; backend POST/PUT/DELETE endpoints for all types |
+| **R5 — Booking automation** | ⬜ Next | Supplier self-onboarding, availability management, first automated booking flow (Stage 2 → 3 gate) |
 
 ---
 
@@ -105,11 +107,38 @@ Selectively borrows GYG's UX patterns for intent-first discovery. Does **not** c
 - **DISC-5** 🔵 P1 — As a *Tourist*, I want to see the country on experience and property cards so the global scope is tangible.
   *AC:* Country name shown as a secondary line or flag chip on both `ExperienceCard` and `PropertyCard`; gracefully absent when `country` is null.
 
-- **DISC-6** ⬜ P2 — As a *Tourist*, I want a destination page `/destinations/[country]` so I can read a curated intro and see all listings for that country.
-  *AC:* Dynamic route; hero with destination cover photo; curated intro text; experiences + stays tabs filtered by country.
+- **DISC-6** ✅ Done — As a *Tourist*, I want a destination page `/destinations/[country]` so I can read a curated intro and see all listings for that country.
+  *AC:* Dynamic route with case-insensitive slug lookup; hero (60vh, gradient overlay); curated intro from `lib/destinations.ts`; tabbed Experiences/Stays grids filtered by country; `generateStaticParams` + `generateMetadata` for SEO.
 
 - **DISC-7** ⬜ P2 — As a *Dev*, I want the backend `/experiences` endpoint to accept a `country` query param so the frontend country filter has API support.
   *AC:* `country: str | None` param in `ExperienceService.search()`; repository adds `.filter(Experience.country == country)` when set; cached with country in the cache key.
+
+---
+
+## EPIC 10 — Admin Dashboard  *(internal tooling)*  · **DONE**
+
+- **ADMIN-1** ✅ — `/dashboard` overview page with live stats (experience/property/blog/product counts + last 10 inquiries).
+- **ADMIN-2** ✅ — Experiences CRUD: list table, create form (auto-slug), edit form, delete with confirmation.
+- **ADMIN-3** ✅ — Properties CRUD: list table, create form, edit form, delete with confirmation.
+- **ADMIN-4** ✅ — Blog CRUD: list table, create form (tags as comma-separated input), edit form, delete.
+- **ADMIN-5** ✅ — Products CRUD: list table, create form, edit form, delete.
+- **ADMIN-6** ✅ — Inquiries read-only table with date, name, email (mailto), phone, subject, source badge.
+- **ADMIN-7** ⬜ P1 — Auth gate on `/dashboard` — basic password/session so dashboard isn't publicly accessible.
+
+---
+
+## EPIC 11 — Marketplace Booking (Stage 3)  *(revenue: booking commissions)*  · **Future**
+
+Unlocks the core marketplace mechanic: customers book directly, LOC captures commission, suppliers receive confirmed bookings automatically.
+
+- **MKT-1** ⬜ P2 — Supplier self-onboarding: a supplier can create and manage their own listing without LOC involvement.
+- **MKT-2** ⬜ P2 — Availability calendar: suppliers set available dates; tourists see real-time availability.
+- **MKT-3** ⬜ P2 — Booking request flow: tourist submits booking, supplier confirms, LOC logs the transaction.
+- **MKT-4** ⬜ P2 — Payment collection: Stripe integration; LOC holds funds, releases to supplier minus commission after service date.
+- **MKT-5** ⬜ P2 — Automated confirmation emails to tourist and supplier on booking.
+- **MKT-6** ⬜ P3 — Supplier payout dashboard: suppliers see earnings, upcoming bookings, payout history.
+
+*Exit criteria for Stage 3 gate:* A tourist completes a booking and a supplier is paid without any manual LOC involvement.
 
 ---
 
@@ -117,9 +146,10 @@ Selectively borrows GYG's UX patterns for intent-first discovery. Does **not** c
 
 | Release | Stories | Outcome |
 |---|---|---|
-| **R4a — Hero + Destinations (this sprint)** | DISC-1, DISC-2, DISC-4, DISC-5 | Homepage feels GYG-inspired; duration + country visible on cards |
-| **R4b — Country filtering** | DISC-3, DISC-7 | Filter by destination end-to-end (frontend + backend) |
-| **R4c — Destination pages** | DISC-6 | Deep destination experience; SEO for "things to do in Japan" etc. |
-| **R5 — Auth + Dashboard** | Partner self-serve, lead tracking, admin | Business tier: partners manage their own listings |
-
-Ship R4a before R4b — the UI change is independent of the backend filter.
+| ~~**R4a — Hero + Destinations**~~ | DISC-1, 2, 4, 5 | ✅ Done |
+| ~~**R4b — Country filtering**~~ | DISC-3, 7 | ✅ Done |
+| ~~**R4c — Destination pages**~~ | DISC-6 | ✅ Done |
+| ~~**Admin dashboard**~~ | ADMIN-1 through 6 | ✅ Done |
+| **R5 — Auth + Referral tracking** | ADMIN-7, EXP-5 | Dashboard auth gate, trackable referral links with click logging |
+| **R6 — Lead Gen & Affiliate (Stage 2)** | Affiliate links, STAY-4 notify_partner | Automated revenue with zero delivery ops |
+| **R7 — Booking MVP (Stage 3)** | MKT-1 through 5 | First confirmed booking without human LOC involvement |
