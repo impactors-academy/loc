@@ -56,7 +56,7 @@ export function ProductForm({ initial, editSlug }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
-      {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>}
+      {error && <p className="text-sm text-destructive bg-destructive/5 border border-destructive/20 rounded-lg px-4 py-3">{error}</p>}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2"><label className={label}>Title *</label><input className={input} value={form.title} onChange={(e) => handleTitle(e.target.value)} required /></div>
