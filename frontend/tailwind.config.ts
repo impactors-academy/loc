@@ -66,7 +66,13 @@ const config: Config = {
           // Decorative only — as text on light grounds amber is 2.28:1. Anything
           // sitting ON amber must use loc-night (7.48:1), never white (2.28:1).
           amber: "#D4A44C",
-          teal: "#2D6A6A",
+          // The cool anchor, from the org palette (Wada combination #296). Replaces
+          // loc-teal #2D6A6A, which sat at 180° — outside the brand's warm family
+          // — and was the only hue in the product not derived from the logo. Slate
+          // keeps the same job (a cool tone that separates *selected* from the
+          // terracotta *primary action*) and is stricter on contrast: white on
+          // slate is 12.67:1 against teal's 5.96:1.
+          slate: "#1B3644",
           night: "#1A1A2E",
           // The body/meta text colour, used across ~40 files. Was #8B7355, which
           // measured 4.31:1 against the page background (--background 37 50% 98%,

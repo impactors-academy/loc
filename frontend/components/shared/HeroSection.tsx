@@ -60,7 +60,7 @@ export function HeroSection({
           "absolute inset-0",
           hasBg
             ? "bg-gradient-to-b from-black/20 via-black/40 to-black/80"
-            : "bg-gradient-to-br from-loc-night via-[#1a3d4a] to-loc-terracotta"
+            : "bg-gradient-to-br from-loc-night via-loc-slate to-loc-terracotta"
         )}
         aria-hidden="true"
       />

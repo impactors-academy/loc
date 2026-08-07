@@ -84,7 +84,7 @@ export default function InquiriesPage() {
                   </td>
                   <td className="px-4 py-3 font-medium text-loc-night">{item.name}</td>
                   <td className="px-4 py-3">
-                    <a href={`mailto:${item.email}`} className="text-loc-teal hover:underline">{item.email}</a>
+                    <a href={`mailto:${item.email}`} className="text-loc-slate hover:underline">{item.email}</a>
                   </td>
                   <td className="px-4 py-3 text-loc-stone">{item.phone ?? "—"}</td>
                   <td className="px-4 py-3 text-loc-stone max-w-[200px] truncate" title={item.subject}>{item.subject}</td>

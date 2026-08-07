@@ -28,6 +28,11 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
+          {/*
+            The mark is square, deliberately: it is a full-bleed copper plate with
+            the letterform on it, so the old rounded-md clipped the plate's own
+            corners and read as a rounded app tile rather than the logo.
+          */}
           <Image
             src="/icons/loc-mark.png"
             alt=""
@@ -35,7 +40,7 @@ export function Navbar() {
             width={36}
             height={36}
             priority
-            className="rounded-md w-8 h-8 md:w-9 md:h-9 flex-none"
+            className="w-8 h-8 md:w-9 md:h-9 flex-none"
           />
           <span
             className={cn(

@@ -48,8 +48,8 @@ export function PropertyFilters() {
           className={cn(
             "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
             activeCountry === ""
-              ? "bg-loc-teal text-white border-loc-teal"
-              : "border-border text-loc-stone hover:border-loc-teal hover:text-loc-teal"
+              ? "bg-loc-slate text-white border-loc-slate"
+              : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
           )}
         >
           All countries
@@ -61,8 +61,8 @@ export function PropertyFilters() {
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCountry === c.value
-                ? "bg-loc-teal text-white border-loc-teal"
-                : "border-border text-loc-stone hover:border-loc-teal hover:text-loc-teal"
+                ? "bg-loc-slate text-white border-loc-slate"
+                : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
             )}
           >
             {c.label}
