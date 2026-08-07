@@ -48,32 +48,6 @@
     --ring: 24 50% 42%;
     --radius: 0.75rem;
   }
-
-  .dark {
-    --background: 230 40% 8%;
-    --foreground: 37 30% 95%;
-    --card: 230 35% 12%;
-    --card-foreground: 37 30% 95%;
-    --popover: 230 35% 12%;
-    --popover-foreground: 37 30% 95%;
-    /* On a dark ground the logo copper works as-is — 7.03:1 on black — so dark
-       mode uses the sampled value directly, with dark ink on top exactly like the
-       mark itself. White on copper would be 2.93:1. */
-    --primary: 24 50% 57%;         /* #C9885C — the logo */
-    --primary-foreground: 230 20% 10%;
-    --brand: 24 50% 57%;
-    --secondary: 230 25% 18%;
-    --secondary-foreground: 37 30% 95%;
-    --muted: 230 25% 18%;
-    --muted-foreground: 230 15% 60%;
-    --accent: 38 50% 52%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 230 25% 18%;
-    --input: 230 25% 18%;
-    --ring: 24 50% 57%;
-  }
 }
 
 @layer base {

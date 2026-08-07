@@ -1,6 +1,10 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // Kept as the strategy a dark theme *would* use, not as a live feature: LOC
+  // has no theme toggle and no `dark:` utilities anywhere, and app/manifest.ts
+  // states the site is light on purpose. The unreachable `.dark` token block in
+  // globals.css was deleted rather than left to drift.
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
