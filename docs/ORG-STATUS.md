@@ -6,13 +6,15 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-05 (audit pass — corrected against actual repo state, see notes below)
+**Last updated:** 2026-08-07 (CI landed on impactors-academy; loc live; snapshot re-verified)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
-> false findings because it inspected each repo's *checked-out* branch. loc's active
-> branch is `develope`, which is 13 commits ahead of `main`; work that exists there
-> was reported as missing. **Always check the active branch, and check whether it has
-> been merged.** A feature existing on a dev branch is not the same as it being live.
+> false findings because it inspected each repo's *checked-out* branch. At the time
+> loc's active branch was `develope`, 13 commits ahead of `main`, and work that
+> existed there was reported as missing. **Always check the active branch, and check
+> whether it has been merged.** A feature existing on a dev branch is not the same as
+> it being live. (As of 2026-08-07 `develope` is fully merged and 20 commits *behind*
+> `main` — `main` is now loc's live branch. Verify before trusting either sentence.)
 
 ---
 
@@ -20,9 +22,9 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 | Project | Status | Priority | Blocker / Next action |
 |---|---|---|---|
-| impactors-academy | LAUNCHED · Phase 9 | High | Real-device 3D perf check; changelog process; Playwright is manual-only, not an automated suite |
+| impactors-academy | LAUNCHED · Phase 9 | High | CI landed 2026-08-07 (18 lint errors cleared with it). Remaining: real-device 3D perf check; changelog process; Playwright is manual-only, not an automated suite |
 | ia-pro | ~85% · Phase 8 done | High | Postgres/blog/projects already shipped (2026-08-04) — remaining: hero video → Cal.com |
-| loc | ~90% · R4 + LEAD-3 done on `develope` | High | **Not yet live** — `loctravels.com` returns 503 (Cloudflare DNS up, no origin). Deploy target: **Hostinger VPS via Coolify**. Order matters: merge PR #1 → merge `develope`→`main` → configure Cloudflare Access → deploy. Do **not** deploy `main` as it stands (no editor auth) |
+| loc | LIVE · `main` | High | `loctravels.com` serves **200** (verified 2026-08-07). Deploy target confirmed: **own VPS via Coolify + Cloudflare** — a leftover **Vercel** GitHub integration is still building every PR and must be disconnected. Next: Cloudflare Access on editor routes |
 | prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → backup script → team seed |
 | grindbuddy | Frontend done · PAUSED | Low | Resume only after backend stack decision |
 
@@ -654,8 +656,9 @@ a bad migration on staging must not destroy prod data.
 
 ### 0B-3 — CI: Test Gates (nothing merges without passing tests)
 
-Right now tests exist on impactors-academy and ia-pro but they don't block merges.
-A GitHub Actions workflow must run on every PR and block the merge if tests fail.
+As of 2026-08-07 every active repo except prospectbuddy runs a CI workflow on every
+PR. **Branch protection is still not configured anywhere**, so a red check is visible
+but does not actually block the merge button — that is the remaining half of this item.
 
 **Standard CI workflow for every repo (`.github/workflows/ci.yml`):**
 ```yaml
@@ -671,9 +674,13 @@ jobs:
       - build (npm run build)  ← catches import errors CI won't catch otherwise
 ```
 
-- [ ] **impactors-academy** — has Coolify auto-deploy on push to `main`, but no GitHub
-      Actions test gate — `.github/` doesn't exist. Deploy ≠ CI; still needed.
-- [ ] **ia-pro** — same gap; Turborepo-aware (`turbo run test build --filter=pro`) when added
+- [x] **impactors-academy** — DONE 2026-08-07. `.github/workflows/ci.yml`: `npm ci` →
+      typecheck → lint → test → build, on PRs into `main`/`develop` and pushes to `main`.
+      Its first run found the 18 lint errors that had been sitting on `main` unnoticed
+      (all fixed in the same PR). Deploy ≠ CI — the Coolify auto-deploy was never a gate.
+- [x] **ia-pro** — DONE 2026-08-06 (was already true when this line was last written;
+      corrected 2026-08-07). Turborepo-aware via the root `turbo` scripts. Adding it is
+      what exposed the lockfile defect that had made eslint unrunnable for everyone.
 - [x] **loc** — CORRECTED 2026-08-05: CI already exists —
       `.github/workflows/ci.yml` runs ruff+pytest (with Postgres+Redis services) and
       eslint+tsc+build, on push/PR to `develope`/`main`; `deploy.yml` also present.
