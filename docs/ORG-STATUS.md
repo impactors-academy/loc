@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-07 (CI landed on impactors-academy; loc live; snapshot re-verified)
+**Last updated:** 2026-08-08 (Vercel fully retired from loc — project deleted, docs purged)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
 > false findings because it inspected each repo's *checked-out* branch. At the time
@@ -24,7 +24,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 |---|---|---|---|
 | impactors-academy | LAUNCHED · Phase 9 | High | CI landed 2026-08-07 (18 lint errors cleared with it). Remaining: real-device 3D perf check; changelog process; Playwright is manual-only, not an automated suite |
 | ia-pro | ~85% · Phase 8 done | High | Postgres/blog/projects already shipped (2026-08-04) — remaining: hero video → Cal.com |
-| loc | LIVE · `main` | High | `loctravels.com` serves **200** (verified 2026-08-07). Deploy target confirmed: **own VPS via Coolify + Cloudflare** — a leftover **Vercel** GitHub integration is still building every PR and must be disconnected. Next: Cloudflare Access on editor routes |
+| loc | LIVE · `main` | High | `loctravels.com` serves **200** (verified 2026-08-07). Deploy path is **own VPS via Coolify + Cloudflare**, and now the only one — the leftover Vercel project and GitHub integration were deleted 2026-08-08 (PR #15 ran CI only, no Vercel checks). Next: **Cloudflare Access on editor routes** |
 | prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → backup script → team seed |
 | grindbuddy | Frontend done · PAUSED | Low | Resume only after backend stack decision |
 
