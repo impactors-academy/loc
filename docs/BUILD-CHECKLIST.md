@@ -195,6 +195,19 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       rendering every page dynamically. **Not yet verified in a real browser**
       (the Chrome extension was unavailable) — load the site once with devtools
       open and check for CSP violations before trusting it.
+- [x] **CSP fixed where it was silently breaking** (2026-08-08). Three faults the
+      policy only showed once something actually rendered:
+      `/docs` and `/redoc` are the only HTML this API serves, and Swagger UI loads
+      its CSS and JS from jsdelivr, so `default-src 'none'` returned 200 and a
+      blank page — those two paths now get a policy allowing exactly what the UI
+      loads, everything else keeps the strict one (2 new tests pin both).
+      The frontend CSP and HSTS no longer apply to `next dev` — dev needs a
+      localhost websocket and eval for hot reload, so enforcing the production
+      policy locally broke the page under test while proving nothing about
+      production.
+      `scripts/dev-local.sh prod` builds to `.next-prod` (via `NEXT_DIST_DIR`)
+      and serves on :3001 beside the dev server — the only honest way to load
+      the real headers locally. **Still unloaded in a browser.**
 
 ## Phase 7 — Deployment & DevOps
 
