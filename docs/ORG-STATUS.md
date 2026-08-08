@@ -54,6 +54,12 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
       the CLAUDE.md-per-sub-repo item above (can't add a line to a file that doesn't exist)
 - [x] Global skills backed up to `impactors-academy/claude-config` (public) — flat
       mirror of `~/.claude/skills/`, 486 skills. Pushed 2026-08-05.
+      **2026-08-08:** audited all 6 CLAUDE.md files — 99 distinct skill references,
+      7 of which resolved to nothing, including 6 of the 7 "Org Infrastructure"
+      skills (only `/coolify-deployment` existed). Written and pushed:
+      `/cloudflare-access`, `/resend-email`, `/cloudflare-r2`, `/authentik-sso`,
+      `/nextauth-setup`, `/drizzle-orm`, `/obs-design-critique`. Each has a
+      `references/impactors-academy.md` recording real org state.
 - [x] `/color-combinations` skill built and pushed — Sanzo Wada's 348 combinations as
       queryable data + CIEDE2000/WCAG tooling + `references/brands/` for per-brand
       palettes. Wired into all 6 CLAUDE.md files and the 8 colour-adjacent skills.
