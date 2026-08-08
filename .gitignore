@@ -12,6 +12,9 @@
 !.claude/
 !.claude/CLAUDE.md
 
+# Local native dev (scripts/dev-local.sh)
+.dev-local/
+
 # OS files
 .DS_Store
 Thumbs.db

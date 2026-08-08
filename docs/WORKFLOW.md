@@ -18,15 +18,47 @@ Four services start: `db` (Postgres 16 + pgvector), `redis`, `backend` (FastAPI,
 
 No local Python/Node/Postgres install needed — Docker is the only prerequisite.
 
-**Without Docker** (faster for frontend-only work):
+### Without Docker — the whole stack
+
+On a machine with no Docker daemon, run everything natively:
+
 ```bash
-cd frontend && npm install && npm run dev
+bash scripts/dev-local.sh          # start
+bash scripts/dev-local.sh stop     # stop the two app processes
 ```
 
-For backend-only:
+It creates the `loc` and `loc_test` databases with `vector` + `pg_trgm`, runs
+migrations, seeds if the tables are empty, and starts backend and frontend with
+the env vars pointed at `localhost` instead of the compose service names.
+
+Needs Homebrew `postgresql@17+`, `pgvector`, `redis`, `uv` and `node`. It starts
+Redis directly rather than through `brew services` — a global `redis.conf` that
+loads a module you do not have will abort the service, and that is not this
+project's problem to work around.
+
+**Cloudflare Access stands aside in development.** `frontend/middleware.ts` has
+nothing to verify without Access in front of it, so `/admin` is reachable locally
+with no token. That is deliberate: a check that cannot pass locally gets disabled
+locally. It fails closed in production.
+
+Single-service alternatives:
 ```bash
+cd frontend && npm install && npm run dev
 cd backend && uv sync && uv run uvicorn app.main:app --reload
 ```
+
+### Running the tests
+
+```bash
+cd backend
+DATABASE_URL=postgresql+psycopg2://loc:loc@localhost:5432/loc_test uv run pytest
+```
+
+**The suite drops every table on teardown** (`Base.metadata.drop_all` in
+`tests/conftest.py`). Pointed at a development database it deletes all your data,
+passes, and says nothing — the damage surfaces the next time you start the app.
+`conftest.py` now refuses any database whose name does not end in `_test` or
+start with `test_`. Do not remove that guard.
 
 ## 2. Branching model
 
