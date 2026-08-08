@@ -38,6 +38,42 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 
 ---
 
+---
+
+## Before opening a PR — hand it over running
+
+Markie tests the work before it is pushed. A PR body full of status codes is not
+a substitute for the thing being on a URL he can click.
+
+1. **Launch it.** `bash scripts/dev-local.sh` — it prints the URLs and any
+   credentials needed.
+2. **Seed enough data to see something.** An empty list view proves nothing.
+   Put a couple of realistic rows in through the real code path.
+3. **Walk every page the change touches**, and the ones next to it. Report the
+   status codes.
+4. **Say what to look at**, specifically: which URL, what should happen, and
+   what would mean it is broken.
+5. **Then push**, once he has looked.
+
+Report what could not be verified as plainly as what was. A CSP that has never
+been loaded in a browser is unverified, however clean the audit looked.
+
+### Never run a production build against a directory a dev server is serving
+
+`npm run build` rewrites `.next` underneath the running dev server. The symptom
+is not an obvious failure — it is `__webpack_modules__[moduleId] is not a
+function` and "Could not find the module ... in the React Client Manifest" on
+pages that were fine a minute ago, which reads exactly like a code bug.
+
+The fix is `rm -rf .next` and restart. Check every listening port before
+building — not the two you expect:
+
+```bash
+lsof -nP -iTCP -sTCP:LISTEN
+```
+
+This has cost real time here twice.
+
 ## Skills — invoke by task (never default to generic)
 
 ### Plan & Architecture
