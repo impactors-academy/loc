@@ -185,8 +185,8 @@ docker compose exec backend sh -c "PYTHONPATH=. uv run python scripts/seed.py"
 **7 — Verify** using the block below. Any `200`/`201` where a `403` is expected means
 stop and fix before announcing the site.
 
-**8 — Afterwards:** disconnect the Vercel project, and add `loctravels.com` plus
-`api.loctravels.com/health` to Uptime Kuma.
+**8 — Afterwards:** add `loctravels.com` plus `api.loctravels.com/health` to Uptime
+Kuma. (The Vercel project was deleted 2026-08-08 — nothing left to disconnect.)
 
 Migrations run automatically — the backend command is
 `alembic upgrade head && uvicorn ...`. On a fresh database run the seed manually once:

@@ -6,7 +6,7 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 **Stack:** Next.js 15.3 · FastAPI · PostgreSQL 16 + pgvector · Redis · Docker
 **Branches:** `develope` = active development · `main` = production-stable
-**Deployment:** Vercel (frontend) · Railway (backend + PostgreSQL + Redis)
+**Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 **Revenue model:** referrals, leads, featured placement, digital product sales — not bookings
 
 ---
@@ -111,7 +111,7 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       `listing_tier`, `country`, `images` (JSONB), `is_featured`
 - [x] CI: ruff, pytest, eslint, tsc --noEmit, next build — all green
 - [ ] Production environment vars documented — all `DATABASE_URL`, `REDIS_URL`,
-      `NEXTAUTH_SECRET` etc. confirmed set in Vercel + Railway dashboards
+      `NEXTAUTH_SECRET` etc. confirmed set in the Coolify UI (see `docs/DEPLOYMENT.md`)
 
 ## Phase 4 — Build
 
@@ -198,8 +198,9 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 - [ ] First deploy triggered — `alembic upgrade head` runs clean, all 4 containers healthy
 - [ ] Production Docker build confirmed (`output: standalone` wired correctly)
 - [ ] Health check endpoint (`/health`) returning 200 in production
-- [ ] Old deploy path retired: `.github/workflows/deploy.yml`, `nginx/loc.conf`,
-      `railway.toml` removed or clearly marked deprecated once Coolify deploy is verified
+- [x] Old deploy path retired: `railway.toml` and `.github/workflows/deploy.yml` are
+      gone; the Vercel project and its GitHub integration were deleted 2026-08-08.
+      `nginx/loc.conf` still present — unused under Coolify, delete or document why not.
 
 ## Phase 8 — Launch
 
@@ -239,13 +240,13 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 ## Open Flags
 
 1. ~~**Editor auth**~~ — CLOSED 2026-08-03: all write endpoints use `require_editor_key`.
-2. **Production deploy not confirmed** — Coolify deploy (not Vercel/Railway) is the
-   target; DNS and health checks not yet verified. See Phase 7.
-   **2026-08-07:** a leftover Vercel GitHub integration is still attached to this
-   repo — PR #14 ran "Vercel" and "Vercel Preview Comments" checks and reported
-   "Deployment has completed". LOC deploys on our own VPS via Coolify + Cloudflare;
-   this Vercel project is not ours to keep. Disconnect it (it builds every PR and
-   may hold stale env vars).
+2. ~~**Production deploy not confirmed**~~ — CLOSED 2026-08-08. `loctravels.com`
+   served 200 on 2026-08-07 from Coolify on the org's Hostinger VPS. The leftover
+   Vercel project and its GitHub integration — which had been building every PR and
+   reporting "Deployment has completed" on PR #14 — were deleted 2026-08-08, along
+   with the Vercel app config in this repo. Coolify is now the only deploy path.
+   Remaining verification: confirm the `GET /health` check and `api.loctravels.com`
+   independently of the frontend.
 3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02).
 4. **Custom domain** — confirm final domain for LOC (`loctravels.com` per Phase 7 plan
    vs. subdomain under `impactorsacademy.com`).
