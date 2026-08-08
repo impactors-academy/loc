@@ -169,9 +169,15 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       `git log --all -- .env` returns empty
 - [ ] **HTTP security headers** — FastAPI middleware: `X-Content-Type-Options`,
       `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `HSTS`
-- [ ] **Cloudflare Access on editor/admin routes** — any `/admin*` or editor-only
-      routes protected by Cloudflare Zero Trust (team emails only). Use
-      `/cloudflare-access` skill.
+- [x] **Cloudflare Access on editor/admin routes** — verified live 2026-08-08:
+      `/admin` and `/api/admin/*` both 302 to the Access login on
+      `delicate-king-3ab8.cloudflareaccess.com`; marketing routes stay public.
+- [x] **Access JWT verified at the origin** — `frontend/middleware.ts` (2026-08-08).
+      The edge policy only covers traffic that arrives through Cloudflare; a request
+      hitting the container directly bypassed it entirely, and `/api/admin/[...path]`
+      attaches `EDITOR_API_KEY` to everything it forwards, so that was an unauthenticated
+      write path and a read of every lead. Fail-closed: unset Access config in production
+      returns 503. Needs `CF_ACCESS_TEAM_DOMAIN` + `CF_ACCESS_AUD` set in Coolify.
 - [ ] **CSP header** — Content Security Policy on the Next.js frontend
 
 ## Phase 7 — Deployment & DevOps

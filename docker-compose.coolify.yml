@@ -94,6 +94,12 @@ services:
       # Runtime only. Never a build arg, never NEXT_PUBLIC_* — that would inline
       # the key into the browser bundle and hand every visitor write access.
       EDITOR_API_KEY: ${EDITOR_API_KEY:?set EDITOR_API_KEY — the admin CMS cannot publish without it}
+      # Cloudflare Access, verified at the origin by frontend/middleware.ts. Neither is
+      # secret, but both are required: unset in production means /admin and
+      # /api/admin/* return 503 rather than serving unauthenticated. Required here
+      # because the edge policy only covers traffic that arrives via Cloudflare.
+      CF_ACCESS_TEAM_DOMAIN: ${CF_ACCESS_TEAM_DOMAIN:?set CF_ACCESS_TEAM_DOMAIN — e.g. your-team.cloudflareaccess.com}
+      CF_ACCESS_AUD: ${CF_ACCESS_AUD:?set CF_ACCESS_AUD — the Access application AUD tag}
     expose:
       - "3000"
     depends_on:

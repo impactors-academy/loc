@@ -77,10 +77,12 @@ SMTP_*            (blank = inquiries logged, no email sent — STAY-4)
 ### frontend
 
 ```
-NEXT_PUBLIC_API_URL   https://api.loctravels.com   ← BUILD ARG, see below
-API_INTERNAL_URL      http://backend:8000
-EDITOR_API_KEY        <same value as above>        ← runtime only
-NODE_ENV              production
+NEXT_PUBLIC_API_URL     https://api.loctravels.com   ← BUILD ARG, see below
+API_INTERNAL_URL        http://backend:8000
+EDITOR_API_KEY          <same value as above>        ← runtime only
+CF_ACCESS_TEAM_DOMAIN   delicate-king-3ab8.cloudflareaccess.com
+CF_ACCESS_AUD           <Access application AUD tag>
+NODE_ENV                production
 ```
 
 **Two things that will bite you:**
@@ -97,6 +99,21 @@ full write access to the API. The `/api/admin/*` proxy reads it per request on t
 
 Both services fail closed if it is missing — the prod compose refuses to start rather
 than serving 503s on every editor route.
+
+`CF_ACCESS_TEAM_DOMAIN` and `CF_ACCESS_AUD` are neither secret nor build args. They tell
+`frontend/middleware.ts` which issuer and audience to accept, so it can verify the Access
+JWT at the origin instead of trusting that every request arrived through Cloudflare. Read
+them off the Access application: **Zero Trust → Access → Applications → LOC admin →
+Overview**; the AUD tag is on that page. If they are unset in production the middleware
+returns 503 on `/admin` and `/api/admin/*` rather than serving them unauthenticated.
+
+Verify after any change to the Access policy — an unauthenticated request must not get a
+200 from either path:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://loctravels.com/api/admin/leads   # 302 → Access
+curl -s -o /dev/null -w "%{http_code}\n" http://<origin-ip>:3000/api/admin/leads  # 403 (origin check)
+```
 
 ---
 
