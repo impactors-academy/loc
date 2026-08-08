@@ -17,6 +17,22 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     which is a genuinely annoying thing to undo.
     """
 
+    # /docs and /redoc are the one place this API serves a real HTML document,
+    # and Swagger UI loads its CSS and JS from a CDN. `default-src 'none'` blocks
+    # both, so the page arrives as a 200 and renders blank — which looks like the
+    # docs are broken rather than like a policy doing its job. These paths get a
+    # policy that permits exactly what the UI needs and nothing else.
+    _DOC_PATHS = ("/docs", "/redoc")
+    _DOC_CSP = (
+        "default-src 'none'; "
+        "script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
+        "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
+        "img-src 'self' data: https://fastapi.tiangolo.com; "
+        "font-src 'self' data:; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none'"
+    )
+
     def __init__(self, app, hsts: bool = True) -> None:
         super().__init__(app)
         self._hsts = hsts
@@ -32,10 +48,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers.setdefault(
             "Permissions-Policy", "camera=(), microphone=(), geolocation=()"
         )
-        # The API returns no markup of its own, so it has no need of any source.
-        response.headers.setdefault(
-            "Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'"
-        )
+        # Everything except the docs returns JSON, so it needs no source at all.
+        if request.url.path.rstrip("/") in self._DOC_PATHS:
+            response.headers.setdefault("Content-Security-Policy", self._DOC_CSP)
+        else:
+            response.headers.setdefault(
+                "Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'"
+            )
 
         forwarded_proto = request.headers.get("x-forwarded-proto", request.url.scheme)
         if self._hsts and forwarded_proto == "https":

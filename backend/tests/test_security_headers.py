@@ -27,3 +27,17 @@ def test_headers_present_on_error_responses(client):
     res = client.get("/api/v1/experiences/definitely-not-a-real-slug")
     assert res.status_code == 404
     assert res.headers["X-Content-Type-Options"] == "nosniff"
+
+
+def test_docs_csp_allows_the_swagger_cdn(client):
+    """Swagger UI loads its CSS and JS from jsdelivr. Under default-src 'none'
+    the page returns 200 and renders blank, which reads as broken docs."""
+    res = client.get("/docs")
+    csp = res.headers["Content-Security-Policy"]
+    assert "https://cdn.jsdelivr.net" in csp
+    assert "script-src" in csp and "style-src" in csp
+
+
+def test_json_endpoints_keep_the_strict_csp(client):
+    res = client.get("/health")
+    assert res.headers["Content-Security-Policy"] == "default-src 'none'; frame-ancestors 'none'"
