@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-08 (Vercel fully retired from loc — project deleted, docs purged)
+**Last updated:** 2026-08-08 (priorities set: loc P1, mother dashboard P2; grindbuddy + prospectbuddy paused)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
 > false findings because it inspected each repo's *checked-out* branch. At the time
@@ -20,13 +20,18 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ## Org Health Snapshot
 
+> **Priority order set 2026-08-08.** 1) **loc** — finish it. 2) **impactors-academy
+> admin dashboard** — the mother dashboard the team will run every other platform
+> from; wanted ASAP. Everything else waits. **grindbuddy and prospectbuddy are
+> PAUSED** until loc and the dashboard are done — do not start work on either.
+
 | Project | Status | Priority | Blocker / Next action |
 |---|---|---|---|
-| impactors-academy | LAUNCHED · Phase 9 | High | CI landed 2026-08-07 (18 lint errors cleared with it). Remaining: real-device 3D perf check; changelog process; Playwright is manual-only, not an automated suite |
+| impactors-academy | LAUNCHED · Phase 9 | **P2 — mother dashboard** | Public site is live and fine. **The dashboard is the work:** `/admin` exists (posts, contacts, ventures, analytics) but auth is NextAuth **v4** with a single shared `ADMIN_PASSWORD` — no per-person identity, no Cloudflare Access, no origin check. See the mother-dashboard section below. Also open: real-device 3D perf, changelog process, Playwright is manual-only |
 | ia-pro | ~85% · Phase 8 done | High | Postgres/blog/projects already shipped (2026-08-04) — remaining: hero video → Cal.com |
-| loc | LIVE · `main` | High | `loctravels.com` serves **200** (verified 2026-08-07). Deploy path is **own VPS via Coolify + Cloudflare**, and now the only one — the leftover Vercel project and GitHub integration were deleted 2026-08-08 (PR #15 ran CI only, no Vercel checks). Next: **Cloudflare Access on editor routes** |
-| prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → backup script → team seed |
-| grindbuddy | Frontend done · PAUSED | Low | Resume only after backend stack decision |
+| loc | LIVE · `main` | **P1** | Vercel fully retired (PR #15/#16). Cloudflare Access verified live at the edge **and** now verified at the origin (PR #17). **ACTION REQUIRED: set `CF_ACCESS_TEAM_DOMAIN` + `CF_ACCESS_AUD` in Coolify or `/admin` returns 503.** Then: security headers (0C-5), rate limiting (0C-6), CSP |
+| prospectbuddy | Built · not deployed | **PAUSED** | Paused 2026-08-08 until loc + the mother dashboard ship. Was: deploy to Coolify → backup script → team seed |
+| grindbuddy | Frontend done · PAUSED | **PAUSED** | Paused 2026-08-08. Resume after loc + the mother dashboard, and only once the backend stack is decided |
 
 ---
 
