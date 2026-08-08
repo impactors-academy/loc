@@ -180,7 +180,7 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 not Vercel/Railway — on the `loctravels.com` domain (already on Cloudflare),
 same pattern as impactors-academy. `railway.toml` and the old SSH-based
 `.github/workflows/deploy.yml` + `nginx/loc.conf` are superseded by this and
-should be retired once the Coolify deploy is confirmed live (see Open Flags).**
+have all since been deleted (2026-08-08).**
 
 - [x] `docker-compose.coolify.yml` drafted at repo root — single-file, Coolify
       "Docker Compose" resource, prod builds for frontend/backend, no pgadmin,
@@ -199,8 +199,8 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 - [ ] Production Docker build confirmed (`output: standalone` wired correctly)
 - [ ] Health check endpoint (`/health`) returning 200 in production
 - [x] Old deploy path retired: `railway.toml` and `.github/workflows/deploy.yml` are
-      gone; the Vercel project and its GitHub integration were deleted 2026-08-08.
-      `nginx/loc.conf` still present — unused under Coolify, delete or document why not.
+      gone; the Vercel project and its GitHub integration were deleted 2026-08-08;
+      `nginx/loc.conf` deleted 2026-08-08. Coolify is the only deploy path.
 
 ## Phase 8 — Launch
 
