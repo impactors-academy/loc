@@ -163,12 +163,19 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       reads `EDITOR_API_KEY` env var, fail-closed if unset) applied to all write routes:
       POST/PUT/DELETE on experiences, stays, products, blog posts; all of /leads/.
       Verified in code 2026-08-03.
-- [ ] Rate limiting on inquiry form — prevent spam submissions (slowapi)
-- [ ] CORS locked to production origin only (not `*` or `localhost` in production config)
+- [x] Rate limiting on inquiry form — slowapi `@limiter.limit("5/minute")` on
+      `POST /api/v1/contact/`. Was already implemented and unmarked; **verified
+      live 2026-08-08**: requests 1–5 return 200, 6 and 7 return 429.
+- [x] CORS locked to production origin — no wildcard anywhere; `cors_origins`
+      defaults to `http://localhost:3000` for dev and is set to
+      `["https://loctravels.com"]` in Coolify (see `docs/DEPLOYMENT.md`).
 - [ ] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
       `git log --all -- .env` returns empty
-- [ ] **HTTP security headers** — FastAPI middleware: `X-Content-Type-Options`,
-      `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `HSTS`
+- [x] **HTTP security headers** — `app/core/security_headers.py`, applied to
+      every API response including errors. HSTS only when the request arrived
+      over https (`x-forwarded-proto`), because sending it over plain http is
+      ignored by browsers and would pin localhost to https for two years in dev.
+      4 tests; verified live 2026-08-08.
 - [x] **Cloudflare Access on editor/admin routes** — verified live 2026-08-08:
       `/admin` and `/api/admin/*` both 302 to the Access login on
       `delicate-king-3ab8.cloudflareaccess.com`; marketing routes stay public.
@@ -178,7 +185,16 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       attaches `EDITOR_API_KEY` to everything it forwards, so that was an unauthenticated
       write path and a read of every lead. Fail-closed: unset Access config in production
       returns 503. Needs `CF_ACCESS_TEAM_DOMAIN` + `CF_ACCESS_AUD` set in Coolify.
-- [ ] **CSP header** — Content Security Policy on the Next.js frontend
+- [x] **CSP header** — plus the same header set, on the Next.js frontend via
+      `next.config.ts` `headers()`. `connect-src` is derived from
+      `NEXT_PUBLIC_API_URL` rather than hard-coded, so it follows the
+      environment instead of blocking every API call locally.
+      **Caveat:** `script-src`/`style-src` keep `'unsafe-inline'` — the app
+      styles with React `style={{}}` props, next/font injects an inline style
+      block, and the JSON-LD blocks are inline scripts. Nonces would require
+      rendering every page dynamically. **Not yet verified in a real browser**
+      (the Chrome extension was unavailable) — load the site once with devtools
+      open and check for CSP violations before trusting it.
 
 ## Phase 7 — Deployment & DevOps
 
