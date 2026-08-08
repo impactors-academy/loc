@@ -27,6 +27,7 @@ frontend/.env.local
 # Frontend
 frontend/node_modules/
 frontend/.next/
+frontend/.next-prod/
 
 # Backend
 backend/__pycache__/

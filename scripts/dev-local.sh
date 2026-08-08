@@ -19,6 +19,33 @@ EDITOR_KEY="${EDITOR_API_KEY:-dev-local-editor-key}"
 
 mkdir -p "$LOGS"
 
+# Local production build, served beside the dev server on its own port and its
+# own build directory. This is the only honest way to check anything that only
+# applies in production — the CSP and HSTS headers, and real bundle behaviour.
+# It is built against the LOCAL API on purpose: pointed at api.loctravels.com,
+# server-side fetches from a dev machine meet Cloudflare's bot challenge and the
+# page renders with no data, which looks like a broken build.
+if [ "${1:-start}" = "prod" ]; then
+  cd "$ROOT/frontend"
+  [ -d node_modules ] || npm install
+  NEXT_DIST_DIR=.next-prod NEXT_PUBLIC_API_URL=http://localhost:8000 npm run build
+  NEXT_DIST_DIR=.next-prod NEXT_PUBLIC_API_URL=http://localhost:8000 \
+    API_INTERNAL_URL=http://localhost:8000 EDITOR_API_KEY="$EDITOR_KEY" \
+    nohup npx next start -p 3001 > "$LOGS/frontend-prod.log" 2>&1 &
+  echo $! > "$LOGS/frontend-prod.pid"
+  for _ in $(seq 1 30); do
+    code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3001/ || true)
+    [ "$code" = "200" ] && break
+    sleep 2
+  done
+  echo
+  echo "  production build  http://localhost:3001   ($code)"
+  echo "  This one carries the CSP and HSTS headers; the dev server does not."
+  echo "  The backend must be running — start it with: bash scripts/dev-local.sh"
+  echo
+  exit 0
+fi
+
 if [ "${1:-start}" = "stop" ]; then
   for f in "$LOGS"/*.pid; do
     [ -e "$f" ] || continue
@@ -53,6 +80,11 @@ sleep 1
 redis-cli ping >/dev/null || { echo "Redis would not start"; exit 1; }
 
 # --- Backend ----------------------------------------------------------------
+# Bound to :: rather than 127.0.0.1. On macOS `localhost` resolves to ::1 first,
+# and a server listening only on IPv4 gives the browser ERR_CONNECTION_REFUSED
+# on http://localhost:8000 while curl to 127.0.0.1 answers perfectly — so it
+# looks like the API is down when it is running. `::` is dual-stack and answers
+# both. The Node servers already bind both, which is why only the API broke.
 cd "$ROOT/backend"
 uv sync -q
 DATABASE_URL="$DB_URL" uv run alembic upgrade head
@@ -63,7 +95,7 @@ fi
 
 DATABASE_URL="$DB_URL" REDIS_URL="$REDIS_URL" EDITOR_API_KEY="$EDITOR_KEY" \
   CORS_ORIGINS="http://localhost:3000" ENV=development \
-  nohup uv run uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload \
+  nohup uv run uvicorn app.main:app --host :: --port 8000 --reload \
   > "$LOGS/backend.log" 2>&1 &
 echo $! > "$LOGS/backend.pid"
 
@@ -95,6 +127,7 @@ cat <<REPORT
   editor key $EDITOR_KEY
   logs       $LOGS/{backend,frontend}.log
   stop       bash scripts/dev-local.sh stop
+  prod       bash scripts/dev-local.sh prod    → :3001, with CSP + HSTS
 
   Tests need the separate database — the suite drops every table on teardown:
     cd backend && DATABASE_URL=postgresql+psycopg2://loc:loc@localhost:5432/loc_test uv run pytest
