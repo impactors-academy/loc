@@ -2,7 +2,8 @@
 
 Platform type: **API Backend (FastAPI) + Marketing Website (Next.js frontend)**
 Stack: FastAPI · SQLAlchemy · Alembic · Postgres · Redis · Next.js · Docker
-Live at: Frontend on Vercel · Backend + DB + Redis on Railway → migrating to Coolify
+Live at: `loctravels.com` (frontend) · `api.loctravels.com` (backend) — Hostinger VPS
+via Coolify, DNS on Cloudflare. Postgres and Redis are containers in the same stack.
 Active branch: `develope` (rename to `develop` — Phase 0B item)
 
 ---
@@ -15,7 +16,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 | `docs/WORKFLOW.md` | Content workflow · editorial process · partner onboarding |
 | `docs/ARCHITECTURE.md` | DB schema · API structure · service boundaries |
 | `docs/ORG-STATUS.md` | Cross-project dependencies · Coolify migration status |
-| `[workspace]/docs/PLATFORM-STANDARDS.md` → API Backend section | New endpoint types · auth · search · payments · Railway→Coolify migration |
+| `[workspace]/docs/PLATFORM-STANDARDS.md` → API Backend section | New endpoint types · auth · search · payments · deploy topology |
 | `[workspace]/docs/DEVOPS-GUIDE.md` | CI for Python · branch strategy · migration runbook |
 | `[workspace]/MASTER-CHECKLIST.md` | Security (Phase 0C) · R4 discovery features · scaling (Phase 7) |
 
@@ -95,7 +96,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 ### DevOps & Deploy
 | Task | Skill |
 |---|---|
-| Railway → Coolify migration | `/coolify-deployment` · `/senior-devops` |
+| Coolify deploy, containers, env vars | `/coolify-deployment` · `/senior-devops` |
 | Docker Compose, multi-service setup | `/docker-development` · `/senior-devops` |
 | GitHub Actions CI (pytest + docker build) | `/ci-cd-pipeline-builder` |
 | Postgres backup, pg_dump → R2 | `/cloudflare-r2` · `/senior-devops` |
@@ -119,8 +120,8 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 Active branch: develope (→ rename to develop — Phase 0B item)
 Branches:   feature/* → develope → main
 CI:         GitHub Actions — pytest + docker build before merge (Phase 0B item)
-Staging:    develope → Railway staging → Coolify staging (after migration)
-Production: main → Railway → Coolify (after migration)
+Staging:    develope → Coolify staging (not yet provisioned)
+Production: main → Coolify on the Hostinger VPS → loctravels.com
 Release:    git tag vX.Y.Z + CHANGELOG.md after merge to main
 ```
 
