@@ -100,7 +100,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 | Docker Compose, multi-service setup | `/docker-development` · `/senior-devops` |
 | GitHub Actions CI (pytest + docker build) | `/ci-cd-pipeline-builder` |
 | Postgres backup, pg_dump → R2 | `/cloudflare-r2` · `/senior-devops` |
-| Nginx config, reverse proxy | `/senior-devops` |
+| Reverse proxy / routing (Coolify handles this — see `docs/DEPLOYMENT.md`) | `/coolify-deployment` · `/senior-devops` |
 | Inquiry notification email | `/resend-email` |
 | Authentik SSO for editor access (Phase 1) | `/authentik-sso` |
 | Admin route protection (Cloudflare) | `/cloudflare-access` |
