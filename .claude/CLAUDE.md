@@ -129,6 +129,9 @@ Release:    git tag vX.Y.Z + CHANGELOG.md after merge to main
 
 ```
 Editor auth:  require_editor_key on ALL POST/PUT/DELETE endpoints ✓
+Admin access: Cloudflare Access at the edge ✓ + Access JWT verified at the origin
+              in frontend/middleware.ts ✓ — /api/admin/* attaches the editor key,
+              so it must never be reachable without both. Fail-closed in prod.
 CORS:         CORSMiddleware — verify no wildcard * in production
 Headers:      FastAPI after_request security headers — pending (Phase 0C-5)
 Rate limit:   slowapi on write endpoints — pending (Phase 0C-6)
