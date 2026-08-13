@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-08 (priorities set: loc P1, mother dashboard P2; grindbuddy + prospectbuddy paused)
+**Last updated:** 2026-08-13 (mother dashboard's Postgres provisioned and cross-posting to ia-pro + loc verified live; ia-pro blog 404 fixed)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
 > false findings because it inspected each repo's *checked-out* branch. At the time
@@ -27,8 +27,8 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 | Project | Status | Priority | Blocker / Next action |
 |---|---|---|---|
-| impactors-academy | LAUNCHED · Phase 9 | **P2 — mother dashboard** | Public site is live and fine. **The dashboard is the work:** `/admin` exists (posts, contacts, ventures, analytics) but auth is NextAuth **v4** with a single shared `ADMIN_PASSWORD` — no per-person identity, no Cloudflare Access, no origin check. See the mother-dashboard section below. **PRs #13 + #14 merged 2026-08-08** — Postgres for contacts/posts (the JSON store was destroyed on every deploy), usable contacts list view, and the `/admin/posts` RSC crash fixed. **ACTION REQUIRED: Coolify needs a Postgres service and `DATABASE_URL` or the app cannot start** — then run `npm run db:migrate` against production. The delete-post fix has never been clicked in a browser. Also open: real-device 3D perf, changelog process, Playwright is manual-only |
-| ia-pro | ~85% · Phase 8 done | High | Postgres/blog/projects already shipped (2026-08-04) — remaining: hero video → Cal.com |
+| impactors-academy | LAUNCHED · Phase 9 | **P2 — mother dashboard** | Public site is live and fine. **2026-08-13: the Postgres gap that blocked the whole dashboard is closed** — `impactors-academy-db` provisioned in Coolify, `DATABASE_URL` wired, migrations run against production. `/blog` and `/admin/posts` were both 500ing all session until this; both confirmed loading clean now. Found and fixed two things along the way: the Dockerfile's runner stage never copied `drizzle.config.ts`/`drizzle/`, so `npm run db:migrate` could never succeed in prod even with a working DB; and `ADMIN_PASSWORD` was unset entirely (or the placeholder), so no password could ever log in. Both fixed and confirmed. **Cross-platform publishing shipped and verified live** — the "Publish to" checkboxes (mother/IA Pro/Loc) on `/admin/posts`, previously built but stuck uncommitted on a stale branch, reviewed, merged to `main`, and tested end-to-end: a real post published from the mother dashboard landed correctly on all three sites, then cleaned up. Still open: auth is NextAuth **v4** with a single shared `ADMIN_PASSWORD` — no per-person identity, no Cloudflare Access, no origin check. Also open: real-device 3D perf, changelog process, Playwright is manual-only |
+| ia-pro | ~85% · Phase 8 done | High | **2026-08-10/13: blog 404 root-caused and fixed** — the content API (`GET`/`POST /api/posts`, `PUT /api/posts/[slug]`) had been built but never pushed; separately, `blog/[slug]/page.tsx` imported `generateHTML` from `@tiptap/core` (needs a browser DOM, throws `window is not defined` server-side) instead of `@tiptap/html` — any published post with real content would 500. Both fixed, pushed, and verified live. Remaining: hero video → Cal.com |
 | loc | LIVE · `main` | **P1** | Vercel fully retired (PR #15/#16). Cloudflare Access verified live at the edge **and** now verified at the origin (PR #17). **ACTION REQUIRED: set `CF_ACCESS_TEAM_DOMAIN` + `CF_ACCESS_AUD` in Coolify or `/admin` returns 503.** Security headers (0C-5) and rate limiting (0C-6) verified live 2026-08-08. **PR #19 merged 2026-08-08** — CSP fixed where it broke Swagger UI and `next dev`, plus `dev-local.sh prod` to serve the real headers locally. The CSP has still never been loaded in a browser: run `bash scripts/dev-local.sh prod` and check :3001 with devtools open |
 | prospectbuddy | Built · not deployed | **PAUSED** | Paused 2026-08-08 until loc + the mother dashboard ship. Was: deploy to Coolify → backup script → team seed |
 | grindbuddy | Frontend done · PAUSED | **PAUSED** | Paused 2026-08-08. Resume after loc + the mother dashboard, and only once the backend stack is decided |
@@ -863,6 +863,42 @@ Current honest state and what's needed:
       - [ ] impactors-academy contact form routed in (replaces `data/contacts.json`)
       - [ ] LOC inquiry form routed in
       - [ ] Rollout comms drafted via `/internal-comms`
+- [x] **Cross-platform publishing from the blog editor (2026-08-10)**
+      No prior plan existed for this; added here. Deliberately extends the
+      existing architecture (PLATFORM-STANDARDS.md §8 — each admin tool owns
+      its own DB) rather than making mother a single source of truth.
+      **It is an option inside the existing `/admin/posts` editor, not a
+      separate section.**
+      - [x] "Publish to" checkboxes on the post form — mother, IA Pro, Loc.
+            Multi-select, at least one required (enforced client and server).
+            New `posts.targets` column, defaulting to `impactors-academy`.
+      - [x] Saving a post mirrors it to every daughter ticked, via each
+            platform's own `X-API-Key` write endpoint. `posts.remote_refs`
+            records the slug each daughter assigned, so a **re-save updates
+            that same remote post instead of creating a duplicate** — that is
+            what keeps the two sides in sync. Untick a platform and its ref is
+            dropped.
+      - [x] A daughter being down never loses the author's work: the post is
+            committed locally first, failures are recorded and shown in the
+            list ("not sent"), never thrown.
+      - [x] Loc has no draft state — a draft is held back rather than published
+            behind the author's back, and goes over on publish.
+      - [x] Reverse direction: `/admin/posts` also lists posts written directly
+            on a daughter, so mother stays in the know either way.
+      - [x] ia-pro gained the content API it lacked —
+            `POST /api/posts` (create) + `PUT /api/posts/[slug]` (update),
+            `POSTS_API_KEY`-gated, plus a public `GET` list.
+            loc needed no backend changes; its blog endpoints already covered it.
+      - [x] Verified end-to-end against live local instances of all three:
+            draft→skip, publish→create, re-save→update-in-place with no
+            duplicates. **Not clicked through in a browser** (Chrome extension
+            disconnected).
+      - [ ] **ACTION REQUIRED for production:** set `IA_PRO_API_URL` /
+            `IA_PRO_POSTS_API_KEY` and `LOC_API_URL` / `LOC_EDITOR_API_KEY` in
+            impactors-academy's Coolify env, plus matching `POSTS_API_KEY` in
+            ia-pro's and `EDITOR_API_KEY` in loc's. Unset = that platform
+            reports "not configured" on save rather than failing silently.
+      - [ ] prospectbuddy and grindbuddy have no blog — out of scope by design.
 
 ---
 
