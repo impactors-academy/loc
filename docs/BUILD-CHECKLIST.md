@@ -203,7 +203,28 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       hitting the container directly bypassed it entirely, and `/api/admin/[...path]`
       attaches `EDITOR_API_KEY` to everything it forwards, so that was an unauthenticated
       write path and a read of every lead. Fail-closed: unset Access config in production
-      returns 503. Needs `CF_ACCESS_TEAM_DOMAIN` + `CF_ACCESS_AUD` set in Coolify.
+      returns 503.
+- [x] **`/admin` 500 root-caused and fixed — 2026-08-13.** `CF_ACCESS_TEAM_DOMAIN`
+      and `CF_ACCESS_AUD` in Coolify were literally set to the placeholder
+      instructional text from `.env.example` (`"set CF_ACCESS_TEAM_DOMAIN — e.g.
+      your-team.cloudflareaccess.com"`), not real values — that string reached
+      `new URL()` in the middleware and threw `ERR_INVALID_URL` uncaught, so the
+      intended fail-closed 503 became an unhandled 500 instead. Set the real team
+      domain (`delicate-king-3ab8.cloudflareaccess.com`) and the AUD tag from the
+      "LOC Admin" Access application, and redeployed.
+      **Second, bigger problem found while fixing the first:** all three DNS
+      records (`loctravels.com`, `www`, `api`) were "DNS only" — not proxied
+      through Cloudflare at all. Access policy at the edge was never seeing any
+      traffic for this zone; only the origin's own JWT check (above) was ever
+      providing protection, and since Access never ran, no valid token could ever
+      be issued — `/admin` would have stayed permanently inaccessible once the 500
+      was fixed. `SSL/TLS` mode was already "Full (strict)" (changed 8 days prior,
+      likely the fix for whatever broke proxying the last time it was tried) and
+      the origin already had a valid Let's Encrypt cert, so switched all three
+      records to Proxied. Verified live: homepage and `api.loctravels.com/health`
+      both 200, `/admin` now correctly 302s to
+      `delicate-king-3ab8.cloudflareaccess.com/cdn-cgi/access/login/...` with a
+      real `cf-ray` header confirming edge enforcement is actually active.
 - [x] **CSP header** — plus the same header set, on the Next.js frontend via
       `next.config.ts` `headers()`. `connect-src` is derived from
       `NEXT_PUBLIC_API_URL` rather than hard-coded, so it follows the
