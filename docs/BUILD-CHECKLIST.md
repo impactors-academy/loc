@@ -148,6 +148,25 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 - [ ] Editor endpoints for Experience and Property create/update (so content doesn't
       require a DB migration to add new listings)
 - [ ] Basic CMS or admin UI for the LOC editor persona
+- [x] **Mother/daughter network — no code changes needed (2026-08-10)** — the
+      impactors-academy mother dashboard's new "Publish to" option on its blog
+      editor (tick which platforms a post goes to) reads loc's blog via
+      the existing public `GET /api/v1/blog/` and writes drafts via the existing
+      `POST /api/v1/blog/` (already gated by `require_editor_key`) — both
+      endpoints already covered this, nothing here needed to change. loc's
+      `content` field is plain text, not the Tiptap JSON ia-pro/impactors-academy
+      use — the mother dashboard sends plain text here and adapts to Tiptap doc
+      shape for the other two. Verified end-to-end against a local instance of
+      this backend (created via the mother's actual sync code path, then
+      re-saved → updated in place rather than duplicated, then cleaned up).
+      Mother holds drafts back from loc, since loc has no draft state and
+      anything sent here is immediately live. `EDITOR_API_KEY` matches the mother
+      dashboard's `LOC_EDITOR_API_KEY` — confirmed in production 2026-08-13:
+      published a real post from the mother dashboard with all three targets
+      ticked, verified it landed at `loctravels.com/blog/<slug>` (200), then
+      deleted the test row via `DELETE /api/v1/blog/<slug>`. See
+      impactors-academy `BUILD-CHECKLIST.md` and workspace `MASTER-CHECKLIST.md`
+      Phase 3 for the full feature.
 
 ## Phase 5 — Testing & QA
 
