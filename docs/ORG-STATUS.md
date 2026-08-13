@@ -852,11 +852,52 @@ Current honest state and what's needed:
 
 ## Phase 3 — Automation + Comms *(depends on Phase 1-2)*
 
-- [ ] **n8n** deployed via Coolify
+- [ ] **n8n** deployed via Coolify — **the top item in this phase.** It blocks
+      the content pipeline below and everything else here.
       - [ ] Cal.com booking → team notification (unblocks ia-pro Phase 4)
       - [ ] Contact-form leads from impactors-academy → shared channel
       - [ ] LOC inquiry form submissions → tracking
-- [ ] **Postiz** deployed — social scheduling
+
+- [ ] **Content automation — automated blog + social posting**
+      Asked for on WhatsApp 2026-08-08; designed and built 2026-08-13.
+      Full design: `docs/CONTENT-AUTOMATION.md`. Dated log of the whole
+      initiative (Markie wants to tell this story afterwards):
+      `docs/CONTENT-AUTOMATION-TIMELINE.md`. Workflows and their tests:
+      `docs/n8n-workflows/`.
+      - [x] Source library curated for both sites — the original ask to the
+            team, done directly after five days of no reply
+      - [x] Two voices as separate persona files — educational for the mother
+            site, technical for IA Pro. Either can be rewritten without
+            touching the other or any workflow.
+      - [x] All eight workflows written, plus shared persona and LLM
+            sub-workflows. Verified by unit tests, static checks and a stubbed
+            dry run — **never run on a live n8n, because there isn't one yet**
+      - [x] `seen_urls` + `posted_social` tables (impactors-academy
+            `drizzle/0005_nervous_maverick.sql`)
+      - [ ] Import into n8n and fill in the 16 `REPLACE_ME` ids
+      - [ ] `POSTS_API_KEY` set in impactors-academy's Coolify env, then given
+            to n8n as an `X-API-Key` Header Auth credential
+      - [ ] Wire WF-01→WF-06 for **IA Pro only** first; read every draft
+            closely for two weeks before trusting the voice check's thresholds
+      - [ ] Add impactors-academy once IA Pro drafts need light edits, not
+            rewrites
+      - [ ] **Decide: does any Coolify host have a GPU?** The whole
+            self-hosted-Qwen question is downstream of this one cheap check
+            (`docs/CONTENT-AUTOMATION.md` §5)
+
+- [ ] **LinkedIn Community Management API approval** — **start now, in
+      parallel with everything else.** Longest lead time in the org: posting to
+      a company page needs a registered company, a verified Page, a two-tier
+      app review and a screencast, and is reported to take months. This gate is
+      identical whether we post through n8n or through Postiz, so it was never
+      "waiting for Postiz" (`docs/CONTENT-AUTOMATION.md` §6).
+      - [ ] LinkedIn developer app created
+      - [ ] Impactors Academy Page verified against it
+      - [ ] Community Management API access requested (`w_organization_social`)
+
+- [ ] **Postiz** deployed — social scheduling. **Not a blocker** for LinkedIn
+      (see above) — deploy it for the content calendar and one place to manage
+      every channel, not to unblock posting.
       - [ ] Content calendar defined per venture via `/social-media-manager`:
             BTFP, IIC, LOC, IA Pro
 - [ ] **Chatwoot** deployed behind SSO — shared inbox
@@ -1193,8 +1234,8 @@ more retention). Add distributed tracing (Tempo) for cross-service request traci
 | Tool | Role | Status | Deploy when |
 |---|---|---|---|
 | Coolify | Deploy/host layer | ✅ Running | Now — onboard remaining projects |
-| n8n | Automation (forms, Cal.com, leads) | ⬜ Not deployed | Phase 3 |
-| Postiz | Social scheduling | ⬜ Not deployed | Phase 3 |
+| n8n | Automation (forms, Cal.com, leads, content pipeline) | ⬜ Not deployed — 8 workflows written and waiting (`docs/n8n-workflows/`) | Phase 3 — top of the list |
+| Postiz | Social scheduling | ⬜ Not deployed — optional, not a blocker (LinkedIn app review is) | Phase 3 |
 | OpenClaw | AI coding agent (alt to Claude Code) | ⬜ Config only | Phase 0 — AGENTS.md in all repos |
 | Authentik | SSO/identity | ⬜ Not deployed | Phase 1 |
 | Uptime Kuma | Uptime monitoring | ⬜ Not deployed | Phase 1 |
