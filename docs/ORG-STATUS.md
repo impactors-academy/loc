@@ -29,7 +29,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 |---|---|---|---|
 | impactors-academy | LAUNCHED · Phase 9 | **P2 — mother dashboard** | Public site is live and fine. **2026-08-13: the Postgres gap that blocked the whole dashboard is closed** — `impactors-academy-db` provisioned in Coolify, `DATABASE_URL` wired, migrations run against production. `/blog` and `/admin/posts` were both 500ing all session until this; both confirmed loading clean now. Found and fixed two things along the way: the Dockerfile's runner stage never copied `drizzle.config.ts`/`drizzle/`, so `npm run db:migrate` could never succeed in prod even with a working DB; and `ADMIN_PASSWORD` was unset entirely (or the placeholder), so no password could ever log in. Both fixed and confirmed. **Cross-platform publishing shipped and verified live** — the "Publish to" checkboxes (mother/IA Pro/Loc) on `/admin/posts`, previously built but stuck uncommitted on a stale branch, reviewed, merged to `main`, and tested end-to-end: a real post published from the mother dashboard landed correctly on all three sites, then cleaned up. Still open: auth is NextAuth **v4** with a single shared `ADMIN_PASSWORD` — no per-person identity, no Cloudflare Access, no origin check. Also open: real-device 3D perf, changelog process, Playwright is manual-only |
 | ia-pro | ~85% · Phase 8 done | High | **2026-08-10/13: blog 404 root-caused and fixed** — the content API (`GET`/`POST /api/posts`, `PUT /api/posts/[slug]`) had been built but never pushed; separately, `blog/[slug]/page.tsx` imported `generateHTML` from `@tiptap/core` (needs a browser DOM, throws `window is not defined` server-side) instead of `@tiptap/html` — any published post with real content would 500. Both fixed, pushed, and verified live. Remaining: hero video → Cal.com |
-| loc | LIVE · `main` | **P1** | Vercel fully retired (PR #15/#16). **2026-08-13: `/admin` 500 fixed** — `CF_ACCESS_TEAM_DOMAIN`/`CF_ACCESS_AUD` in Coolify were literal placeholder text, not real values, crashing the origin's JWT check uncaught instead of failing closed with 503. Set the real values. **Found and fixed a second, bigger gap while there: all three DNS records (`loctravels.com`, `www`, `api`) were DNS-only — Cloudflare Access at the edge was never seeing any traffic for this zone at all**, meaning `/admin` would have stayed permanently inaccessible even after the env fix (Access could never issue a token for the origin check to verify). Switched all three to Proxied; verified live end-to-end (homepage/API 200, `/admin` now correctly 302s to Cloudflare's Access login with a real `cf-ray` header). Security headers (0C-5) and rate limiting (0C-6) verified live 2026-08-08. **PR #19 merged 2026-08-08** — CSP fixed where it broke Swagger UI and `next dev`, plus `dev-local.sh prod` to serve the real headers locally. The CSP has still never been loaded in a browser: run `bash scripts/dev-local.sh prod` and check :3001 with devtools open |
+| loc | LIVE · `main` | **P1** | Vercel fully retired (PR #15/#16). **2026-08-13: `/admin` 500 fixed** — `CF_ACCESS_TEAM_DOMAIN`/`CF_ACCESS_AUD` in Coolify were literal placeholder text, not real values, crashing the origin's JWT check uncaught instead of failing closed with 503. Set the real values. **Found and fixed a second, bigger gap while there: all three DNS records (`loctravels.com`, `www`, `api`) were DNS-only — Cloudflare Access at the edge was never seeing any traffic for this zone at all**, meaning `/admin` would have stayed permanently inaccessible even after the env fix (Access could never issue a token for the origin check to verify). Switched all three to Proxied; verified live end-to-end (homepage/API 200, `/admin` now correctly 302s to Cloudflare's Access login with a real `cf-ray` header). Security headers (0C-5) and rate limiting (0C-6) verified live 2026-08-08. **2026-08-14: CSP verified live in a real browser** — stood up the full stack locally (native `uv`/`psql`/`npm`, temp Docker Postgres+pgvector/Redis on alt ports since the host already runs Postgres on 5432 and in-container `pip install` has no egress in this sandbox), ran `next build && next start -p 3001` per `dev-local.sh prod`, and loaded homepage/`/experiences`/an experience detail page/`/admin` in a real Chromium tab with devtools open. All 6 headers confirmed present (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy); zero CSP console violations on real page loads, external Unsplash images load fine under `img-src`. **One informational-only finding, not a bug**: navigating to `/experiences` logged a CSP `connect-src` violation for `https://localhost:8000` — caused by `upgrade-insecure-requests` upgrading the local `http://` API call because the *test* was served over plain `http://localhost:3001`; production serves everything over HTTPS via Cloudflare so `NEXT_PUBLIC_API_URL` is already `https://api.loctravels.com` and there is no HTTP URL for that directive to upgrade. Confirmed by reading `next.config.ts` — `connect-src` is derived from `NEXT_PUBLIC_API_URL`, not hardcoded. Also incidentally re-confirmed the 2026-08-13 `/admin` fail-closed fix: with no `CF_ACCESS_*` set locally, `/admin` correctly returns `503 {"detail":"Cloudflare Access is not configured..."}` instead of crashing. **This closes the last open Phase 6 (0C-5) item for loc.** Remaining for P1: real production browser check of the CSP is still recommended once convenient (this was a faithful local prod build, not the live domain) — see Phase 6/Open Flags for what's actually left (rate limiting on the inquiry form, editor CRUD admin UI, load test on hybrid search, cross-browser/mobile check). **2026-08-14: design polish (Phase 2) closed, product-side scope.** Discovered `origin/develope` is now stale — 40 commits behind `main` with zero unique commits of its own; a WCAG contrast rebuild, dead-dark-theme removal, and reduced-motion pass had already landed directly on `main` undocumented in any checklist. Found and fixed two real, scoped a11y gaps on the customer-facing pages (home/experiences/stays/store/destinations, admin CMS untouched): filter pill groups (`ExperienceFilters`, `PropertyFilters`) had no `aria-pressed`/group label; `DestinationTabs` was plain buttons with no tab semantics (now real `role="tablist"/"tab"/"tabpanel"`); `InquiryForm` (every experience/stay/product detail page) had visual labels with no `htmlFor`/`id`, so screen readers fell back to placeholder text as the accessible name. All verified live in a real browser. Design tokens and restraint/hierarchy were already substantially done on `main` (rigorous WCAG-derived `loc-*` palette with inline contrast-ratio justification comments) — closed as-is rather than mechanically wrapped in CSS custom properties, since nothing consumes them for theme-switching |
 | prospectbuddy | Built · not deployed | **PAUSED** | Paused 2026-08-08 until loc + the mother dashboard ship. Was: deploy to Coolify → backup script → team seed |
 | grindbuddy | Frontend done · PAUSED | **PAUSED** | Paused 2026-08-08. Resume after loc + the mother dashboard, and only once the backend stack is decided |
 
@@ -869,28 +869,90 @@ Current honest state and what's needed:
       - [x] Two voices as separate persona files — educational for the mother
             site, technical for IA Pro. Either can be rewritten without
             touching the other or any workflow.
-      - [x] All eight workflows written, plus shared persona and LLM
-            sub-workflows. Verified by unit tests, static checks and a stubbed
-            dry run — **never run on a live n8n, because there isn't one yet**
+      - [x] All fourteen workflows written — the seven autonomous ones plus the
+            on-demand pair (WF-08/09) and five shared sub-workflows. Verified by
+            unit tests, static checks, a stubbed dry run, a real `psql` run of
+            every WF-08/09 query, and a clean import into a local n8n 2.34.5
+            (14/14). **No node has executed** — no model, search, GPU or Postiz
+            exists yet
+      - [x] **On-demand half — WF-08 Request Intake + WF-09 Request Publisher.**
+            Added 2026-08-14 after Markie shared a Make.com blueprint as a
+            reference. The existing seven are autonomous (they watch feeds);
+            these two let a human say "make posts about *this*, now" from a
+            request queue, with a blog draft handed off to WF-03 so it goes
+            through the identical review gate. `CONTENT-AUTOMATION.md` §11
+      - [x] **Open-source models are now the default, not an option.**
+            `LLM_PROVIDER` flipped `anthropic`→`ollama`, Perplexity replaced by
+            direct page fetch + SearXNG, gpt-4-vision by Qwen2.5-VL, Leonardo by
+            SDXL/FLUX. This changes the *existing* pipeline too — WF-03 and WF-04
+            now draft on the self-hosted model, so **nothing drafts until Ollama
+            is deployed.** `CONTENT-AUTOMATION.md` §11
+      - [x] `content_requests` + `content_request_posts` — the request queue,
+            `docs/n8n-workflows/sql/001-content-requests.sql`. Applied locally;
+            **still needs a Drizzle migration** to reach staging and production
+      - [x] **The Coolify stack is written** — `docs/n8n-workflows/deploy/`:
+            n8n + Ollama + SearXNG as one Docker Compose resource on a shared
+            network, `searxng/settings.yml` committed because the JSON API is off
+            in the stock config, and a model-sizing table keyed off the VPS's
+            real RAM. `deploy/DEPLOY.md` is the operator runbook. **Not deployed
+            — Claude has no Coolify credentials and should not have any**
+      - [x] WF-03 researches the open web before drafting (`00-web-search`,
+            provider-swappable Brave/Tavily/Exa, fails soft to feed-item-only).
+            Added 2026-08-14 — `docs/CONTENT-AUTOMATION.md` §5
       - [x] `seen_urls` + `posted_social` tables (impactors-academy
             `drizzle/0005_nervous_maverick.sql`)
-      - [ ] Import into n8n and fill in the 16 `REPLACE_ME` ids
+      - [ ] Import into n8n and fill in the 17 `REPLACE_ME` ids
       - [ ] `POSTS_API_KEY` set in impactors-academy's Coolify env, then given
             to n8n as an `X-API-Key` Header Auth credential
       - [ ] Wire WF-01→WF-06 for **IA Pro only** first; read every draft
             closely for two weeks before trusting the voice check's thresholds
       - [ ] Add impactors-academy once IA Pro drafts need light edits, not
             rewrites
-      - [ ] **Decide: does any Coolify host have a GPU?** The whole
-            self-hosted-Qwen question is downstream of this one cheap check
-            (`docs/CONTENT-AUTOMATION.md` §5)
+      - [ ] **Run `free -g && nproc && df -h /` on the VPS** — the one number
+            that gates everything else, because it picks the model tag.
+            `deploy/DEPLOY.md` §0 has the table
+      - [ ] **Deploy the stack** (`deploy/DEPLOY.md`). First boot pulls two
+            multi-GB models: expect 20–40 minutes, and n8n will not start until
+            Ollama is healthy
+      - [ ] **Verify SearXNG returns JSON, not 403** (`deploy/DEPLOY.md` §7).
+            The single most likely thing to be wrong and the one failure the
+            pipeline *hides* — a 403 becomes an empty result set and every draft
+            is silently written with no research behind it
+      - [ ] `N8N_ENCRYPTION_KEY` in Vaultwarden **before** the first deploy.
+            Every credential n8n stores is encrypted with it; lose it and they
+            all have to be re-entered by hand
+      - [ ] Cloudflare Access in front of the n8n editor (Phase 0C), with
+            `/webhook/*` **and `/api/v1/*`** carved out — `/webhook/*` for the
+            stages POSTing to each other, `/api/v1/*` for the mother dashboard's
+            `/admin/automations` calling n8n's REST API cross-service
+            (`docs/n8n-workflows/deploy/DEPLOY.md` §5)
+      - [ ] `FAL_KEY` for image generation. Hostinger sells no GPU plan, so the
+            deployed default is `fal` running FLUX.1-schnell — open weights on a
+            rented GPU. This supersedes the "does any host have a GPU?" check:
+            the answer is no, and buying one is a purchase decision, not config
+            (`docs/CONTENT-AUTOMATION.md` §6, §11)
+      - [x] **`/admin/content-requests` + `/admin/automations` on the mother
+            dashboard (2026-08-14)** — a request is now a form and an approval
+            is a button, not two `psql` statements; workflows can be watched
+            and toggled without opening the n8n editor. Both env-gated
+            (`N8N_BASE_URL`/`N8N_API_KEY`) so they degrade to "not connected"
+            rather than erroring while n8n itself is still undeployed.
+            impactors-academy `docs/BUILD-CHECKLIST.md` has the detail
+      - [ ] **Caption approval on the `/admin/posts` review screen** before
+            WF-07 ever runs live. The blog is exempt from EU AI Act Art. 50(4)
+            disclosure because a human publishes every draft; autoposted
+            captions have no such review to point at
+            (`docs/CONTENT-AUTOMATION.md` §8)
+      - [ ] "How we use AI" page linked from both blog footers — not the
+            Art. 50(4) disclosure, but the honest version, and overdue for an
+            org that teaches people about AI
 
 - [ ] **LinkedIn Community Management API approval** — **start now, in
       parallel with everything else.** Longest lead time in the org: posting to
       a company page needs a registered company, a verified Page, a two-tier
       app review and a screencast, and is reported to take months. This gate is
       identical whether we post through n8n or through Postiz, so it was never
-      "waiting for Postiz" (`docs/CONTENT-AUTOMATION.md` §6).
+      "waiting for Postiz" (`docs/CONTENT-AUTOMATION.md` §7).
       - [ ] LinkedIn developer app created
       - [ ] Impactors Academy Page verified against it
       - [ ] Community Management API access requested (`w_organization_social`)
@@ -1234,7 +1296,9 @@ more retention). Add distributed tracing (Tempo) for cross-service request traci
 | Tool | Role | Status | Deploy when |
 |---|---|---|---|
 | Coolify | Deploy/host layer | ✅ Running | Now — onboard remaining projects |
-| n8n | Automation (forms, Cal.com, leads, content pipeline) | ⬜ Not deployed — 8 workflows written and waiting (`docs/n8n-workflows/`) | Phase 3 — top of the list |
+| n8n | Automation (forms, Cal.com, leads, content pipeline) | ⬜ Not deployed — 14 workflows written and waiting, and the Coolify stack for n8n + Ollama + SearXNG is written too (`docs/n8n-workflows/deploy/`) | Phase 3 — top of the list |
+| Ollama | Self-hosted open-weight models (Qwen3 + Qwen2.5-VL) — now the pipeline's **default**, so nothing drafts without it | ⬜ Not deployed — compose written, model tag pending the VPS RAM check | Phase 3 — blocks the content pipeline |
+| SearXNG | Self-hosted metasearch — replaces Perplexity for pipeline research | ⬜ Not deployed — compose + `settings.yml` written | Phase 3 |
 | Postiz | Social scheduling | ⬜ Not deployed — optional, not a blocker (LinkedIn app review is) | Phase 3 |
 | OpenClaw | AI coding agent (alt to Claude Code) | ⬜ Config only | Phase 0 — AGENTS.md in all repos |
 | Authentik | SSO/identity | ⬜ Not deployed | Phase 1 |
