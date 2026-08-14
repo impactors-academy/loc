@@ -22,7 +22,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
 
   if (isSuccess) {
     return (
-      <div className="rounded-2xl bg-loc-sand/60 border border-loc-sand p-8 text-center">
+      <div className="rounded-2xl bg-loc-sand/60 border border-loc-sand p-8 text-center" role="status">
         <p className="font-heading text-xl text-loc-night mb-2">Message sent!</p>
         <p className="text-loc-stone text-sm">We&apos;ll be in touch with you shortly.</p>
       </div>
@@ -33,10 +33,11 @@ export function InquiryForm({ subject }: InquiryFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+          <label htmlFor="inquiry-name" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
             Name
           </label>
           <input
+            id="inquiry-name"
             required
             placeholder="Your full name"
             value={form.name}
@@ -45,10 +46,11 @@ export function InquiryForm({ subject }: InquiryFormProps) {
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+          <label htmlFor="inquiry-email" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
             Email
           </label>
           <input
+            id="inquiry-email"
             required
             type="email"
             placeholder="your@email.com"
@@ -59,10 +61,11 @@ export function InquiryForm({ subject }: InquiryFormProps) {
         </div>
       </div>
       <div>
-        <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+        <label htmlFor="inquiry-phone" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
           Phone <span className="text-loc-stone/50 normal-case">(optional)</span>
         </label>
         <input
+          id="inquiry-phone"
           placeholder="+212 6xx xxx xxx"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -70,10 +73,11 @@ export function InquiryForm({ subject }: InquiryFormProps) {
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+        <label htmlFor="inquiry-message" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
           Message
         </label>
         <textarea
+          id="inquiry-message"
           required
           rows={4}
           placeholder="Tell us about your dates, group size, or any questions…"
@@ -83,7 +87,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
         />
       </div>
       {isError && (
-        <p className="text-destructive text-sm">Something went wrong. Please try again.</p>
+        <p className="text-destructive text-sm" role="alert">Something went wrong. Please try again.</p>
       )}
       <button
         type="submit"

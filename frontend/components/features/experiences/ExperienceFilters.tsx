@@ -42,12 +42,13 @@ export function ExperienceFilters() {
   return (
     <div className="space-y-4 mb-8">
       {/* Search bar */}
-      <form onSubmit={handleSearch} className="relative max-w-md">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-loc-stone pointer-events-none" />
+      <form onSubmit={handleSearch} role="search" aria-label="Search experiences" className="relative max-w-md">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-loc-stone pointer-events-none" aria-hidden="true" />
         <input
           ref={inputRef}
           defaultValue={activeQ}
           placeholder="Search experiences…"
+          aria-label="Search experiences"
           className="w-full pl-9 pr-9 py-2.5 rounded-full border border-border text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
         />
         {activeQ && (
@@ -63,11 +64,12 @@ export function ExperienceFilters() {
       </form>
 
       {/* Category pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
         {EXPERIENCE_CATEGORIES.map((cat) => (
           <button
             key={cat.value}
             onClick={() => pillPush({ category: cat.value })}
+            aria-pressed={activeCategory === cat.value}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCategory === cat.value
@@ -81,9 +83,10 @@ export function ExperienceFilters() {
       </div>
 
       {/* Country pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by country">
         <button
           onClick={() => pillPush({ country: "" })}
+          aria-pressed={activeCountry === ""}
           className={cn(
             "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
             activeCountry === ""
@@ -97,6 +100,7 @@ export function ExperienceFilters() {
           <button
             key={c.value}
             onClick={() => pillPush({ country: c.value })}
+            aria-pressed={activeCountry === c.value}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCountry === c.value

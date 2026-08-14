@@ -24,11 +24,12 @@ export function PropertyFilters() {
   return (
     <div className="space-y-4 mb-8">
       {/* Type pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by property type">
         {PROPERTY_TYPES.map((t) => (
           <button
             key={t.value}
             onClick={() => push({ type: t.value })}
+            aria-pressed={activeType === t.value}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeType === t.value
@@ -42,9 +43,10 @@ export function PropertyFilters() {
       </div>
 
       {/* Country pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by country">
         <button
           onClick={() => push({ country: "" })}
+          aria-pressed={activeCountry === ""}
           className={cn(
             "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
             activeCountry === ""
@@ -58,6 +60,7 @@ export function PropertyFilters() {
           <button
             key={c.value}
             onClick={() => push({ country: c.value })}
+            aria-pressed={activeCountry === c.value}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCountry === c.value
