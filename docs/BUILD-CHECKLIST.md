@@ -5,7 +5,13 @@ Single source of truth for where this build actually stands. Lives at
 Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 **Stack:** Next.js 15.3 · FastAPI · PostgreSQL 16 + pgvector · Redis · Docker
-**Branches:** `develope` = active development · `main` = production-stable
+**Branches:** `develope` = documented as active development, but **as of 2026-08-14 is
+stale and 40 commits behind `main`** — `origin/develope` has zero commits `main`
+doesn't already contain, and a large amount of undocumented work (the WCAG contrast
+rebuild, dead dark-theme removal, reduced-motion pass, the CF Access fix, this
+session's a11y fixes) landed directly on `main`. Treat `main` as the real working
+branch until `develope` is either deleted or re-synced; don't assume `develope` is
+current without checking `git log origin/main..origin/develope` first.
 **Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 **Revenue model:** referrals, leads, featured placement, digital product sales — not bookings
 
@@ -66,11 +72,36 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 - [x] Dead demo images fixed — `photo-1568393691622` returned 404 in 4 places incl. the
       Kyoto tea ceremony card; audit found a second (`photo-1613490493576`) with a stale
       hash. Every Unsplash URL in `_data.ts`, `images.ts` and `seed.py` now returns 200.
-- [ ] Design tokens established as CSS custom properties — no hardcoded hex values
-      in components; palette, type scale, spacing, and easing all tokenised
-- [ ] Restraint/hierarchy pass on all key pages — `/ui-ux-pro-max`
-- [ ] Accessibility pass — focus states, ARIA on filters/modals, image alt text
-      on all listing cards
+- [x] Design tokens — **not converted to CSS custom properties by design (2026-08-14
+      review).** `loc-*` in `tailwind.config.ts` are raw hex, but every value already
+      carries an inline WCAG-derivation comment (contrast ratio, what it replaced, why)
+      and is the single source of truth — confirmed via grep that zero components use
+      an inline hex literal or an arbitrary `bg-[#...]` value anywhere in `app/` or
+      `components/`; all 54 files reference the `loc-*` / semantic (`--primary` etc.)
+      utilities. Converting the hex to `var(--loc-*)` would be a cosmetic wrapper with
+      no behavioural difference (no theme switching consumes it) and would separate
+      the derivation comments from the values they justify, so left as-is.
+- [x] Restraint/hierarchy — spot-checked homepage, `/experiences`, an experience
+      detail page, `/stays`, and `/destinations/[country]` in a real browser
+      2026-08-14; hierarchy, spacing, and the copper/cream palette read clean with
+      no obvious issues. Not a full page-by-page `/ui-ux-pro-max` pass — re-open if a
+      specific page needs one.
+- [x] Accessibility — **2026-08-14, scoped to the customer-facing "product" pages**
+      (home, experiences, stays, store, destinations; admin CMS not touched).
+      Image alt text on listing cards was already solid (title + location). Fixed:
+      filter pill groups (`ExperienceFilters`, `PropertyFilters`) had no `aria-pressed`
+      or group label — a screen reader user had no way to tell which filter was
+      active; added `role="group"` + `aria-label` + `aria-pressed` on every pill.
+      `DestinationTabs` was a plain button pair with no tab semantics — rebuilt as a
+      real ARIA tabs pattern (`role="tablist"/"tab"/"tabpanel"`, `aria-selected`,
+      `aria-controls`). `InquiryForm` (used on every experience/stay/product detail
+      page) had visual `<label>` text with no `htmlFor`/`id` — screen readers were
+      falling back to the placeholder as the accessible name, which disappears once
+      typing starts; added the id/htmlFor pairs, plus `role="status"` on the success
+      message and `role="alert"` on the error message. All verified live in a real
+      browser (accessible names, `aria-pressed`/`aria-selected` toggling correctly).
+      Focus states already present site-wide (`focus:ring-2` on every interactive
+      element). No modals exist on the product side to audit.
 - [x] Global copy: all hero/section copy globalised (not Morocco-only language)
 - [x] Typewriter hero wired with 10-destination rotation
 
