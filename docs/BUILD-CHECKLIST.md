@@ -95,16 +95,32 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       reads `EDITOR_API_KEY` env var, fail-closed if unset) applied to all write routes:
       POST/PUT/DELETE on experiences, stays, products, blog posts; all of /leads/.
       Verified in code 2026-08-03.
-- [ ] Rate limiting on inquiry form — prevent spam submissions (slowapi)
-- [ ] CORS locked to production origin only (not `*` or `localhost` in production config)
-- [ ] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
-      `git log --all -- .env` returns empty
-- [ ] **HTTP security headers** — FastAPI middleware: `X-Content-Type-Options`,
-      `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `HSTS`
-- [ ] **Cloudflare Access on editor/admin routes** — any `/admin*` or editor-only
-      routes protected by Cloudflare Zero Trust (team emails only). Use
-      `/cloudflare-access` skill.
-- [ ] **CSP header** — Content Security Policy on the Next.js frontend
+- [x] Rate limiting on inquiry form — `slowapi`, `@limiter.limit("5/minute")` on
+      `POST /api/v1/contact/` (`backend/app/api/v1/endpoints/contact.py`); confirmed
+      live on `main` 2026-08-14.
+- [x] CORS locked to production origin only — `CORSMiddleware` with an explicit,
+      config-driven `allow_origins` list (`Settings.cors_origins`), no wildcard;
+      confirmed on `main` 2026-08-14.
+- [x] No secrets committed — `git log --all -p -- .env` returns zero diffs on this
+      repo's full history; confirmed 2026-08-14.
+- [x] **HTTP security headers** — Next.js frontend ships `X-Content-Type-Options`,
+      `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Strict-Transport-Security`
+      in production (`next.config.ts`); verified live 2026-08-08, re-verified in a real
+      browser locally 2026-08-14.
+- [x] **Cloudflare Access on editor/admin routes** — `/admin*` protected by Cloudflare
+      Zero Trust at the edge; `CF_ACCESS_TEAM_DOMAIN`/`CF_ACCESS_AUD` fixed and all three
+      DNS records switched to Proxied 2026-08-13; verified live (`/admin` 302s to Access
+      login). Origin also fails closed (503) if the env vars are ever unset — confirmed
+      2026-08-14.
+- [x] **CSP header** — Content Security Policy on the Next.js frontend, derived from
+      `NEXT_PUBLIC_API_URL` (not hardcoded) so it never blocks its own API host.
+      PR #19 (2026-08-08) fixed it where it broke Swagger UI and `next dev`.
+      **2026-08-14: verified live in a real browser** via `dev-local.sh prod` (:3001) —
+      all headers present, zero CSP console violations across homepage, `/experiences`,
+      an experience detail page, and `/admin`. One local-only false alarm understood and
+      documented (see MASTER-CHECKLIST loc entry): `upgrade-insecure-requests` upgrading
+      a plain-`http` local API call, which cannot happen in production since the whole
+      site + `NEXT_PUBLIC_API_URL` are already `https` there.
 
 ## Phase 7 — Deployment & DevOps
 
@@ -117,29 +133,33 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 - [x] `docker-compose.coolify.yml` drafted at repo root — single-file, Coolify
       "Docker Compose" resource, prod builds for frontend/backend, no pgadmin,
       no published ports on db/redis
-- [ ] VPS capacity check run (`free -h`, `df -h`, `docker stats --no-stream`) —
-      confirm headroom before adding 4 more containers (`/senior-devops`)
-- [ ] Cloudflare DNS: `loctravels.com`, `www.loctravels.com`, `api.loctravels.com`
-      → A records pointing at the VPS IP
-- [ ] Coolify: new "Docker Compose" resource added, pointed at this repo/branch `main`,
-      compose file path set to `docker-compose.coolify.yml`
-- [ ] Coolify: domains assigned per service — frontend → `loctravels.com` +
-      `www.loctravels.com` (port 3000), backend → `api.loctravels.com` (port 8000)
-- [ ] Coolify: environment variables set (`POSTGRES_PASSWORD`, `EMAIL_TO`,
-      `SMTP_*`, `OPENAI_API_KEY` optional) — no secrets committed to the compose file
-- [ ] First deploy triggered — `alembic upgrade head` runs clean, all 4 containers healthy
-- [ ] Production Docker build confirmed (`output: standalone` wired correctly)
-- [ ] Health check endpoint (`/health`) returning 200 in production
-- [ ] Old deploy path retired: `.github/workflows/deploy.yml`, `nginx/loc.conf`,
-      `railway.toml` removed or clearly marked deprecated once Coolify deploy is verified
+- [ ] VPS capacity check (`free -h`, `df -h`, `docker stats --no-stream`) — never
+      formally run; site is live and stable but headroom for the 4 loc containers
+      alongside every other project's containers hasn't been confirmed
+      (`/senior-devops`)
+- [x] Cloudflare DNS: `loctravels.com`, `www.loctravels.com`, `api.loctravels.com`
+      → all three Proxied (fixed 2026-08-13 — were DNS-only, which silently broke
+      Cloudflare Access at the edge); confirmed live 2026-08-14 (`loctravels.com` 200,
+      `api.loctravels.com/health` 200)
+- [x] Coolify: "Docker Compose" resource live, pointed at `main`,
+      compose file `docker-compose.coolify.yml`
+- [x] Coolify: domains assigned per service — frontend `loctravels.com`/`www`,
+      backend `api.loctravels.com` — confirmed live
+- [x] Coolify: environment variables set — no secrets committed to the compose file
+- [x] First deploy triggered — all containers healthy in production
+- [x] Production Docker build confirmed — verified live
+- [x] Health check endpoint (`/health`) returning 200 in production — confirmed 2026-08-14
+- [x] Old deploy path retired: `.github/workflows/deploy.yml`, `nginx/loc.conf`,
+      `railway.toml` — confirmed removed from `main` 2026-08-14 (zero matches in the tree)
 
 ## Phase 8 — Launch
 
 - [ ] SEO pass — OG/Twitter meta on experience/stay/product detail pages;
       JSON-LD (`TouristAttraction`, `LodgingBusiness`, `Product` schemas)
-- [ ] `robots.txt` present; disallows editor/admin routes; points to sitemap
-- [ ] `sitemap.xml` — covers `/experiences/[slug]`, `/stays/[slug]`, `/products/[slug]`,
-      `/blog/[slug]` with `lastmod` from DB
+- [x] `robots.txt` present — confirmed live 2026-08-14 (200); verify it disallows
+      `/admin*` specifically
+- [x] `sitemap.xml` present — confirmed live 2026-08-14 (200); verify slug coverage
+      and `lastmod` still match the DB as content grows
 - [ ] Analytics before launch — GA4 or Plausible; track referral CTA clicks,
       inquiry form submissions, product page views, search queries
 - [ ] Social share preview verified (OG image renders correctly on WhatsApp/LinkedIn)
@@ -171,8 +191,9 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 ## Open Flags
 
 1. ~~**Editor auth**~~ — CLOSED 2026-08-03: all write endpoints use `require_editor_key`.
-2. **Production deploy not confirmed** — Coolify deploy (not Vercel/Railway) is the
-   target; DNS and health checks not yet verified. See Phase 7.
+2. ~~**Production deploy not confirmed**~~ — CLOSED 2026-08-14: Coolify deploy on
+   `loctravels.com`/`api.loctravels.com` confirmed live (homepage, API health,
+   sitemap, robots.txt all 200; old Vercel/Railway paths confirmed removed from `main`).
 3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02).
 4. **Custom domain** — confirm final domain for LOC (`loctravels.com` per Phase 7 plan
    vs. subdomain under `impactorsacademy.com`).
