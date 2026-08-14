@@ -6,25 +6,32 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-05 (audit pass — corrected against actual repo state, see notes below)
+**Last updated:** 2026-08-13 (mother dashboard's Postgres provisioned and cross-posting to ia-pro + loc verified live; ia-pro blog 404 fixed)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
-> false findings because it inspected each repo's *checked-out* branch. loc's active
-> branch is `develope`, which is 13 commits ahead of `main`; work that exists there
-> was reported as missing. **Always check the active branch, and check whether it has
-> been merged.** A feature existing on a dev branch is not the same as it being live.
+> false findings because it inspected each repo's *checked-out* branch. At the time
+> loc's active branch was `develope`, 13 commits ahead of `main`, and work that
+> existed there was reported as missing. **Always check the active branch, and check
+> whether it has been merged.** A feature existing on a dev branch is not the same as
+> it being live. (As of 2026-08-07 `develope` is fully merged and 20 commits *behind*
+> `main` — `main` is now loc's live branch. Verify before trusting either sentence.)
 
 ---
 
 ## Org Health Snapshot
 
+> **Priority order set 2026-08-08.** 1) **loc** — finish it. 2) **impactors-academy
+> admin dashboard** — the mother dashboard the team will run every other platform
+> from; wanted ASAP. Everything else waits. **grindbuddy and prospectbuddy are
+> PAUSED** until loc and the dashboard are done — do not start work on either.
+
 | Project | Status | Priority | Blocker / Next action |
 |---|---|---|---|
-| impactors-academy | LAUNCHED · Phase 9 | High | Real-device 3D perf check; changelog process; Playwright is manual-only, not an automated suite |
-| ia-pro | ~85% · Phase 8 done | High | Postgres/blog/projects already shipped (2026-08-04) — remaining: hero video → Cal.com |
-| loc | ~90% · R4 + LEAD-3 done on `develope` | High | **Not yet live** — `loctravels.com` returns 503 (Cloudflare DNS up, no origin). Deploy target: **Hostinger VPS via Coolify**. Order matters: merge PR #1 → merge `develope`→`main` → configure Cloudflare Access → deploy. Do **not** deploy `main` as it stands (no editor auth) |
-| prospectbuddy | Built · not deployed | Medium | Deploy to Coolify → backup script → team seed |
-| grindbuddy | Frontend done · PAUSED | Low | Resume only after backend stack decision |
+| impactors-academy | LAUNCHED · Phase 9 | **P2 — mother dashboard** | Public site is live and fine. **2026-08-13: the Postgres gap that blocked the whole dashboard is closed** — `impactors-academy-db` provisioned in Coolify, `DATABASE_URL` wired, migrations run against production. `/blog` and `/admin/posts` were both 500ing all session until this; both confirmed loading clean now. Found and fixed two things along the way: the Dockerfile's runner stage never copied `drizzle.config.ts`/`drizzle/`, so `npm run db:migrate` could never succeed in prod even with a working DB; and `ADMIN_PASSWORD` was unset entirely (or the placeholder), so no password could ever log in. Both fixed and confirmed. **Cross-platform publishing shipped and verified live** — the "Publish to" checkboxes (mother/IA Pro/Loc) on `/admin/posts`, previously built but stuck uncommitted on a stale branch, reviewed, merged to `main`, and tested end-to-end: a real post published from the mother dashboard landed correctly on all three sites, then cleaned up. Still open: auth is NextAuth **v4** with a single shared `ADMIN_PASSWORD` — no per-person identity, no Cloudflare Access, no origin check. Also open: real-device 3D perf, changelog process, Playwright is manual-only |
+| ia-pro | ~85% · Phase 8 done | High | **2026-08-10/13: blog 404 root-caused and fixed** — the content API (`GET`/`POST /api/posts`, `PUT /api/posts/[slug]`) had been built but never pushed; separately, `blog/[slug]/page.tsx` imported `generateHTML` from `@tiptap/core` (needs a browser DOM, throws `window is not defined` server-side) instead of `@tiptap/html` — any published post with real content would 500. Both fixed, pushed, and verified live. Remaining: hero video → Cal.com |
+| loc | LIVE · `main` | **P1** | Vercel fully retired (PR #15/#16). **2026-08-13: `/admin` 500 fixed** — `CF_ACCESS_TEAM_DOMAIN`/`CF_ACCESS_AUD` in Coolify were literal placeholder text, not real values, crashing the origin's JWT check uncaught instead of failing closed with 503. Set the real values. **Found and fixed a second, bigger gap while there: all three DNS records (`loctravels.com`, `www`, `api`) were DNS-only — Cloudflare Access at the edge was never seeing any traffic for this zone at all**, meaning `/admin` would have stayed permanently inaccessible even after the env fix (Access could never issue a token for the origin check to verify). Switched all three to Proxied; verified live end-to-end (homepage/API 200, `/admin` now correctly 302s to Cloudflare's Access login with a real `cf-ray` header). Security headers (0C-5) and rate limiting (0C-6) verified live 2026-08-08. **2026-08-14: CSP verified live in a real browser** — stood up the full stack locally (native `uv`/`psql`/`npm`, temp Docker Postgres+pgvector/Redis on alt ports since the host already runs Postgres on 5432 and in-container `pip install` has no egress in this sandbox), ran `next build && next start -p 3001` per `dev-local.sh prod`, and loaded homepage/`/experiences`/an experience detail page/`/admin` in a real Chromium tab with devtools open. All 6 headers confirmed present (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy); zero CSP console violations on real page loads, external Unsplash images load fine under `img-src`. **One informational-only finding, not a bug**: navigating to `/experiences` logged a CSP `connect-src` violation for `https://localhost:8000` — caused by `upgrade-insecure-requests` upgrading the local `http://` API call because the *test* was served over plain `http://localhost:3001`; production serves everything over HTTPS via Cloudflare so `NEXT_PUBLIC_API_URL` is already `https://api.loctravels.com` and there is no HTTP URL for that directive to upgrade. Confirmed by reading `next.config.ts` — `connect-src` is derived from `NEXT_PUBLIC_API_URL`, not hardcoded. Also incidentally re-confirmed the 2026-08-13 `/admin` fail-closed fix: with no `CF_ACCESS_*` set locally, `/admin` correctly returns `503 {"detail":"Cloudflare Access is not configured..."}` instead of crashing. **This closes the last open Phase 6 (0C-5) item for loc.** Remaining for P1: real production browser check of the CSP is still recommended once convenient (this was a faithful local prod build, not the live domain) — see Phase 6/Open Flags for what's actually left (rate limiting on the inquiry form, editor CRUD admin UI, load test on hybrid search, cross-browser/mobile check) |
+| prospectbuddy | Built · not deployed | **PAUSED** | Paused 2026-08-08 until loc + the mother dashboard ship. Was: deploy to Coolify → backup script → team seed |
+| grindbuddy | Frontend done · PAUSED | **PAUSED** | Paused 2026-08-08. Resume after loc + the mother dashboard, and only once the backend stack is decided |
 
 ---
 
@@ -50,6 +57,23 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
       stale (786 lines of drift) — needs a re-sync run.
 - [ ] Each sub-repo CLAUDE.md updated with ORG-STATUS.md sync-check line — blocked on
       the CLAUDE.md-per-sub-repo item above (can't add a line to a file that doesn't exist)
+- [x] Global skills backed up to `impactors-academy/claude-config` (public) — flat
+      mirror of `~/.claude/skills/`, 486 skills. Pushed 2026-08-05.
+      **2026-08-08:** audited all 6 CLAUDE.md files — 99 distinct skill references,
+      7 of which resolved to nothing, including 6 of the 7 "Org Infrastructure"
+      skills (only `/coolify-deployment` existed). Written and pushed:
+      `/cloudflare-access`, `/resend-email`, `/cloudflare-r2`, `/authentik-sso`,
+      `/nextauth-setup`, `/drizzle-orm`, `/obs-design-critique`. Each has a
+      `references/impactors-academy.md` recording real org state.
+- [x] `/color-combinations` skill built and pushed — Sanzo Wada's 348 combinations as
+      queryable data + CIEDE2000/WCAG tooling + `references/brands/` for per-brand
+      palettes. Wired into all 6 CLAUDE.md files and the 8 colour-adjacent skills.
+      **This is the single entry point for every colour decision, org-wide.**
+- [x] `setup.sh` syncs claude-config into `~/.claude/skills/` on a fresh machine —
+      added 2026-08-05. Mirrors to `~/.claude/.claude-config-mirror`, rsyncs without
+      `--delete` so machine-local skills survive. **Not yet run on a second machine.**
+- [ ] Remaining projects migrated to the canonical copper tokens — ia-pro,
+      prospectbuddy, loc (see Design Token Canonical Values → Adoption status)
 
 ---
 
@@ -643,8 +667,9 @@ a bad migration on staging must not destroy prod data.
 
 ### 0B-3 — CI: Test Gates (nothing merges without passing tests)
 
-Right now tests exist on impactors-academy and ia-pro but they don't block merges.
-A GitHub Actions workflow must run on every PR and block the merge if tests fail.
+As of 2026-08-07 every active repo except prospectbuddy runs a CI workflow on every
+PR. **Branch protection is still not configured anywhere**, so a red check is visible
+but does not actually block the merge button — that is the remaining half of this item.
 
 **Standard CI workflow for every repo (`.github/workflows/ci.yml`):**
 ```yaml
@@ -660,9 +685,13 @@ jobs:
       - build (npm run build)  ← catches import errors CI won't catch otherwise
 ```
 
-- [ ] **impactors-academy** — has Coolify auto-deploy on push to `main`, but no GitHub
-      Actions test gate — `.github/` doesn't exist. Deploy ≠ CI; still needed.
-- [ ] **ia-pro** — same gap; Turborepo-aware (`turbo run test build --filter=pro`) when added
+- [x] **impactors-academy** — DONE 2026-08-07. `.github/workflows/ci.yml`: `npm ci` →
+      typecheck → lint → test → build, on PRs into `main`/`develop` and pushes to `main`.
+      Its first run found the 18 lint errors that had been sitting on `main` unnoticed
+      (all fixed in the same PR). Deploy ≠ CI — the Coolify auto-deploy was never a gate.
+- [x] **ia-pro** — DONE 2026-08-06 (was already true when this line was last written;
+      corrected 2026-08-07). Turborepo-aware via the root `turbo` scripts. Adding it is
+      what exposed the lockfile defect that had made eslint unrunnable for everyone.
 - [x] **loc** — CORRECTED 2026-08-05: CI already exists —
       `.github/workflows/ci.yml` runs ruff+pytest (with Postgres+Redis services) and
       eslint+tsc+build, on push/PR to `develope`/`main`; `deploy.yml` also present.
@@ -823,17 +852,156 @@ Current honest state and what's needed:
 
 ## Phase 3 — Automation + Comms *(depends on Phase 1-2)*
 
-- [ ] **n8n** deployed via Coolify
+- [ ] **n8n** deployed via Coolify — **the top item in this phase.** It blocks
+      the content pipeline below and everything else here.
       - [ ] Cal.com booking → team notification (unblocks ia-pro Phase 4)
       - [ ] Contact-form leads from impactors-academy → shared channel
       - [ ] LOC inquiry form submissions → tracking
-- [ ] **Postiz** deployed — social scheduling
+
+- [ ] **Content automation — automated blog + social posting**
+      Asked for on WhatsApp 2026-08-08; designed and built 2026-08-13.
+      Full design: `docs/CONTENT-AUTOMATION.md`. Dated log of the whole
+      initiative (Markie wants to tell this story afterwards):
+      `docs/CONTENT-AUTOMATION-TIMELINE.md`. Workflows and their tests:
+      `docs/n8n-workflows/`.
+      - [x] Source library curated for both sites — the original ask to the
+            team, done directly after five days of no reply
+      - [x] Two voices as separate persona files — educational for the mother
+            site, technical for IA Pro. Either can be rewritten without
+            touching the other or any workflow.
+      - [x] All fourteen workflows written — the seven autonomous ones plus the
+            on-demand pair (WF-08/09) and five shared sub-workflows. Verified by
+            unit tests, static checks, a stubbed dry run, a real `psql` run of
+            every WF-08/09 query, and a clean import into a local n8n 2.34.5
+            (14/14). **No node has executed** — no model, search, GPU or Postiz
+            exists yet
+      - [x] **On-demand half — WF-08 Request Intake + WF-09 Request Publisher.**
+            Added 2026-08-14 after Markie shared a Make.com blueprint as a
+            reference. The existing seven are autonomous (they watch feeds);
+            these two let a human say "make posts about *this*, now" from a
+            request queue, with a blog draft handed off to WF-03 so it goes
+            through the identical review gate. `CONTENT-AUTOMATION.md` §11
+      - [x] **Open-source models are now the default, not an option.**
+            `LLM_PROVIDER` flipped `anthropic`→`ollama`, Perplexity replaced by
+            direct page fetch + SearXNG, gpt-4-vision by Qwen2.5-VL, Leonardo by
+            SDXL/FLUX. This changes the *existing* pipeline too — WF-03 and WF-04
+            now draft on the self-hosted model, so **nothing drafts until Ollama
+            is deployed.** `CONTENT-AUTOMATION.md` §11
+      - [x] `content_requests` + `content_request_posts` — the request queue,
+            `docs/n8n-workflows/sql/001-content-requests.sql`. Applied locally;
+            **still needs a Drizzle migration** to reach staging and production
+      - [x] **The Coolify stack is written** — `docs/n8n-workflows/deploy/`:
+            n8n + Ollama + SearXNG as one Docker Compose resource on a shared
+            network, `searxng/settings.yml` committed because the JSON API is off
+            in the stock config, and a model-sizing table keyed off the VPS's
+            real RAM. `deploy/DEPLOY.md` is the operator runbook. **Not deployed
+            — Claude has no Coolify credentials and should not have any**
+      - [x] WF-03 researches the open web before drafting (`00-web-search`,
+            provider-swappable Brave/Tavily/Exa, fails soft to feed-item-only).
+            Added 2026-08-14 — `docs/CONTENT-AUTOMATION.md` §5
+      - [x] `seen_urls` + `posted_social` tables (impactors-academy
+            `drizzle/0005_nervous_maverick.sql`)
+      - [ ] Import into n8n and fill in the 17 `REPLACE_ME` ids
+      - [ ] `POSTS_API_KEY` set in impactors-academy's Coolify env, then given
+            to n8n as an `X-API-Key` Header Auth credential
+      - [ ] Wire WF-01→WF-06 for **IA Pro only** first; read every draft
+            closely for two weeks before trusting the voice check's thresholds
+      - [ ] Add impactors-academy once IA Pro drafts need light edits, not
+            rewrites
+      - [ ] **Run `free -g && nproc && df -h /` on the VPS** — the one number
+            that gates everything else, because it picks the model tag.
+            `deploy/DEPLOY.md` §0 has the table
+      - [ ] **Deploy the stack** (`deploy/DEPLOY.md`). First boot pulls two
+            multi-GB models: expect 20–40 minutes, and n8n will not start until
+            Ollama is healthy
+      - [ ] **Verify SearXNG returns JSON, not 403** (`deploy/DEPLOY.md` §7).
+            The single most likely thing to be wrong and the one failure the
+            pipeline *hides* — a 403 becomes an empty result set and every draft
+            is silently written with no research behind it
+      - [ ] `N8N_ENCRYPTION_KEY` in Vaultwarden **before** the first deploy.
+            Every credential n8n stores is encrypted with it; lose it and they
+            all have to be re-entered by hand
+      - [ ] Cloudflare Access in front of the n8n editor (Phase 0C), with
+            `/webhook/*` **and `/api/v1/*`** carved out — `/webhook/*` for the
+            stages POSTing to each other, `/api/v1/*` for the mother dashboard's
+            `/admin/automations` calling n8n's REST API cross-service
+            (`docs/n8n-workflows/deploy/DEPLOY.md` §5)
+      - [ ] `FAL_KEY` for image generation. Hostinger sells no GPU plan, so the
+            deployed default is `fal` running FLUX.1-schnell — open weights on a
+            rented GPU. This supersedes the "does any host have a GPU?" check:
+            the answer is no, and buying one is a purchase decision, not config
+            (`docs/CONTENT-AUTOMATION.md` §6, §11)
+      - [x] **`/admin/content-requests` + `/admin/automations` on the mother
+            dashboard (2026-08-14)** — a request is now a form and an approval
+            is a button, not two `psql` statements; workflows can be watched
+            and toggled without opening the n8n editor. Both env-gated
+            (`N8N_BASE_URL`/`N8N_API_KEY`) so they degrade to "not connected"
+            rather than erroring while n8n itself is still undeployed.
+            impactors-academy `docs/BUILD-CHECKLIST.md` has the detail
+      - [ ] **Caption approval on the `/admin/posts` review screen** before
+            WF-07 ever runs live. The blog is exempt from EU AI Act Art. 50(4)
+            disclosure because a human publishes every draft; autoposted
+            captions have no such review to point at
+            (`docs/CONTENT-AUTOMATION.md` §8)
+      - [ ] "How we use AI" page linked from both blog footers — not the
+            Art. 50(4) disclosure, but the honest version, and overdue for an
+            org that teaches people about AI
+
+- [ ] **LinkedIn Community Management API approval** — **start now, in
+      parallel with everything else.** Longest lead time in the org: posting to
+      a company page needs a registered company, a verified Page, a two-tier
+      app review and a screencast, and is reported to take months. This gate is
+      identical whether we post through n8n or through Postiz, so it was never
+      "waiting for Postiz" (`docs/CONTENT-AUTOMATION.md` §7).
+      - [ ] LinkedIn developer app created
+      - [ ] Impactors Academy Page verified against it
+      - [ ] Community Management API access requested (`w_organization_social`)
+
+- [ ] **Postiz** deployed — social scheduling. **Not a blocker** for LinkedIn
+      (see above) — deploy it for the content calendar and one place to manage
+      every channel, not to unblock posting.
       - [ ] Content calendar defined per venture via `/social-media-manager`:
             BTFP, IIC, LOC, IA Pro
 - [ ] **Chatwoot** deployed behind SSO — shared inbox
       - [ ] impactors-academy contact form routed in (replaces `data/contacts.json`)
       - [ ] LOC inquiry form routed in
       - [ ] Rollout comms drafted via `/internal-comms`
+- [x] **Cross-platform publishing from the blog editor (2026-08-10)**
+      No prior plan existed for this; added here. Deliberately extends the
+      existing architecture (PLATFORM-STANDARDS.md §8 — each admin tool owns
+      its own DB) rather than making mother a single source of truth.
+      **It is an option inside the existing `/admin/posts` editor, not a
+      separate section.**
+      - [x] "Publish to" checkboxes on the post form — mother, IA Pro, Loc.
+            Multi-select, at least one required (enforced client and server).
+            New `posts.targets` column, defaulting to `impactors-academy`.
+      - [x] Saving a post mirrors it to every daughter ticked, via each
+            platform's own `X-API-Key` write endpoint. `posts.remote_refs`
+            records the slug each daughter assigned, so a **re-save updates
+            that same remote post instead of creating a duplicate** — that is
+            what keeps the two sides in sync. Untick a platform and its ref is
+            dropped.
+      - [x] A daughter being down never loses the author's work: the post is
+            committed locally first, failures are recorded and shown in the
+            list ("not sent"), never thrown.
+      - [x] Loc has no draft state — a draft is held back rather than published
+            behind the author's back, and goes over on publish.
+      - [x] Reverse direction: `/admin/posts` also lists posts written directly
+            on a daughter, so mother stays in the know either way.
+      - [x] ia-pro gained the content API it lacked —
+            `POST /api/posts` (create) + `PUT /api/posts/[slug]` (update),
+            `POSTS_API_KEY`-gated, plus a public `GET` list.
+            loc needed no backend changes; its blog endpoints already covered it.
+      - [x] Verified end-to-end against live local instances of all three:
+            draft→skip, publish→create, re-save→update-in-place with no
+            duplicates. **Not clicked through in a browser** (Chrome extension
+            disconnected).
+      - [ ] **ACTION REQUIRED for production:** set `IA_PRO_API_URL` /
+            `IA_PRO_POSTS_API_KEY` and `LOC_API_URL` / `LOC_EDITOR_API_KEY` in
+            impactors-academy's Coolify env, plus matching `POSTS_API_KEY` in
+            ia-pro's and `EDITOR_API_KEY` in loc's. Unset = that platform
+            reports "not configured" on save rather than failing silently.
+      - [ ] prospectbuddy and grindbuddy have no blog — out of scope by design.
 
 ---
 
@@ -1128,8 +1296,10 @@ more retention). Add distributed tracing (Tempo) for cross-service request traci
 | Tool | Role | Status | Deploy when |
 |---|---|---|---|
 | Coolify | Deploy/host layer | ✅ Running | Now — onboard remaining projects |
-| n8n | Automation (forms, Cal.com, leads) | ⬜ Not deployed | Phase 3 |
-| Postiz | Social scheduling | ⬜ Not deployed | Phase 3 |
+| n8n | Automation (forms, Cal.com, leads, content pipeline) | ⬜ Not deployed — 14 workflows written and waiting, and the Coolify stack for n8n + Ollama + SearXNG is written too (`docs/n8n-workflows/deploy/`) | Phase 3 — top of the list |
+| Ollama | Self-hosted open-weight models (Qwen3 + Qwen2.5-VL) — now the pipeline's **default**, so nothing drafts without it | ⬜ Not deployed — compose written, model tag pending the VPS RAM check | Phase 3 — blocks the content pipeline |
+| SearXNG | Self-hosted metasearch — replaces Perplexity for pipeline research | ⬜ Not deployed — compose + `settings.yml` written | Phase 3 |
+| Postiz | Social scheduling | ⬜ Not deployed — optional, not a blocker (LinkedIn app review is) | Phase 3 |
 | OpenClaw | AI coding agent (alt to Claude Code) | ⬜ Config only | Phase 0 — AGENTS.md in all repos |
 | Authentik | SSO/identity | ⬜ Not deployed | Phase 1 |
 | Uptime Kuma | Uptime monitoring | ⬜ Not deployed | Phase 1 |
@@ -1152,24 +1322,75 @@ more retention). Add distributed tracing (Tempo) for cross-service request traci
 
 One source of truth. All repos mirror these manually. No shared npm package.
 
+**Brand = the logo: copper on black.** `#C9885C` is sampled from the logo mark, not
+approximated. Derivation, WCAG ratios and reasoning: `/color-combinations` skill →
+`references/impactors-academy.md`. Never add a colour here without running it through
+that skill first.
+
 ```css
---ia-black:        #030303;   /* impactors-academy canonical — ia-pro was #0a0a0a (DRIFT) */
---ia-obsidian:     #161616;
+/* Ground */
+--ia-black:        #030303;   /* logo ground */
+--ia-obsidian:     #15110E;   /* elevated dark, warmed toward copper */
 --ia-white:        #fafafa;
---ia-cream:        #F2EDE4;
---ia-acid:         #C8F135;
---ia-terra:        #C87B3F;
---ia-terra-light:  #E8A87A;
---ia-terra-dark:   #8B4E22;
---ia-amber:        #D4A84B;
+--ia-cream:        #F2EDE4;   /* paper — 17.7:1 on black */
+
+/* Copper — the brand. Four values because one hex cannot serve two grounds. */
+--ia-copper:       #C9885C;   /* 7.03:1 on black — AAA. Accent/CTA on dark.     */
+--ia-copper-light: #D99E73;   /* 8.93:1 on black — hover, emphasis, focus ring  */
+--ia-copper-pale:  #F2AD78;   /* 10.8:1 on black — quiet copper                 */
+--ia-copper-deep:  #8B4E22;   /* 5.61:1 on cream — AA. USE THIS ON LIGHT.       */
+
+/* Earth + cool anchor — Sanzo Wada combination #296 */
+--ia-umber:        #5E4017;   /* dividers/borders on dark — decorative only */
+--ia-slate:        #1B3644;   /* cool counterweight surface */
+--ia-sand:         #EBD999;   /* 14.7:1 on black — warm muted text */
+
+/* No lime. #C8F135 is retired outright — see the retirement note below. */
+
 --ia-gray-200:     #e5e5e5;
 --ia-gray-400:     #a3a3a3;
 --ia-gray-600:     #525252;
 --ia-gray-900:     #171717;
+
+/* States — two values each; one cannot clear 4.5:1 on both grounds. */
+--color-success:              #40C945;  /* 9.5:1 on black  */
+--color-success-on-light:     #00592E;  /* 7.3:1 on cream  */
+--color-warning:              #E0B81F;  /* 10.9:1 on black */
+--color-warning-on-light:     #8C6510;  /* 4.5:1 on cream  */
+--color-destructive:          #FF616B;  /* 7.1:1 on black  */
+--color-destructive-on-light: #A10B2B;  /* 6.9:1 on cream  */
 ```
+
+**On light surfaces use `--ia-copper-deep`, never `--ia-copper`** — the mid copper
+falls to 2.51:1 on cream and fails outright.
+
+Retired 2026-08-05: `--ia-acid` `#C8F135` — **removed entirely, not demoted.** A
+retained token gets reused until it is the brand again. Also `--ia-terra*` (an
+approximation of the logo — replaced by the sampled `--ia-copper*` ramp) and
+`--ia-amber` (unused).
+
+**Venture colours** — one warm family in the brand's own hue neighbourhood, separated
+by lightness rather than hue (46° arc, even L steps of ~15). All Sanzo Wada values,
+all ≥4.5:1 on `--ia-black`:
+
+```css
+--venture-loc:      #FFB852;  /* 12.01:1 — amber      */
+--venture-btfp:     #A3AD00;  /* 8.38:1  — olive      */
+--venture-finance:  #B85E00;  /* 4.56:1  — burnt orange */
+--venture-iapro:    #F5F5B8;  /* 18.30:1 — pale wheat */
+```
+
+Superseded 2026-08-05: the first pass used Wada plate 282 (magenta / tan / mint /
+violet). It was selected for *maximum* hue separation, which by construction picks the
+least cohesive set in the book — a rainbow. The orbs carry a name label and a fixed
+position, so hue was never doing the work of telling them apart.
 
 Motion, spacing, and radius tokens are identical across both repos — no drift.
 Font bodies differ intentionally: IA uses General Sans, IA Pro uses Source Serif 4.
+
+**Adoption status:** impactors-academy ✅ migrated. ia-pro ⬜, prospectbuddy ⬜
+(already runs a near-brand copper), loc ⬜ (has its own product palette — decide
+whether it inherits the org brand before migrating).
 
 ---
 
