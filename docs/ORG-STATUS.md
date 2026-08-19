@@ -852,8 +852,18 @@ Current honest state and what's needed:
 
 ## Phase 3 — Automation + Comms *(depends on Phase 1-2)*
 
-- [ ] **n8n** deployed via Coolify — **the top item in this phase.** It blocks
-      the content pipeline below and everything else here.
+- [x] **n8n** deployed via Coolify. 9/17 workflow files imported, zero
+      credentials configured, nothing activated (0 executions) —
+      "deployed" ≠ "configured." **2026-08-18: was fully public with no
+      auth** (`https://n8n.impactorsacademy.com/` returned a plain `200`,
+      the whole editor open to anyone with the URL) — its Cloudflare Access
+      application existed but had no effect because the DNS record was
+      "DNS only" (grey-clouded), bypassing Cloudflare's edge entirely.
+      Fixed: DNS record flipped to Proxied, confirmed the Access login
+      screen now gates it. Still open: no `/webhook/*` carve-out yet (moot
+      today since no workflow is activated, but must be added before the
+      first workflow with an external webhook trigger goes live, or the
+      external caller will get blocked by Access too).
       - [ ] Cal.com booking → team notification (unblocks ia-pro Phase 4)
       - [ ] Contact-form leads from impactors-academy → shared channel
       - [ ] LOC inquiry form submissions → tracking
@@ -921,11 +931,14 @@ Current honest state and what's needed:
       - [ ] `N8N_ENCRYPTION_KEY` in Vaultwarden **before** the first deploy.
             Every credential n8n stores is encrypted with it; lose it and they
             all have to be re-entered by hand
-      - [ ] Cloudflare Access in front of the n8n editor (Phase 0C), with
-            `/webhook/*` **and `/api/v1/*`** carved out — `/webhook/*` for the
-            stages POSTing to each other, `/api/v1/*` for the mother dashboard's
-            `/admin/automations` calling n8n's REST API cross-service
-            (`docs/n8n-workflows/deploy/DEPLOY.md` §5)
+      - [x] Cloudflare Access in front of the n8n editor (Phase 0C) — see
+            the note above, fixed 2026-08-18. Still open:
+      - [ ] `/webhook/*` **and `/api/v1/*`** carved out of Access —
+            `/webhook/*` for the stages POSTing to each other, `/api/v1/*`
+            for the mother dashboard's `/admin/automations` calling n8n's
+            REST API cross-service (`docs/n8n-workflows/deploy/DEPLOY.md`
+            §5). Not urgent while nothing is activated, but blocks the
+            first live webhook
       - [ ] `FAL_KEY` for image generation. Hostinger sells no GPU plan, so the
             deployed default is `fal` running FLUX.1-schnell — open weights on a
             rented GPU. This supersedes the "does any host have a GPU?" check:
@@ -953,13 +966,30 @@ Current honest state and what's needed:
       app review and a screencast, and is reported to take months. This gate is
       identical whether we post through n8n or through Postiz, so it was never
       "waiting for Postiz" (`docs/CONTENT-AUTOMATION.md` §7).
-      - [ ] LinkedIn developer app created
-      - [ ] Impactors Academy Page verified against it
+      - [x] LinkedIn developer app created (2026-08-19), tied to the
+            Impactors Academy Page. Redirect URI set to
+            `https://postiz.impactorsacademy.com/integrations/social/linkedin`
+            (confirmed from Postiz's own OAuth request)
+      - [x] Impactors Academy Page verified against it
+      - [ ] "Share on LinkedIn" product requested — Default Tier, normally
+            auto-approved with no review wait; unblocks personal-profile
+            posting (`w_member_social`) as soon as it's granted
       - [ ] Community Management API access requested (`w_organization_social`)
+            — **review in progress** as of 2026-08-19, this is the multi-month
+            wait, unblocks posting to the company Page specifically
 
-- [ ] **Postiz** deployed — social scheduling. **Not a blocker** for LinkedIn
-      (see above) — deploy it for the content calendar and one place to manage
-      every channel, not to unblock posting.
+- [x] **Postiz** deployed via Coolify (`ghcr.io/gitroomhq/postiz-app:v2.10.1`,
+      own Postgres + Redis), given a real domain
+      (`postiz.impactorsacademy.com`, Cloudflare-proxied, valid cert) and put
+      behind Cloudflare Access (2026-08-18) — was previously reachable only
+      on an auto-generated `sslip.io` host with a fully public sign-up page,
+      same shape of problem as n8n above. Admin account created 2026-08-19.
+      Still open: no platform credentials wired in yet (`SERVICE_LINKEDIN_ID`
+      etc. all empty) — LinkedIn is the one in progress, see above; every
+      other platform (X, Facebook, Instagram, TikTok, YouTube, Reddit, ...)
+      is unconfigured and untouched. Not a blocker for LinkedIn itself (see
+      above) — this buys the content calendar and one place to manage every
+      channel, not a way to skip the app review.
       - [ ] Content calendar defined per venture via `/social-media-manager`:
             BTFP, IIC, LOC, IA Pro
 - [ ] **Chatwoot** deployed behind SSO — shared inbox
@@ -1296,10 +1326,10 @@ more retention). Add distributed tracing (Tempo) for cross-service request traci
 | Tool | Role | Status | Deploy when |
 |---|---|---|---|
 | Coolify | Deploy/host layer | ✅ Running | Now — onboard remaining projects |
-| n8n | Automation (forms, Cal.com, leads, content pipeline) | ⬜ Not deployed — 14 workflows written and waiting, and the Coolify stack for n8n + Ollama + SearXNG is written too (`docs/n8n-workflows/deploy/`) | Phase 3 — top of the list |
+| n8n | Automation (forms, Cal.com, leads, content pipeline) | 🟡 Deployed, behind Cloudflare Access as of 2026-08-18 — 9/17 workflows imported, zero credentials, nothing activated | Phase 3 — top of the list |
 | Ollama | Self-hosted open-weight models (Qwen3 + Qwen2.5-VL) — now the pipeline's **default**, so nothing drafts without it | ⬜ Not deployed — compose written, model tag pending the VPS RAM check | Phase 3 — blocks the content pipeline |
 | SearXNG | Self-hosted metasearch — replaces Perplexity for pipeline research | ⬜ Not deployed — compose + `settings.yml` written | Phase 3 |
-| Postiz | Social scheduling | ⬜ Not deployed — optional, not a blocker (LinkedIn app review is) | Phase 3 |
+| Postiz | Social scheduling | 🟡 Deployed, own domain, behind Cloudflare Access as of 2026-08-18 — no platform credentials wired in yet | Phase 3 |
 | OpenClaw | AI coding agent (alt to Claude Code) | ⬜ Config only | Phase 0 — AGENTS.md in all repos |
 | Authentik | SSO/identity | ⬜ Not deployed | Phase 1 |
 | Uptime Kuma | Uptime monitoring | ⬜ Not deployed | Phase 1 |
