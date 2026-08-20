@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
+import { useTranslations } from "next-intl"
 
 const DESTINATIONS = [
   "Morocco",
@@ -35,11 +35,9 @@ export function TypewriterTitle() {
   const [idx, setIdx] = useState(0)
   const [phase, setPhase] = useState<Phase>("typing")
   const prefersReducedMotion = usePrefersReducedMotion()
+  const t = useTranslations("hero")
 
   useEffect(() => {
-    // The cycle never ends on its own, so under reduced motion do not start it:
-    // settle on the last destination ("the World"), which is the phrase the
-    // sequence builds to and the one that reads correctly standing alone.
     if (prefersReducedMotion) return
 
     const dest = DESTINATIONS[idx]
@@ -57,7 +55,7 @@ export function TypewriterTitle() {
       timer = setTimeout(() => setPhase("deleting"), 0)
     } else if (phase === "deleting") {
       if (text.length > 0) {
-        timer = setTimeout(() => setText((t) => t.slice(0, -1)), DELETE_MS)
+        timer = setTimeout(() => setText((prev) => prev.slice(0, -1)), DELETE_MS)
       } else {
         timer = setTimeout(() => {
           setIdx((i) => i + 1)
@@ -65,7 +63,6 @@ export function TypewriterTitle() {
         }, PAUSE_BEFORE_NEXT)
       }
     } else {
-      // "holding" — pause on "the World" then loop
       timer = setTimeout(() => {
         setText("")
         setIdx(0)
@@ -76,18 +73,31 @@ export function TypewriterTitle() {
     return () => clearTimeout(timer)
   }, [text, idx, phase, prefersReducedMotion])
 
+  const longest = DESTINATIONS.reduce((a, b) => (a.length > b.length ? a : b))
+
   return (
-    <h1 className="font-heading text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.05] mb-6">
-      Discover{" "}
-      <span className="text-loc-amber whitespace-nowrap">
-        {prefersReducedMotion ? DESTINATIONS[DESTINATIONS.length - 1] : text}
-        {/* The caret only means something while text is being typed. */}
-        {!prefersReducedMotion && (
-          <span
-            className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
-            aria-hidden="true"
-          />
-        )}
+    <h1
+      className="font-heading font-semibold tracking-tight leading-[0.92] mb-6"
+      style={{ fontSize: "var(--loc-text-hero)", wordSpacing: "-0.15em" }}
+    >
+      {t("discover")}{" "}
+      <span className="inline-grid align-baseline">
+        <span
+          className="col-start-1 row-start-1 text-loc-amber"
+          style={{ visibility: "hidden" }}
+          aria-hidden="true"
+        >
+          {longest}
+        </span>
+        <span className="col-start-1 row-start-1 text-loc-amber whitespace-nowrap">
+          {prefersReducedMotion ? DESTINATIONS[DESTINATIONS.length - 1] : text}
+          {!prefersReducedMotion && (
+            <span
+              className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
+              aria-hidden="true"
+            />
+          )}
+        </span>
       </span>
     </h1>
   )

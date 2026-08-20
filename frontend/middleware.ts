@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createRemoteJWKSet, jwtVerify } from "jose"
+import createMiddleware from "next-intl/middleware"
+import { routing } from "./i18n/routing"
 
 /**
  * Verifies the Cloudflare Access JWT at the origin.
@@ -31,40 +33,51 @@ function deny(status: number, detail: string) {
   return NextResponse.json({ detail }, { status })
 }
 
+const intlMiddleware = createMiddleware(routing)
+
 export async function middleware(req: NextRequest) {
-  // Unconfigured. In production that is a broken deployment, not a reason to
-  // serve the admin surface unauthenticated. Locally there is no Access in
-  // front of you, so the check has nothing to verify and stands aside.
-  if (!JWKS || !AUD) {
-    if (process.env.NODE_ENV === "production") {
-      return deny(503, "Cloudflare Access is not configured on this deployment — admin is disabled.")
+  const { pathname } = req.nextUrl
+
+  // Admin routes: verify Cloudflare Access JWT
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
+    // Unconfigured. In production that is a broken deployment, not a reason to
+    // serve the admin surface unauthenticated. Locally there is no Access in
+    // front of you, so the check has nothing to verify and stands aside.
+    if (!JWKS || !AUD) {
+      if (process.env.NODE_ENV === "production") {
+        return deny(503, "Cloudflare Access is not configured on this deployment. Admin is disabled.")
+      }
+      return NextResponse.next()
     }
+
+    const token =
+      req.headers.get("Cf-Access-Jwt-Assertion") ?? req.cookies.get("CF_Authorization")?.value
+
+    if (!token) {
+      return deny(403, "Missing Cloudflare Access token.")
+    }
+
+    try {
+      await jwtVerify(token, JWKS, {
+        issuer: `https://${TEAM_DOMAIN}`,
+        audience: AUD,
+      })
+    } catch {
+      return deny(403, "Invalid Cloudflare Access token.")
+    }
+
     return NextResponse.next()
   }
 
-  // Access sends the assertion as a header; the cookie is the fallback for
-  // browser navigations that did not go through the header-setting path.
-  const token =
-    req.headers.get("Cf-Access-Jwt-Assertion") ?? req.cookies.get("CF_Authorization")?.value
-
-  if (!token) {
-    return deny(403, "Missing Cloudflare Access token.")
+  // API routes: pass through without locale handling
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next()
   }
 
-  try {
-    await jwtVerify(token, JWKS, {
-      issuer: `https://${TEAM_DOMAIN}`,
-      audience: AUD,
-    })
-  } catch {
-    // Deliberately not echoing the parse error — it would tell an unauthenticated
-    // caller which part of the token they got wrong.
-    return deny(403, "Invalid Cloudflare Access token.")
-  }
-
-  return NextResponse.next()
+  // All other routes: handle locale detection and routing
+  return intlMiddleware(req)
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/((?!_next|icons|images|videos|fonts|favicon|apple-icon|icon|manifest|robots|sitemap).*)"],
 }
