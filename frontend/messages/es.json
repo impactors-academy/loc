@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "LOC | Descubre el Mundo | Experiencias, Alojamientos y Joyas Ocultas",
+    "description": "Descubre las mejores experiencias turísticas, alojamientos y joyas ocultas del mundo, desde Japón hasta Marruecos, de Bali a Burdeos. Seleccionados por amantes del viaje."
+  },
+  "nav": {
+    "experiences": "Experiencias",
+    "stays": "Alojamientos",
+    "store": "Tienda",
+    "blog": "Blog",
+    "promote": "Promocionar",
+    "contact": "Contacto",
+    "listWithUs": "Únete a nosotros"
+  },
+  "hero": {
+    "eyebrow": "Global · Auténtico · Seleccionado",
+    "discover": "Descubre",
+    "subtitle": "Experiencias, alojamientos y joyas ocultas. Seleccionados por quienes viven allí.",
+    "cta": "Explorar experiencias",
+    "ctaSecondary": "Encontrar alojamiento",
+    "adventures": "Aventuras",
+    "wellness": "Bienestar",
+    "cultural": "Cultural",
+    "staysPill": "Alojamientos",
+    "guides": "Guías"
+  },
+  "stats": {
+    "experiences": "Experiencias",
+    "countries": "Países",
+    "providers": "Proveedores locales",
+    "travellers": "Viajeros satisfechos"
+  },
+  "destinations": {
+    "eyebrow": "Explorar por destino",
+    "title": "Destinos populares",
+    "subtitle": "Elige un lugar y sumérgete. Experiencias y alojamientos filtrados para ese rincón del mundo."
+  },
+  "categories": {
+    "eyebrow": "Explorar por tipo",
+    "title": "¿Qué descubrirás?",
+    "subtitle": "De las dunas del Sahara a las casas de té japonesas, una aventura diferente espera en cada esquina."
+  },
+  "topExperiences": {
+    "eyebrow": "Seleccionados para ti",
+    "title": "Mejores experiencias",
+    "subtitle": "Momentos inolvidables creados por los mejores proveedores locales del mundo.",
+    "seeAll": "Ver todas las experiencias",
+    "seeAllMobile": "Ver todas las experiencias →"
+  },
+  "howItWorks": {
+    "eyebrow": "Simple por diseño",
+    "title": "Cómo funciona LOC",
+    "subtitle": "Conectamos viajeros curiosos con proveedores locales auténticos, directamente, sin motor de reservas intermedio."
+  },
+  "handpickedStays": {
+    "eyebrow": "Lugares que sentir como hogar",
+    "title": "Alojamientos seleccionados",
+    "subtitle": "Ryokans, riads, villas y casas rurales, elegidos por su carácter, comodidad y ubicación.",
+    "seeAll": "Ver todos los alojamientos"
+  },
+  "cta": {
+    "title": "Tu próxima aventura comienza aquí",
+    "subtitle": "Ya sea un trek al amanecer en Bali o una cata de vinos en Burdeos, el mundo está lleno de momentos esperándote.",
+    "explore": "Explorar experiencias",
+    "stays": "Ver alojamientos"
+  },
+  "footer": {
+    "tagline": "Tu conector turístico global. Experiencias seleccionadas, alojamientos escogidos y guías de viaje digitales de todo el mundo.",
+    "explore": "Explorar",
+    "forBusinesses": "Para empresas",
+    "company": "Empresa",
+    "listExperience": "Listar tu experiencia",
+    "advertise": "Anunciar con LOC",
+    "partnerPackages": "Packs de socios",
+    "aboutLoc": "Sobre LOC",
+    "contactUs": "Contacto",
+    "privacyPolicy": "Política de privacidad",
+    "rights": "Todos los derechos reservados. Hecho para viajeros curiosos de todo el mundo."
+  },
+  "experiencesPage": {
+    "title": "Experiencias en todo el mundo",
+    "subtitle": "Aventuras, retiros de bienestar, tours culinarios y más, seleccionados por quienes conocen cada destino.",
+    "eyebrow": "Experiencias seleccionadas"
+  },
+  "staysPage": {
+    "title": "Alojamientos",
+    "subtitle": "Ryokans, riads, villas, gîtes y apartamentos, cada uno seleccionado por su carácter, comodidad y ubicación.",
+    "eyebrow": "Alojamientos escogidos"
+  },
+  "storePage": {
+    "title": "Tienda de viaje digital",
+    "subtitle": "Guías, itinerarios y cursos en vídeo para destinos de todo el mundo, descargables al instante.",
+    "eyebrow": "Recursos de viaje"
+  },
+  "blogPage": {
+    "title": "Historias y guías de viaje",
+    "eyebrow": "Desde el terreno"
+  },
+  "inquiry": {
+    "title": "Contacta con nosotros",
+    "name": "Tu nombre",
+    "email": "Correo electrónico",
+    "phone": "Teléfono (opcional)",
+    "subject": "Asunto",
+    "message": "Tu mensaje",
+    "send": "Enviar mensaje",
+    "sending": "Enviando...",
+    "success": "¡Mensaje enviado! Te responderemos pronto.",
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo."
+  },
+  "common": {
+    "from": "Desde",
+    "perPerson": "/ persona",
+    "perNight": "/ noche",
+    "featured": "Destacado",
+    "viewDetails": "Ver detalles",
+    "bookNow": "Reservar",
+    "inquire": "Consultar",
+    "search": "Buscar",
+    "noResults": "No se encontraron resultados.",
+    "loading": "Cargando..."
+  },
+  "partnerCta": {
+    "eyebrow": "Para empresas",
+    "title": "Haz crecer tu negocio con LOC",
+    "subtitle": "Lista tu experiencia, propiedad o servicio turístico y llega a miles de viajeros que buscan activamente destinos auténticos.",
+    "cta": "Únete a nosotros"
+  }
+}

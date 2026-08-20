@@ -1,15 +1,26 @@
 "use client"
 
-import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
+import { SITE_NAME } from "@/lib/constants"
 import { cn } from "@/lib/utils"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
+import { LanguageSwitcher } from "./LanguageSwitcher"
+
+const NAV_KEYS = [
+  { key: "experiences", href: "/experiences" },
+  { key: "stays", href: "/stays" },
+  { key: "blog", href: "/blog" },
+  { key: "store", href: "/store" },
+  { key: "promote", href: "/promote" },
+] as const
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const t = useTranslations("nav")
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -44,7 +55,7 @@ export function Navbar() {
           />
           <span
             className={cn(
-              "font-heading font-bold text-2xl tracking-tight transition-colors",
+              "font-heading font-semibold text-2xl tracking-tight transition-colors",
               scrolled ? "text-loc-night" : "text-white"
             )}
           >
@@ -54,7 +65,7 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-          {NAV_LINKS.map((link) => (
+          {NAV_KEYS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -65,12 +76,13 @@ export function Navbar() {
                   : "text-white/85 hover:text-white"
               )}
             >
-              {link.label}
+              {t(link.key)}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:flex">
+        <div className="hidden md:flex items-center gap-3">
+          <LanguageSwitcher scrolled={scrolled} />
           <Link
             href="/promote"
             className={cn(
@@ -80,7 +92,7 @@ export function Navbar() {
                 : "bg-white/15 text-white border border-white/40 hover:bg-white/25 backdrop-blur-sm"
             )}
           >
-            List with us
+            {t("listWithUs")}
           </Link>
         </div>
 
@@ -100,14 +112,14 @@ export function Navbar() {
       {/* Mobile drawer */}
       {open && (
         <div className="md:hidden bg-white border-t border-loc-sand px-4 py-5 flex flex-col gap-3 shadow-lg">
-          {NAV_LINKS.map((link) => (
+          {NAV_KEYS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className="text-base font-medium text-loc-night hover:text-loc-terracotta transition-colors py-1"
               onClick={() => setOpen(false)}
             >
-              {link.label}
+              {t(link.key)}
             </Link>
           ))}
           <Link
@@ -115,7 +127,7 @@ export function Navbar() {
             className="mt-3 text-center text-sm font-semibold px-5 py-3 rounded-full bg-loc-terracotta text-white hover:bg-loc-terracotta/90 transition-colors"
             onClick={() => setOpen(false)}
           >
-            List with us
+            {t("listWithUs")}
           </Link>
         </div>
       )}

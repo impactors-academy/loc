@@ -1,5 +1,5 @@
 """
-Idempotent seed script for local development — global destinations.
+Idempotent seed script for local development. Global destinations.
 Run via: make seed   OR   uv run python -m scripts.seed
 """
 import sys
@@ -25,7 +25,7 @@ EXPERIENCES = [
     # ── Japan ──────────────────────────────────────────────────────────────
     dict(
         slug="kyoto-tea-ceremony",
-        title="Traditional Tea Ceremony — Kyoto",
+        title="Traditional Tea Ceremony | Kyoto",
         description=(
             "Step inside a 200-year-old machiya townhouse in Higashiyama and learn "
             "the art of chado from a certified tea master. Matcha whisking, wagashi "
@@ -43,7 +43,7 @@ EXPERIENCES = [
     ),
     dict(
         slug="tokyo-street-food-tour",
-        title="Tokyo Street Food Night Tour — Shinjuku",
+        title="Tokyo Street Food Night Tour | Shinjuku",
         description=(
             "Navigate the izakayas, yakitori alleys, and ramen counters of Shinjuku "
             "with a local food journalist. Eight stops, eight tastings. "
@@ -62,7 +62,7 @@ EXPERIENCES = [
     # ── France ─────────────────────────────────────────────────────────────
     dict(
         slug="bordeaux-wine-tasting",
-        title="Grand Cru Wine Tasting — Bordeaux",
+        title="Grand Cru Wine Tasting | Bordeaux",
         description=(
             "Tour three classified châteaux on the Left Bank, meet the winemakers, "
             "and taste six vintages from 2015–2022. Includes a cellar visit, cheese "
@@ -80,7 +80,7 @@ EXPERIENCES = [
     ),
     dict(
         slug="provence-lavender-cycling",
-        title="Lavender Fields Cycling Tour — Provence",
+        title="Lavender Fields Cycling Tour | Provence",
         description=(
             "Glide through blooming lavender rows between Valensole and Manosque "
             "on a curated 40 km route with an e-bike option. Includes a stop at a "
@@ -99,7 +99,7 @@ EXPERIENCES = [
     # ── UK ─────────────────────────────────────────────────────────────────
     dict(
         slug="scottish-highlands-hike",
-        title="Scottish Highlands Trek — Ben Nevis Foothills",
+        title="Scottish Highlands Trek | Ben Nevis Foothills",
         description=(
             "A guided 18 km circular walk through ancient Caledonian pine forest, "
             "past lochs, and up to the shoulder of Britain's highest mountain. "
@@ -118,7 +118,7 @@ EXPERIENCES = [
     # ── Belgium ────────────────────────────────────────────────────────────
     dict(
         slug="bruges-chocolate-workshop",
-        title="Artisan Chocolate Workshop — Bruges",
+        title="Artisan Chocolate Workshop | Bruges",
         description=(
             "Join a fourth-generation chocolatier in a medieval guildhall. "
             "Temper couverture, hand-pipe pralines, and leave with a 500 g box "
@@ -137,7 +137,7 @@ EXPERIENCES = [
     # ── Bali ───────────────────────────────────────────────────────────────
     dict(
         slug="bali-sunrise-volcano-trek",
-        title="Sunrise Volcano Trek — Mount Batur",
+        title="Sunrise Volcano Trek | Mount Batur",
         description=(
             "Start at 2 am, reach the 1717 m crater rim just as dawn breaks over "
             "the caldera lake and Mount Agung. Breakfast cooked in volcanic steam, "
@@ -156,7 +156,7 @@ EXPERIENCES = [
     # ── Morocco ────────────────────────────────────────────────────────────
     dict(
         slug="desert-sunrise-merzouga",
-        title="Desert Sunrise Camel Trek — Merzouga",
+        title="Desert Sunrise Camel Trek | Merzouga",
         description=(
             "Wake before dawn in Erg Chebbi, mount a camel at the foot of the dunes, "
             "and watch the Sahara ignite in gold. Includes traditional Berber breakfast "
@@ -175,7 +175,7 @@ EXPERIENCES = [
     # ── Greece ─────────────────────────────────────────────────────────────
     dict(
         slug="santorini-sailing-sunset",
-        title="Catamaran Sunset Sail — Santorini",
+        title="Catamaran Sunset Sail | Santorini",
         description=(
             "Board a 12-metre catamaran in Vlychada and sail to the hot springs at "
             "Palea Kameni, snorkel above the volcanic reef, and anchor off Oia "
@@ -194,7 +194,7 @@ EXPERIENCES = [
     # ── Italy ──────────────────────────────────────────────────────────────
     dict(
         slug="tuscany-cooking-class",
-        title="Tuscan Farmhouse Cooking Class — Siena",
+        title="Tuscan Farmhouse Cooking Class | Siena",
         description=(
             "Learn to make fresh pici pasta, wild boar ragù, and tiramisu from "
             "a Nonna in her 14th-century farmhouse kitchen. Followed by a long "
@@ -217,7 +217,7 @@ PROPERTIES = [
     dict(
         slug="paris-marais-apartment",
         type="apartment",
-        title="Le Marais Pied-à-Terre — Paris 4e",
+        title="Le Marais Pied-à-Terre | Paris 4e",
         description=(
             "A 65 m² Haussmann apartment on Rue de Bretagne, two blocks from "
             "the covered market. Original parquet floors, exposed beams, and a "
@@ -234,7 +234,7 @@ PROPERTIES = [
     dict(
         slug="provence-mas-villa",
         type="villa",
-        title="Mas Provençal — Luberon Valley",
+        title="Mas Provençal | Luberon Valley",
         description=(
             "An 18th-century stone mas (farmhouse) with a 12-metre pool, lavender "
             "terraces, and views to the Luberon ridge. Sleeps 8; private chef "
@@ -252,7 +252,7 @@ PROPERTIES = [
     dict(
         slug="cotswolds-farmhouse",
         type="gite",
-        title="The Old Woolstore — Cotswolds",
+        title="The Old Woolstore | Cotswolds",
         description=(
             "A converted 17th-century wool merchant's house in the village of "
             "Bourton-on-the-Water. Inglenook fireplace, garden with hot tub, "
@@ -270,7 +270,7 @@ PROPERTIES = [
     dict(
         slug="kyoto-ryokan-higashiyama",
         type="ryokan",
-        title="Ryokan Kiyomizu — Higashiyama, Kyoto",
+        title="Ryokan Kiyomizu | Higashiyama, Kyoto",
         description=(
             "A family-run ryokan on the stone-paved Ninenzaka lane. Eight rooms with "
             "futon beds, yukata robes, and private hinoki wood baths. "
@@ -288,7 +288,7 @@ PROPERTIES = [
     dict(
         slug="ubud-jungle-villa",
         type="villa",
-        title="Jungle Edge Villa — Ubud, Bali",
+        title="Jungle Edge Villa | Ubud, Bali",
         description=(
             "A three-bedroom villa cantilevered over a river gorge in Penestanan. "
             "Infinity pool that merges with the rice-terrace horizon, open-air "
@@ -306,7 +306,7 @@ PROPERTIES = [
     dict(
         slug="riad-zouak-marrakech",
         type="riad",
-        title="Riad Zouak — Hidden Gem in Marrakech Medina",
+        title="Riad Zouak | Hidden Gem in Marrakech Medina",
         description=(
             "Seven rooms arranged around a central courtyard fountain, each adorned "
             "with hand-painted zellij tilework. Rooftop terrace with Atlas views, "
@@ -351,7 +351,7 @@ PRODUCTS = [
     ),
     dict(
         slug="asia-pacific-masterclass",
-        title="Asia Pacific Travel Masterclass — Video Course",
+        title="Asia Pacific Travel Masterclass | Video Course",
         description=(
             "8 short-form videos (total 2 hrs) covering Japan, Bali, Vietnam, and "
             "Thailand: when to go, where to stay, what to eat, and how to get "
@@ -370,7 +370,7 @@ BLOG_POSTS = [
         title="10 Off-the-Beaten-Path Destinations for 2026",
         excerpt=(
             "From Albania's turquoise coast to Kyushu's onsen towns, these ten "
-            "destinations offer the experiences travellers crave — without the crowds."
+            "destinations offer the experiences travellers crave, without the crowds."
         ),
         content="""<h2>1. Faroe Islands, Denmark</h2>
 <p>Dramatic sea cliffs, grass-roofed villages, and a total of zero traffic lights. The Faroes top every 'hidden gem' list for a reason: they are genuinely spectacular and still genuinely quiet. Fly direct from Copenhagen or Edinburgh.</p>
@@ -388,7 +388,7 @@ BLOG_POSTS = [
 <p>The Soča River runs an impossible turquoise through Julian Alps forest. Kayak it, hike above it, or simply sit beside it. Kobarid village has a Michelin-starred restaurant and a museum about World War I that will stay with you.</p>
 
 <h2>6. Jericoacoara, Brazil</h2>
-<p>No paved roads, no traffic — just dune lakes, kite-surfers, and the best caipirinhas on the planet, served at sunset from a sandbar. Accessible only by 4WD from Fortaleza.</p>
+<p>No paved roads, no traffic. Just dune lakes, kite-surfers, and the best caipirinhas on the planet, served at sunset from a sandbar. Accessible only by 4WD from Fortaleza.</p>
 
 <h2>7. Azores, Portugal</h2>
 <p>Mid-Atlantic volcanic islands with crater lakes, thermal spas, and landscapes that shift from lunar to lush within a kilometre. São Miguel is the entry point; Flores is the reward for those who go further.</p>
@@ -409,7 +409,7 @@ BLOG_POSTS = [
         title="Tokyo Street Food: Your Complete First-Timer's Guide",
         excerpt=(
             "Navigating Tokyo's food scene for the first time is overwhelming "
-            "— in the best possible way. Here is where to start."
+            "in the best possible way. Here is where to start."
         ),
         content="""<h2>The Golden Rule</h2>
 <p>Follow the salarymen. If there's a line of suited office workers at 1 pm, the food is excellent and the price is fair. This rule works 99% of the time in Tokyo.</p>
@@ -418,7 +418,7 @@ BLOG_POSTS = [
 <p>The inner wholesale market moved to Toyosu, but the outer market's tiny shops are still the best place in the world to eat grilled tamagoyaki, sashimi on rice, and fresh uni (sea urchin) at 8 am. Get there before 10.</p>
 
 <h2>Yurakucho Under the Tracks (Lunch)</h2>
-<p>The warren of izakayas and ramen counters under the Yamanote Line tracks between Yurakucho and Shinbashi stations is a time-warp to 1970s Tokyo. Yakitori grilled over binchōtan charcoal, cold Sapporo, no English menu needed — just point.</p>
+<p>The warren of izakayas and ramen counters under the Yamanote Line tracks between Yurakucho and Shinbashi stations is a time-warp to 1970s Tokyo. Yakitori grilled over binchōtan charcoal, cold Sapporo, no English menu needed. Just point.</p>
 
 <h2>Asakusa (Afternoon Snacking)</h2>
 <p>Nakamise-dori leads to Senso-ji, and the side streets surrounding it are lined with vendors selling ningyo-yaki (little sponge cakes in temple shapes), ningyo-yaki, and mochi pounded to order. The melonpan (sweet bread) shops here are the best in the city.</p>
@@ -439,22 +439,22 @@ BLOG_POSTS = [
             "for a fraction of European prices. But they are very different journeys."
         ),
         content="""<h2>For Culture Depth: Morocco</h2>
-<p>Few places on earth compact so much history into a medina walk. Fès el-Bali is a living medieval city — the tanners, the brass-beaters, the Quranic schools — unchanged in structure for 900 years. Bali has extraordinary Hindu temple culture, but the scale and density of Morocco's imperial cities is in a class of its own.</p>
+<p>Few places on earth compact so much history into a medina walk. Fès el-Bali is a living medieval city: the tanners, the brass-beaters, the Quranic schools, unchanged in structure for 900 years. Bali has extraordinary Hindu temple culture, but the scale and density of Morocco's imperial cities is in a class of its own.</p>
 
 <h2>For Nature & Landscapes: Both (Different)</h2>
 <p>Morocco offers three distinct biomes within a day's drive: Atlantic coast, High Atlas peaks (skiing December–March), and Sahara desert. Bali's canvas is narrower but no less dramatic: volcanic peaks, terraced rice paddies, black-sand beaches, and jungle river gorges. If you want diversity of terrain, Morocco wins by area. If you want a single island where everything is within two hours, Bali is unbeatable.</p>
 
 <h2>For Food: Morocco</h2>
-<p>Moroccan cuisine is one of the great under-celebrated food cultures — tagine, bastilla, couscous, pastilla au lait, preserved lemons, argan oil. Bali's food scene is excellent but leans heavily toward tourist-facing warungs serving nasi goreng and mie goreng. For genuine depth, Morocco.</p>
+<p>Moroccan cuisine is one of the great under-celebrated food cultures: tagine, bastilla, couscous, pastilla au lait, preserved lemons, argan oil. Bali's food scene is excellent but leans heavily toward tourist-facing warungs serving nasi goreng and mie goreng. For genuine depth, Morocco.</p>
 
 <h2>For Wellness & Spiritual Reset: Bali</h2>
-<p>Ubud is the global capital of yoga retreats, sound baths, and holistic healing — for better or worse. Morocco has hammams, which are magnificent, but Bali built an entire industry around slowing down. If a retreat is the goal, Bali wins.</p>
+<p>Ubud is the global capital of yoga retreats, sound baths, and holistic healing, for better or worse. Morocco has hammams, which are magnificent, but Bali built an entire industry around slowing down. If a retreat is the goal, Bali wins.</p>
 
 <h2>For Budget: Bali (Slightly)</h2>
 <p>Both destinations are good value versus Europe. Bali edges ahead for mid-budget travellers: excellent villas with pools for €80–120/night and restaurant meals for €4–8. Morocco is close behind, especially outside Marrakech.</p>
 
 <h2>Verdict</h2>
-<p>Go to Morocco if: you want history, medinas, Sahara, and the Atlantic. Go to Bali if: you want nature, spirituality, surf, and temple culture on a compact island. Go to both if you can — they are utterly different and both exceptional.</p>""",
+<p>Go to Morocco if: you want history, medinas, Sahara, and the Atlantic. Go to Bali if: you want nature, spirituality, surf, and temple culture on a compact island. Go to both if you can. They are utterly different and both exceptional.</p>""",
         image_url="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1200",
         tags="morocco,bali,indonesia,planning,comparison",
     ),

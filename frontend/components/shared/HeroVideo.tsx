@@ -11,7 +11,7 @@ interface HeroVideoProps {
  * The hero's looping background video, gated on the OS "reduce motion" setting.
  *
  * `autoPlay` is a DOM attribute, so the prefers-reduced-motion block in
- * globals.css cannot stop it — a full-bleed video looping behind the headline is
+ * globals.css cannot stop it. a full-bleed video looping behind the headline is
  * exactly the kind of motion that setting exists to prevent. When reduce is on we
  * render the poster as a static backdrop instead, which is what the video's first
  * frame would have shown anyway.

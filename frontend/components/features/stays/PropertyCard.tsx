@@ -59,7 +59,7 @@ export function PropertyCard({ property }: { property: Property }) {
             </span>
           )}
         </div>
-        <h3 className="font-heading font-bold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
+        <h3 className="font-heading font-semibold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
           {property.title}
         </h3>
         <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">

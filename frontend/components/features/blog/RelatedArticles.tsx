@@ -21,7 +21,7 @@ export function RelatedArticles({ slug }: RelatedArticlesProps) {
 
   return (
     <section className="mt-20 pt-12 border-t border-border">
-      <h2 className="font-heading text-2xl font-bold text-loc-night mb-8">You Might Also Like</h2>
+      <h2 className="font-heading text-2xl font-semibold text-loc-night mb-8">You Might Also Like</h2>
       <motion.div
         variants={staggerContainer}
         initial="hidden"

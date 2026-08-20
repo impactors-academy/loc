@@ -4,7 +4,41 @@
 
 @layer base {
   :root {
-    /* LOC brand semantic tokens */
+    /* ── LOC primitive tokens ──────────────────────────────────────────────
+       Raw brand values. Every color in the product traces back here.
+       Hex format so they work in any context (Tailwind, inline, SVG).
+       Provenance: org palette (impactors-academy.md) + LOC SKILL.md.       */
+    --loc-copper:     #C9885C;  /* logo mark — 7.03:1 on black, 2.93:1 on white */
+    --loc-terracotta: #A16036;  /* working accent on light — 4.95:1 on white     */
+    --loc-sand:       #F7EDD8;  /* highlight backgrounds, stat strips             */
+    --loc-amber:      #D4A44C;  /* decorative only — 2.28:1 as text on white     */
+    --loc-slate:      #1B3644;  /* cool anchor (Wada #296) — white 12.67:1       */
+    --loc-night:      #231B15;  /* heading ink — logo hue near-black, 16.27:1    */
+    --loc-stone:      #7F694D;  /* body/meta text — 5.02:1 on page               */
+    --loc-cream:      #FAF5EC;  /* card/surface warm white                       */
+
+    /* ── Type scale ────────────────────────────────────────────────────── */
+    --loc-font-heading: var(--font-clash), system-ui, sans-serif;
+    --loc-font-body:    var(--font-general), system-ui, sans-serif;
+
+    /* Fluid hero sizes — same clamp pattern as impactors-academy / ia-pro */
+    --loc-text-hero:    clamp(2.25rem, 7vw, 6rem);
+    --loc-text-hero-sm: clamp(1.5rem, 5vw, 3.5rem);
+
+    /* ── Spacing scale (8px base) ──────────────────────────────────────── */
+    --loc-space-xs:  0.25rem;   /* 4px  */
+    --loc-space-sm:  0.5rem;    /* 8px  */
+    --loc-space-md:  1rem;      /* 16px */
+    --loc-space-lg:  1.5rem;    /* 24px */
+    --loc-space-xl:  2rem;      /* 32px */
+    --loc-space-2xl: 3rem;      /* 48px */
+    --loc-space-3xl: 4rem;      /* 64px */
+
+    /* ── Motion ────────────────────────────────────────────────────────── */
+    --loc-ease:     cubic-bezier(0.22, 1, 0.36, 1);   /* ease-out quint  */
+    --loc-duration: 300ms;
+
+    /* ── LOC semantic tokens (shadcn/ui layer) ─────────────────────────── */
     --background: 37 50% 98%;
     /* The ink is the logo's own hue (24°) taken almost to black. It was
        230 20% 10% — a blue-grey, the stock shadcn default, and the only cool

@@ -59,14 +59,14 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-heading font-bold text-loc-night text-base leading-snug line-clamp-2 mb-2">
+        <h3 className="font-heading font-semibold text-loc-night text-base leading-snug line-clamp-2 mb-2">
           {product.title}
         </h3>
         <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
           {product.description}
         </p>
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="font-heading text-lg font-bold text-loc-terracotta">
+          <span className="font-heading text-lg font-semibold text-loc-terracotta">
             €{product.price.toFixed(2)}
           </span>
           <a

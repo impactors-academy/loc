@@ -14,7 +14,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       {/* reducedMotion="user" makes every framer-motion animation follow the OS
           setting: transform animations (the y-offset in fadeInUp) are dropped
           while opacity still fades, so content appears without moving. CSS alone
-          cannot do this — framer-motion drives inline styles from JS, so the
+          cannot do this. framer-motion drives inline styles from JS, so the
           prefers-reduced-motion block in globals.css never sees these. */}
       <MotionConfig reducedMotion="user">
         {children}

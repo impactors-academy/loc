@@ -32,7 +32,7 @@ export function ProductGrid() {
     return (
       <div className="py-16 text-center">
         <p className="font-heading text-xl text-loc-night mb-2">No products yet</p>
-        <p className="text-loc-stone text-sm">Check back soon — new guides are on the way.</p>
+        <p className="text-loc-stone text-sm">Check back soon. new guides are on the way.</p>
       </div>
     )
   }

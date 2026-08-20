@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "LOC | Découvrez le Monde | Expériences, Séjours & Trésors Cachés",
+    "description": "Découvrez les meilleures expériences touristiques, séjours et trésors cachés à travers le monde, du Japon au Maroc, de Bali à Bordeaux. Sélectionnés par des passionnés de voyage."
+  },
+  "nav": {
+    "experiences": "Expériences",
+    "stays": "Séjours",
+    "store": "Boutique",
+    "blog": "Blog",
+    "promote": "Promouvoir",
+    "contact": "Nous contacter",
+    "listWithUs": "Rejoignez-nous"
+  },
+  "hero": {
+    "eyebrow": "Global · Authentique · Sélectionné",
+    "discover": "Découvrez",
+    "subtitle": "Expériences, séjours et trésors cachés. Sélectionnés par ceux qui y vivent.",
+    "cta": "Explorer les expériences",
+    "ctaSecondary": "Trouver un séjour",
+    "adventures": "Aventures",
+    "wellness": "Bien-être",
+    "cultural": "Culture",
+    "staysPill": "Séjours",
+    "guides": "Guides"
+  },
+  "stats": {
+    "experiences": "Expériences",
+    "countries": "Pays",
+    "providers": "Prestataires locaux",
+    "travellers": "Voyageurs satisfaits"
+  },
+  "destinations": {
+    "eyebrow": "Parcourir par destination",
+    "title": "Destinations populaires",
+    "subtitle": "Choisissez un lieu et plongez-y. Expériences et séjours filtrés pour ce coin du monde."
+  },
+  "categories": {
+    "eyebrow": "Explorer par type",
+    "title": "Que découvrirez-vous ?",
+    "subtitle": "Des dunes du Sahara aux maisons de thé japonaises, une aventure différente attend à chaque tournant."
+  },
+  "topExperiences": {
+    "eyebrow": "Sélectionnés pour vous",
+    "title": "Meilleures expériences",
+    "subtitle": "Des moments inoubliables créés par les meilleurs prestataires locaux du monde.",
+    "seeAll": "Voir toutes les expériences",
+    "seeAllMobile": "Voir toutes les expériences →"
+  },
+  "howItWorks": {
+    "eyebrow": "Simple par conception",
+    "title": "Comment fonctionne LOC",
+    "subtitle": "Nous connectons les voyageurs curieux avec des prestataires locaux authentiques, directement, sans moteur de réservation intermédiaire."
+  },
+  "handpickedStays": {
+    "eyebrow": "Des lieux où se sentir chez soi",
+    "title": "Séjours sélectionnés",
+    "subtitle": "Ryokans, riads, villas et fermes, choisis pour leur caractère, leur confort et leur emplacement.",
+    "seeAll": "Voir tous les séjours"
+  },
+  "cta": {
+    "title": "Votre prochaine aventure commence ici",
+    "subtitle": "Qu'il s'agisse d'un trek au lever du soleil à Bali ou d'une dégustation de vin à Bordeaux, le monde regorge de moments qui vous attendent.",
+    "explore": "Explorer les expériences",
+    "stays": "Parcourir les séjours"
+  },
+  "footer": {
+    "tagline": "Votre connecteur touristique mondial. Expériences sélectionnées, séjours triés sur le volet et guides de voyage numériques du monde entier.",
+    "explore": "Explorer",
+    "forBusinesses": "Pour les entreprises",
+    "company": "Entreprise",
+    "listExperience": "Lister votre expérience",
+    "advertise": "Annoncer avec LOC",
+    "partnerPackages": "Packs partenaires",
+    "aboutLoc": "À propos de LOC",
+    "contactUs": "Nous contacter",
+    "privacyPolicy": "Politique de confidentialité",
+    "rights": "Tous droits réservés. Fait pour les voyageurs curieux du monde entier."
+  },
+  "experiencesPage": {
+    "title": "Expériences à travers le monde",
+    "subtitle": "Aventures, retraites bien-être, circuits culinaires et bien plus, sélectionnés par ceux qui connaissent chaque destination.",
+    "eyebrow": "Expériences sélectionnées"
+  },
+  "staysPage": {
+    "title": "Hébergements",
+    "subtitle": "Ryokans, riads, villas, gîtes et appartements, chacun sélectionné pour son caractère, son confort et son emplacement.",
+    "eyebrow": "Séjours triés sur le volet"
+  },
+  "storePage": {
+    "title": "Boutique de voyage numérique",
+    "subtitle": "Guides, itinéraires et cours vidéo pour des destinations du monde entier, téléchargeables instantanément.",
+    "eyebrow": "Ressources de voyage"
+  },
+  "blogPage": {
+    "title": "Récits & Guides de voyage",
+    "eyebrow": "Depuis le terrain"
+  },
+  "inquiry": {
+    "title": "Contactez-nous",
+    "name": "Votre nom",
+    "email": "Adresse e-mail",
+    "phone": "Téléphone (optionnel)",
+    "subject": "Objet",
+    "message": "Votre message",
+    "send": "Envoyer le message",
+    "sending": "Envoi en cours...",
+    "success": "Message envoyé ! Nous vous répondrons rapidement.",
+    "error": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "common": {
+    "from": "À partir de",
+    "perPerson": "/ personne",
+    "perNight": "/ nuit",
+    "featured": "En vedette",
+    "viewDetails": "Voir les détails",
+    "bookNow": "Réserver",
+    "inquire": "Demander",
+    "search": "Rechercher",
+    "noResults": "Aucun résultat trouvé.",
+    "loading": "Chargement..."
+  },
+  "partnerCta": {
+    "eyebrow": "Pour les entreprises",
+    "title": "Développez votre activité avec LOC",
+    "subtitle": "Listez votre expérience, propriété ou service touristique et atteignez des milliers de voyageurs recherchant activement des destinations authentiques.",
+    "cta": "Rejoignez-nous"
+  }
+}
