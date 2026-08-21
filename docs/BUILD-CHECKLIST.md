@@ -327,6 +327,19 @@ have all since been deleted (2026-08-08).**
 - [ ] Advertiser onboarding: `/promote` inquiries flowing into a tracked pipeline
 - [ ] R5 scoped — user accounts, saved experiences, booking history (if LOC moves
       toward a logged-in experience)
+- [x] **`GET /api/v1/admin/metrics` (2026-08-21)** — feeds the mother
+      dashboard's Phase 6B business-metrics card (`[workspace]/MASTER-CHECKLIST.md`).
+      New `app/api/v1/endpoints/admin_metrics.py`, gated behind
+      `require_editor_key` same as `/leads` — no new secret. Returns inquiry
+      total/7d, experience/property counts, top 5 destinations by experience
+      count, and blog post total/last-published-at. 3 pytest tests added
+      (fail-closed 503, wrong-key 403, valid-key 200 shape) — full suite (13
+      tests) green against a real local Postgres. Verified live against real
+      seeded dev data (6 inquiries, 10 experiences, 6 properties, Japan/
+      France/Italy top destinations) — curled directly and confirmed
+      end-to-end in the mother dashboard's browser render. Not yet committed;
+      this repo is on `main` directly, so per 0B-1 this needs a feature
+      branch, not a direct commit.
 
 ---
 
