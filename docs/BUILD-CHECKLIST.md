@@ -337,9 +337,14 @@ have all since been deleted (2026-08-08).**
       tests) green against a real local Postgres. Verified live against real
       seeded dev data (6 inquiries, 10 experiences, 6 properties, Japan/
       France/Italy top destinations) — curled directly and confirmed
-      end-to-end in the mother dashboard's browser render. Not yet committed;
-      this repo is on `main` directly, so per 0B-1 this needs a feature
-      branch, not a direct commit.
+      end-to-end in the mother dashboard's browser render. On
+      `feature/admin-metrics-api`, PR #21 open against `main` — not yet
+      merged. `LOC_API_URL`/`LOC_EDITOR_API_KEY` already exist on
+      impactors-academy's Coolify env (checked directly, corrected the
+      earlier "not configured" note in the workspace `MASTER-CHECKLIST.md`);
+      whether the key value actually matches this app's `EDITOR_API_KEY`
+      can't be verified without logging into production `/admin` — that's
+      the real test once this merges.
 
 ---
 

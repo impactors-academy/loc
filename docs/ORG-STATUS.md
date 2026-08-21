@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-13 (mother dashboard's Postgres provisioned and cross-posting to ia-pro + loc verified live; ia-pro blog 404 fixed)
+**Last updated:** 2026-08-21 (Phase 6B business-metrics dashboard built, verified locally on all three ventures, and pushed on feature branches — see "Mother Dashboard" plan below for how this fits the larger unified-admin roadmap)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
 > false findings because it inspected each repo's *checked-out* branch. At the time
@@ -20,9 +20,11 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ## Org Health Snapshot
 
-> **Priority order set 2026-08-08.** 1) **loc** — finish it. 2) **impactors-academy
+> **Priority order set 2026-08-08, updated 2026-08-20.** 1) **loc** — finish it. 2) **impactors-academy
 > admin dashboard** — the mother dashboard the team will run every other platform
-> from; wanted ASAP. Everything else waits. **grindbuddy and prospectbuddy are
+> from; wanted ASAP. The mother must be able to manage everything any daughter can;
+> daughters keep only their own entities. See Phase 4 § "Mother Dashboard" for the
+> full plan and feature gap matrix. Everything else waits. **grindbuddy and prospectbuddy are
 > PAUSED** until loc and the dashboard are done — do not start work on either.
 
 | Project | Status | Priority | Blocker / Next action |
@@ -1026,12 +1028,35 @@ Current honest state and what's needed:
             draft→skip, publish→create, re-save→update-in-place with no
             duplicates. **Not clicked through in a browser** (Chrome extension
             disconnected).
-      - [ ] **ACTION REQUIRED for production:** set `IA_PRO_API_URL` /
-            `IA_PRO_POSTS_API_KEY` and `LOC_API_URL` / `LOC_EDITOR_API_KEY` in
-            impactors-academy's Coolify env, plus matching `POSTS_API_KEY` in
-            ia-pro's and `EDITOR_API_KEY` in loc's. Unset = that platform
-            reports "not configured" on save rather than failing silently.
+      - [x] **CORRECTED 2026-08-21 — this was stale, not actually open.**
+            Checked directly in the Coolify UI: `IA_PRO_API_URL`,
+            `IA_PRO_POSTS_API_KEY`, `LOC_API_URL`, and `LOC_EDITOR_API_KEY` are
+            all already set on impactors-academy's production service —
+            someone configured these at some point without updating this
+            checklist (same drift pattern flagged elsewhere in this file).
+            Both URLs read back correct (`https://pro.impactorsacademy.com`,
+            `https://api.loctravels.com`). **Still genuinely unverified:**
+            whether each key's value actually matches its daughter's copy
+            (`POSTS_API_KEY` on ia-pro, `EDITOR_API_KEY` on loc) — Coolify
+            masks secret values and a safety check correctly blocked reading
+            them out programmatically to compare. The only real way to
+            confirm a match is to merge the Phase 6B feature branches and
+            watch whether the daughter cards go live or 403 — do not rotate
+            either key preemptively; both are load-bearing on other things
+            (loc's key gates every admin write endpoint, not just this).
       - [ ] prospectbuddy and grindbuddy have no blog — out of scope by design.
+- [x] **Post-delete propagation to daughters (2026-08-21)** — the feature
+      above mirrored create/update but never delete, so deleting a post on
+      the mother left orphaned copies live on both daughters. Fixed:
+      `deleteFromDaughters()` in impactors-academy's `src/lib/network.ts`
+      (best-effort, using the deleted row's `remote_refs`) plus a new
+      `DELETE /api/posts/[slug]` on ia-pro (loc already had `DELETE
+      /api/v1/blog/{slug}`, gated behind `require_editor_key`, so no backend
+      change needed there). Built by a second, concurrent Claude session
+      (`session_01CNPkbuknAi2fuUDGnX5SCN`) that branched off the in-flight
+      Phase 6B feature branches and merged straight to `main` on both repos
+      — **no test coverage added on either side**, and not verified in a
+      live browser. Worth closing next time this area is touched.
 
 ---
 
@@ -1044,6 +1069,67 @@ See `impactors-academy/docs/BUILD-CHECKLIST.md` for full detail.
 - [ ] Changelog process established — `/changelog-generator`
 - [ ] Google Search Console rich result check (structured data) — after 2026-08-16
 - [ ] OG link preview verified on WhatsApp/LinkedIn
+
+#### Mother Dashboard — Unified Admin for All Platforms
+
+> **Rule: the mother dashboard must be able to manage everything any daughter can.**
+> Each daughter dashboard keeps only the features relevant to its own platform.
+> The mother dashboard is the single place the team goes to operate every venture.
+
+**Current state (2026-08-20 audit):**
+
+| Feature | Mother (IA) | ia-pro | loc | Mother needs |
+|---|---|---|---|---|
+| Overview dashboard (entity counts, recent activity) | ⚠️ **2026-08-21: entity-count cards built** (`/admin` no longer redirects — see Phase 6B below) — still missing the recent-activity feed and health indicators | ❌ redirects to /enquiries | ✅ counts + recent inquiries | **Add recent-activity feed + health indicators to the new mother card** |
+| Blog posts CRUD | ✅ + revisions + concurrency | ✅ basic | ✅ basic | ✅ done |
+| Cross-post to daughters | ✅ checkboxes per post | — | — | ✅ done |
+| View daughter posts | ✅ shows remote posts | — | — | ✅ done |
+| Contacts / Enquiries / Inquiries | ✅ mark read (bulk) | ✅ mark read | ✅ read-only + CSV export | **Add CSV export, add daughter enquiries** |
+| Content requests (n8n pipeline) | ✅ create, approve/reject | — | — | ✅ done |
+| Affiliate products | ✅ CRUD + toggle | — | — | ✅ done |
+| Automations (n8n workflows) | ✅ view + toggle | — | — | ✅ done |
+| Ventures / Projects | ✅ read-only links | ✅ full CRUD (public/hidden) | — | **Add ia-pro projects management** |
+| Experiences CRUD | ❌ | — | ✅ full CRUD | **Add (proxied to LOC API)** |
+| Properties CRUD | ❌ | — | ✅ full CRUD | **Add (proxied to LOC API)** |
+| Products CRUD | ❌ | — | ✅ full CRUD | **Add (proxied to LOC API)** |
+| Analytics | ✅ GA4 links | ❌ | ❌ | **Expand: per-daughter analytics** |
+| Export (CSV) | ❌ | ❌ | ✅ inquiries | **Add** |
+| Platform switcher in sidebar | ❌ (external links only) | — | — | **Add** |
+
+**Implementation plan (ordered by impact):**
+
+Phase A — Platform Switcher + Overview
+- [ ] **Platform switcher in the sidebar**: dropdown or tabs — "All Platforms" / "IA Pro" /
+      "LOC". Selecting a daughter scopes the sidebar to that daughter's entities. "All" shows
+      the current mother-level items (contacts, posts, content requests, automations, ventures).
+- [x] **Overview dashboard** at `/admin`: entity counts per platform — **2026-08-21, see
+      Phase 6B below.** Posts, contacts/enquiries/inquiries, experiences, properties all
+      covered. Still open from this bullet: recent activity feed across all platforms,
+      platform health indicators (API reachable, last deploy time).
+
+Phase B — Daughter Entity Management from Mother
+- [ ] **LOC entities on the mother**: Experiences, Properties, Products, Blog Posts managed
+      via the LOC FastAPI backend. Mother calls `LOC_API_URL` with `LOC_EDITOR_API_KEY`
+      (same pattern as cross-posting). CRUD forms reuse LOC's existing API schema.
+      Routes: `/admin/loc/experiences`, `/admin/loc/properties`, `/admin/loc/products`.
+- [ ] **ia-pro projects on the mother**: manage ia-pro projects via its API.
+      Route: `/admin/ia-pro/projects`.
+- [ ] **Daughter enquiries on the mother**: unified contacts view that pulls from all three
+      sources (mother contacts, ia-pro enquiries, LOC inquiries), filterable by platform.
+      CSV export across all or per-platform.
+
+Phase C — Cross-Platform Intelligence
+- [ ] **Per-daughter analytics**: each daughter section shows its own analytics (GA4, Umami,
+      or PostHog depending on platform type per `PLATFORM-STANDARDS.md`).
+- [ ] **Content sync status**: for each blog post, show which daughters it was published to,
+      whether the remote copy is in sync (matching slug + updated_at), and a "re-sync" action.
+- [ ] **Daughter health panel**: API health check for each daughter (call `/health` endpoint),
+      last deployment timestamp from Coolify, uptime status.
+
+**Daughter dashboards remain standalone:**
+Each daughter keeps its own `/admin` with only its own entities. The daughter dashboard is the
+fallback when the mother is down and the lightweight option for team members who only work on
+one platform. No features are removed from daughters — the mother adds a superset view.
 
 ### ia-pro (~85% · Phase 8 done)
 See `ia-pro/docs/BUILD-CHECKLIST.md` for full detail. (Header % corrected 2026-08-05 —
@@ -1219,22 +1305,66 @@ When resumed:
 The mother dashboard at `impactorsacademy.com/admin` is the founder-facing view.
 It should show the health of the org as a business, not as an infra stack.
 
+**Relationship to the "Mother Dashboard — Unified Admin" plan above:** this is
+Phase A's "Overview dashboard" bullet — entity counts, built. Phase A's
+recent-activity feed and health indicators are not part of this; neither is
+Phase B (daughter entity CRUD from the mother) or Phase C. Those remain open.
+
+**2026-08-21: Phase 3 (real numbers, server-side) built and verified locally.**
+`/admin` is now the dashboard itself (was a redirect straight to `/admin/contacts`)
+— three per-venture cards, real data, same server-to-server `X-API-Key` pattern
+as the cross-platform blog publishing in Phase 3 above. impactors-academy's own
+numbers are queried directly (`src/lib/metrics.ts` → own Postgres); IA Pro and
+Loc are read over the network from two new endpoints (`GET /api/metrics` on
+ia-pro, `GET /api/v1/admin/metrics` on loc), both reusing the existing shared
+keys (`POSTS_API_KEY`, `EDITOR_API_KEY`) rather than minting new secrets, both
+fail-closed 503 when unconfigured. Verified end-to-end in a real browser
+against real seeded data on all three; full detail in each project's
+`docs/BUILD-CHECKLIST.md`.
+
 **Per-venture cards (real-time, pulled from each project's DB/analytics):**
-- [ ] **IA Pro** — enquiries this week, total enquiries, services breakdown,
-      conversion rate (enquiry → booked call)
-- [ ] **LOC** — new inquiries, active stays/experiences, top destinations,
-      referral link click-through rates (when EXP-5 ships)
-- [ ] **impactors-academy** — contact form submissions, page views (Umami),
-      blog post count + last published
-- [ ] **prospectbuddy** — prospects scraped this week, cache freshness, cities covered
+- [x] **IA Pro** — enquiries this week, total enquiries, unread, top services
+      by count, blog post total/published/last-published. Conversion rate
+      (enquiry → booked call) still open — no booked-call data exists yet
+      anywhere to compute it from.
+- [x] **LOC** — new inquiries, experience/property counts, top destinations
+      (by experience count, not yet referral-driven). Referral click-through
+      rate still open — blocked on EXP-5, which hasn't shipped.
+- [x] **impactors-academy** — contact submissions (total/7d/unread), blog post
+      count + last published. Umami page views not wired into the card yet
+      (Phase 2 below still open) — GA4/Umami links remain on the separate
+      Analytics tab, unchanged.
+- [ ] **prospectbuddy** — prospects scraped this week, cache freshness, cities
+      covered. Deliberately skipped this pass — prospectbuddy is PAUSED and not
+      deployed, so there is no live API to call yet.
 - [ ] **Org-wide** — total team size, active ventures, uptime summary (Uptime Kuma API)
+
+**2026-08-21 — checked Coolify directly, this was stale.** All four env vars
+(`IA_PRO_API_URL`, `IA_PRO_POSTS_API_KEY`, `LOC_API_URL`, `LOC_EDITOR_API_KEY`)
+are already set on impactors-academy's production service, not missing as
+previously noted — see the corrected note in Phase 3 above. Both URLs verified
+correct. Key-*matching* between mother and daughter is still unverified (can't
+read masked values to compare, and rotating either blind risks breaking a
+config that may already be right — loc's key in particular gates every admin
+write endpoint, not just this). **The actual remaining gap is code, not
+config:** impactors-academy and ia-pro merged to `main` on 2026-08-21 — a
+second, concurrent Claude session (`session_01CNPkbuknAi2fuUDGnX5SCN`)
+branched off both feature branches to add delete-propagation (see Phase 3
+above), bundled it in, and merged straight to `main` on both repos before
+this session knew it was happening. `curl
+https://pro.impactorsacademy.com/api/metrics` confirms the route is live
+(403, not 404/503). **loc is still open** — PR #21, not yet merged.
+Merging it is the real test for the key-match question: the Loc card
+either goes live or shows "not connected," which proves the match either
+way without ever needing to see a secret value. **Still nobody has actually
+logged into production `/admin` to look at the cards** — that is the one
+step left that needs a human with the real `ADMIN_PASSWORD`.
 
 **Implementation path:**
 - Phase 1: static links out to Grafana + GA4 (already done for IA analytics tab)
-- Phase 2: embed Umami widgets directly in the dashboard iframes
-- Phase 3: server-side API calls to each project's DB → real numbers rendered
-  server-side in the mother dashboard (no extra API needed, same pattern as
-  the existing Contacts tab)
+- [ ] Phase 2: embed Umami widgets directly in the dashboard iframes — still open
+- [x] Phase 3: server-side API calls to each project's DB → real numbers rendered
+  server-side in the mother dashboard — **built 2026-08-21**, see above
 
 ### 6C — Alerting
 
