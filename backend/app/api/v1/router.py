@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import blog, contact, experiences, leads, products, properties, referrals
+from app.api.v1.endpoints import admin_metrics, blog, contact, experiences, leads, products, properties, referrals
 
 router = APIRouter()
 
@@ -11,3 +11,4 @@ router.include_router(blog.router)
 router.include_router(contact.router)
 router.include_router(leads.router)
 router.include_router(referrals.router)
+router.include_router(admin_metrics.router)
