@@ -41,3 +41,16 @@ def test_docs_csp_allows_the_swagger_cdn(client):
 def test_json_endpoints_keep_the_strict_csp(client):
     res = client.get("/health")
     assert res.headers["Content-Security-Policy"] == "default-src 'none'; frame-ancestors 'none'"
+
+
+def test_coop_is_same_origin(client):
+    res = client.get("/health")
+    assert res.headers["Cross-Origin-Opener-Policy"] == "same-origin"
+
+
+def test_corp_is_same_site_not_same_origin(client):
+    """same-origin would break the frontend at a different subdomain
+    (loctravels.com) reading responses from this API (api.loctravels.com) —
+    CORP is a separate check from CORS and isn't overridden by it."""
+    res = client.get("/health")
+    assert res.headers["Cross-Origin-Resource-Policy"] == "same-site"
