@@ -62,6 +62,11 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+  // MASTER-CHECKLIST 0C-5. same-origin, not same-site like the API's: this is
+  // the site being embedded/opened, not the one doing the fetching, so there's
+  // no equivalent of the API's cross-subdomain-fetch concern here.
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
   // Cloudflare terminates TLS in front of this, but the header has to come from
   // somewhere and the origin is the honest place for it. Not in development —
   // it would pin localhost to https in your browser for two years.

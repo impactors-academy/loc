@@ -48,6 +48,19 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers.setdefault(
             "Permissions-Policy", "camera=(), microphone=(), geolocation=()"
         )
+        # MASTER-CHECKLIST 0C-5. COOP is same-origin — nothing here opens a
+        # cross-origin window and needs to interact with it.
+        #
+        # CORP is same-site, not same-origin: the frontend at loctravels.com
+        # fetches this API from a different subdomain, api.loctravels.com.
+        # same-origin would make the browser refuse to let that fetch read the
+        # response body at all — CORS headers don't override CORP, they're
+        # separate checks. same-site still blocks a genuinely unrelated third
+        # party from reading a response via a non-CORS vector (an <img src>
+        # pointing at a JSON endpoint, for instance), which is the actual
+        # threat this header defends against.
+        response.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
+        response.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
         # Everything except the docs returns JSON, so it needs no source at all.
         if request.url.path.rstrip("/") in self._DOC_PATHS:
             response.headers.setdefault("Content-Security-Policy", self._DOC_CSP)

@@ -263,9 +263,25 @@ current without checking `git log origin/main..origin/develope` first.
       **Caveat:** `script-src`/`style-src` keep `'unsafe-inline'` — the app
       styles with React `style={{}}` props, next/font injects an inline style
       block, and the JSON-LD blocks are inline scripts. Nonces would require
-      rendering every page dynamically. **Not yet verified in a real browser**
-      (the Chrome extension was unavailable) — load the site once with devtools
-      open and check for CSP violations before trusting it.
+      rendering every page dynamically. **Verified live 2026-08-23** — the
+      Chrome extension is available now: `scripts/dev-local.sh prod` (:3001)
+      loaded `/` and `/experiences` with real API data (country filter chips
+      populated from the DB), zero console errors, zero CSP violations.
+- [x] **`Cross-Origin-Opener-Policy` / `Cross-Origin-Resource-Policy`** —
+      shipped 2026-08-23, on both the backend (`security_headers.py`) and
+      the frontend (`next.config.ts`). **The two are not the same value on
+      purpose**: the frontend uses `same-origin` for both, but the backend's
+      CORP is `same-site`, not `same-origin` — the frontend at
+      `loctravels.com` fetches this API from a different subdomain,
+      `api.loctravels.com`, and CORP is a separate browser check from CORS
+      that a permissive `Access-Control-Allow-Origin` does not override.
+      `same-origin` there would have made the browser refuse to let the
+      frontend read any API response body — a self-inflicted outage that
+      only shows up once something tries to actually fetch data. Caught in
+      review before it shipped, not after. 2 new backend tests pin both
+      values; verified live via `curl` and in a real cross-port browser
+      session (`:3001` frontend fetching `:8000` API — same "different
+      origin" shape as the real subdomains) with zero console errors.
 - [x] **CSP fixed where it was silently breaking** (2026-08-08). Three faults the
       policy only showed once something actually rendered:
       `/docs` and `/redoc` are the only HTML this API serves, and Swagger UI loads
