@@ -294,7 +294,26 @@ current without checking `git log origin/main..origin/develope` first.
       production.
       `scripts/dev-local.sh prod` builds to `.next-prod` (via `NEXT_DIST_DIR`)
       and serves on :3001 beside the dev server — the only honest way to load
-      the real headers locally. **Still unloaded in a browser.**
+      the real headers locally. **Loaded in a browser 2026-08-23** — see the
+      COOP/CORP entry above; same session, same verification pass.
+- [x] **Dependency audit — 2026-08-23.** Backend: `uvx pip-audit` — "No known
+      vulnerabilities found" — plus `uv run ruff check` clean. `pip-audit`
+      wasn't installed or wired into CI before this; added as a CI step
+      (`.github/workflows/ci.yml`) so this stays checked automatically
+      instead of needing a manual run each time (MASTER-CHECKLIST 0C-8).
+      Frontend: `npm audit fix`
+      (non-forcing) resolved 5 HIGH Next.js CVEs by bumping within the
+      existing `^15.3.3` range to 15.5.23 — cache confusion, unbounded
+      Server Action payload, SSRF via rewrites, image-optimization DoS,
+      unauthenticated Server Function endpoint disclosure. **Accepted risk,
+      not fixed**: `postcss`/`sharp` HIGH advisories remain — the only fix
+      is `next@16.3.2`, a major-version bump (15→16) this session didn't
+      attempt, unlike impactors-academy's 16.2→16.3 minor bump for the same
+      advisory pair. A 15→16 major on this app needs its own regression
+      pass, not a drive-by force-fix. Verified the 15.5.23 bump itself with
+      a full local production build (`scripts/dev-local.sh prod`) and a
+      real browser load of `/experiences` — zero console errors, CSP/COOP/
+      CORP headers all still correct.
 
 ## Phase 7 — Deployment & DevOps
 
