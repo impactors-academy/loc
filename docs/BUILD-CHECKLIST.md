@@ -320,6 +320,26 @@ current without checking `git log origin/main..origin/develope` first.
       `pyproject.toml`/`uv.lock`, not the older `pip` type), and
       `github-actions`. Minor/patch grouped per ecosystem so a routine week
       doesn't turn into a pile of separate PRs.
+- [x] **Privacy policy page (MASTER-CHECKLIST 0C-7)** — shipped 2026-08-23,
+      `/privacy` in the `(marketing)` route group. **The footer
+      (`components/shared/Footer.tsx`) already linked to `/about`, `/contact`,
+      and `/privacy` — all three 404'd before this.** Only built `/privacy`
+      here since that's this task's scope; `/about` and `/contact` are still
+      broken links and worth a separate pass.
+      English only, deliberately — matches the existing precedent set by
+      `/promote` in the same route group (also plain hardcoded copy, no
+      `useTranslations`), and a legal document is a place where a wrong
+      translation is worse than none; localizing to the other 3 locales can
+      follow once someone reviews the translated text.
+      Content reflects what LOC actually does: only the inquiry form
+      collects personal data (name/email/phone/message, confirmed via the
+      `Inquiry` model before writing this — no analytics, no cookies, no
+      checkout/payment data since bookings happen with partners directly,
+      never on LOC itself). Contact address reuses `pro@impactorsacademy.com`,
+      the same org-wide privacy contact impactors-academy's own policy uses.
+      Verified live via `scripts/dev-local.sh`: the footer link (previously
+      dead) now resolves correctly in French and English, zero console
+      errors.
 
 ## Phase 7 — Deployment & DevOps
 
