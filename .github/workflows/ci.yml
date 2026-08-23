@@ -43,6 +43,8 @@ jobs:
         run: uv sync
       - name: Lint (ruff)
         run: uv run ruff check .
+      - name: Dependency audit (report only)
+        run: uvx pip-audit || true
       - name: Test (pytest)
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/loc_test
