@@ -314,6 +314,12 @@ current without checking `git log origin/main..origin/develope` first.
       a full local production build (`scripts/dev-local.sh prod`) and a
       real browser load of `/experiences` — zero console errors, CSP/COOP/
       CORP headers all still correct.
+- [x] **Dependabot enabled (MASTER-CHECKLIST 0C-8)** — `.github/dependabot.yml`,
+      weekly updates across all three ecosystems this repo actually has:
+      `npm` (`/frontend`), `uv` (`/backend` — Dependabot's native ecosystem for
+      `pyproject.toml`/`uv.lock`, not the older `pip` type), and
+      `github-actions`. Minor/patch grouped per ecosystem so a routine week
+      doesn't turn into a pile of separate PRs.
 
 ## Phase 7 — Deployment & DevOps
 
