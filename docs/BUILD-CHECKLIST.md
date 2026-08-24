@@ -365,6 +365,16 @@ current without checking `git log origin/main..origin/develope` first.
       the config at build time, so a plain one-line addition was the whole
       fix (no Dockerfile change needed). Verified with a real
       `scripts/dev-local.sh prod` build + `curl` — header correctly absent.
+- [x] **`NEXT_LOCALE` cookie missing `Secure` — found and fixed 2026-08-24,
+      same `testssl.sh` pass.** next-intl's default `localeCookie` config
+      omits `secure` entirely, even over an HTTPS-only site. Not
+      `httpOnly` — next-intl's own client-side navigation needs to read/
+      write the cookie, so that's a deliberate library choice, not a gap.
+      `secure: true` added in `i18n/routing.ts`, conditional on
+      `NODE_ENV === 'production'` (a Secure cookie is silently refused over
+      plain http in local dev). Verified both ways via
+      `scripts/dev-local.sh prod` + `curl`. Same fix shipped on
+      impactors-academy and ia-pro the same session.
 
 ## Phase 7 — Deployment & DevOps
 
