@@ -323,9 +323,7 @@ current without checking `git log origin/main..origin/develope` first.
 - [x] **Privacy policy page (MASTER-CHECKLIST 0C-7)** — shipped 2026-08-23,
       `/privacy` in the `(marketing)` route group. **The footer
       (`components/shared/Footer.tsx`) already linked to `/about`, `/contact`,
-      and `/privacy` — all three 404'd before this.** Only built `/privacy`
-      here since that's this task's scope; `/about` and `/contact` are still
-      broken links and worth a separate pass.
+      and `/privacy` — all three 404'd before this.**
       English only, deliberately — matches the existing precedent set by
       `/promote` in the same route group (also plain hardcoded copy, no
       `useTranslations`), and a legal document is a place where a wrong
@@ -340,6 +338,23 @@ current without checking `git log origin/main..origin/develope` first.
       Verified live via `scripts/dev-local.sh`: the footer link (previously
       dead) now resolves correctly in French and English, zero console
       errors.
+- [x] **`/contact` and `/about` — shipped 2026-08-24, the other two dead
+      footer links from the entry above.** `/contact` reuses the existing
+      `InquiryForm` component (`subject: "General contact"`,
+      `source_type: "general"`) — no new form logic, just wiring the
+      component that `/promote` already uses onto a plain page. Verified
+      by actually submitting it end to end: `psql` confirmed the row landed
+      in `inquiries` with the right subject/source_type (then deleted the
+      test row).
+      `/about` is deliberately restrained: only claims already made
+      elsewhere on the live site (the footer tagline, the hero subtitle,
+      the "How LOC Works" line) plus the confirmed architecture fact that
+      LOC never processes bookings or payments itself. No founding story,
+      no team bios, no numbers — those need real input from someone at the
+      company, not an invented narrative, so they're left out rather than
+      fabricated.
+      Both English only, same reasoning as `/privacy`. Verified live: zero
+      console errors on either page.
 
 ## Phase 7 — Deployment & DevOps
 
