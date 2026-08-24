@@ -76,6 +76,12 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Don't advertise the stack. `x-powered-by: Next.js` is free reconnaissance
+  // for anyone scanning for framework-specific CVEs and buys us nothing.
+  // Confirmed live on loctravels.com via testssl.sh before this — this
+  // setting was simply never added here, unlike impactors-academy/ia-pro
+  // (which had it in source but hit an unrelated Dockerfile bug instead).
+  poweredByHeader: false,
   // A local production build writes to its own directory so it can run beside
   // `next dev` on another port. Sharing `.next` means whichever process built
   // last wins, and the other starts throwing

@@ -355,6 +355,16 @@ current without checking `git log origin/main..origin/develope` first.
       fabricated.
       Both English only, same reasoning as `/privacy`. Verified live: zero
       console errors on either page.
+- [x] **`poweredByHeader: false` — never set at all, found and fixed
+      2026-08-24.** `testssl.sh` against loctravels.com showed
+      `x-powered-by: Next.js` live. Different root cause than the same
+      finding on impactors-academy/ia-pro (their Dockerfiles didn't copy
+      `next.config.ts` into an `output: 'standalone'`-less build) —
+      `frontend/next.config.ts` here simply never had the setting at all.
+      This frontend does use `output: 'standalone'`, which self-contains
+      the config at build time, so a plain one-line addition was the whole
+      fix (no Dockerfile change needed). Verified with a real
+      `scripts/dev-local.sh prod` build + `curl` — header correctly absent.
 
 ## Phase 7 — Deployment & DevOps
 
