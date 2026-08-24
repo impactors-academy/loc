@@ -6,7 +6,7 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 `bash scripts/sync-org-checklist.sh`. Per-project detail lives in each repo's own
 `docs/BUILD-CHECKLIST.md` — this file tracks phases and cross-cutting work only.
 
-**Last updated:** 2026-08-13 (mother dashboard's Postgres provisioned and cross-posting to ia-pro + loc verified live; ia-pro blog 404 fixed)
+**Last updated:** 2026-08-21 (Mother Dashboard unified-admin Phase A + Phase B both built — business-metrics cards and full daughter-entity CRUD for Loc + IA Pro, all pushed on feature branches; Phase C and the daughter-enquiries bullet remain open)
 
 > **Auditing this file — read first.** The 2026-08-05 audit initially produced several
 > false findings because it inspected each repo's *checked-out* branch. At the time
@@ -20,9 +20,11 @@ Org-level source of truth. Synced into each project as `docs/ORG-STATUS.md` via
 
 ## Org Health Snapshot
 
-> **Priority order set 2026-08-08.** 1) **loc** — finish it. 2) **impactors-academy
+> **Priority order set 2026-08-08, updated 2026-08-20.** 1) **loc** — finish it. 2) **impactors-academy
 > admin dashboard** — the mother dashboard the team will run every other platform
-> from; wanted ASAP. Everything else waits. **grindbuddy and prospectbuddy are
+> from; wanted ASAP. The mother must be able to manage everything any daughter can;
+> daughters keep only their own entities. See Phase 4 § "Mother Dashboard" for the
+> full plan and feature gap matrix. Everything else waits. **grindbuddy and prospectbuddy are
 > PAUSED** until loc and the dashboard are done — do not start work on either.
 
 | Project | Status | Priority | Blocker / Next action |
@@ -341,7 +343,33 @@ Every Next.js and FastAPI app must ship these headers. No exceptions.
 
 **Required headers (add to `next.config.ts` for Next.js, response middleware for FastAPI):**
 
-- [ ] `Content-Security-Policy` — the most important missing header
+- [x] `Content-Security-Policy` — **impactors-academy shipped 2026-08-23**
+      (`src/proxy.ts`, merged with the existing next-intl middleware since Next.js
+      only allows one). Nonce generated per request, forwarded to Server Components
+      via an `x-nonce` request header (`headers()` from `next/headers`), applied to
+      every JSON-LD `<script>` and the GA4 loader. Verified live in a browser on
+      `/`, `/en`, `/en/about`, `/blog`, `/blog/[slug]`, `/admin/login` — zero CSP
+      violations, zero console errors (a dev-only `eval()` warning and a cosmetic
+      nonce-hydration warning were fixed, not just tolerated — see `src/proxy.ts`
+      and the layout/page comments for both). Policy extends the spec below with
+      `frame-src https://www.youtube-nocookie.com` (the blog editor's Youtube
+      embed needs it) and `object-src`/`base-uri`/`form-action` hardening.
+      **ia-pro shipped 2026-08-23 too** (same `src/proxy.ts` pattern; policy is
+      minimal there — no analytics/embeds wired into that app yet, so no
+      third-party hosts are whitelisted; verified live the same way). Note:
+      ia-pro's repo has no `develop` branch, so this landed on `main` only —
+      unlike impactors-academy there's no staging sync step to do.
+      **LOC already had this — this whole checklist item was stale.**
+      Shipped 2026-08-08 (`backend/app/core/security_headers.py` on the API,
+      `frontend/next.config.ts` on the Next.js frontend), well before the
+      "still missing entirely" note below was last touched. Frontend keeps
+      `'unsafe-inline'` on script/style deliberately (React `style={{}}`
+      props, next/font's inline block, inline JSON-LD — a nonce would need
+      every page rendered dynamically); backend gets a stricter policy for
+      JSON responses and a separate permissive one for `/docs`/`/redoc` so
+      Swagger UI still loads. Verified live in a real browser 2026-08-23
+      (the "not yet verified" caveat from 08-08 is now closed).
+      **Still open: prospectbuddy (Flask) — no CSP.**
       ```
       default-src 'self';
       script-src 'self' 'nonce-{NONCE}' https://www.googletagmanager.com;
@@ -352,22 +380,38 @@ Every Next.js and FastAPI app must ship these headers. No exceptions.
       frame-ancestors 'none';
       ```
       Implementation: Next.js middleware generates a nonce per request; nonce added
-      to every `<script>` tag via `next/headers`. Add after staging is confirmed working.
-- [x] `X-Content-Type-Options: nosniff` — confirmed 2026-08-05 on ia-pro + impactors-academy
-- [x] `X-Frame-Options: DENY` — confirmed 2026-08-05 on both — upgrade to CSP `frame-ancestors` once CSP ships
-- [x] `Referrer-Policy: strict-origin-when-cross-origin` — confirmed 2026-08-05 on both
-- [x] `Permissions-Policy` — confirmed 2026-08-05 on both
-- [ ] `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
-      — **corrected 2026-08-05: ia-pro already has this** (`next.config.ts`); still
-      needed on impactors-academy and any other app (Cloudflare also sends this,
-      belt-and-suspenders)
-- [ ] `Cross-Origin-Opener-Policy: same-origin` — confirmed missing on both, still open
-- [ ] `Cross-Origin-Resource-Policy: same-origin` — confirmed missing on both, still open
-- [ ] CSP — confirmed missing on both ia-pro and impactors-academy, still the biggest gap here
-- [ ] **LOC FastAPI** — add all above headers via FastAPI middleware — confirmed
-      2026-08-05 still missing entirely, no header middleware in `main.py`
+      to every `<script>` tag via `next/headers`.
+- [x] `X-Content-Type-Options: nosniff` — confirmed 2026-08-05 on ia-pro + impactors-academy; LOC has it too (backend + frontend, since 2026-08-08)
+- [x] `X-Frame-Options: DENY` — confirmed 2026-08-05 on impactors-academy/ia-pro, LOC since 2026-08-08 — upgrade to CSP `frame-ancestors` once CSP ships (done on all three)
+- [x] `Referrer-Policy: strict-origin-when-cross-origin` — confirmed 2026-08-05 on impactors-academy/ia-pro; LOC since 2026-08-08
+- [x] `Permissions-Policy` — confirmed 2026-08-05 on impactors-academy/ia-pro; LOC since 2026-08-08
+- [x] `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+      — ia-pro and LOC had this already; **impactors-academy shipped it too**
+      (`next.config.ts`), confirmed present 2026-08-23
+- [x] `Cross-Origin-Opener-Policy: same-origin` — **impactors-academy, ia-pro,
+      and LOC all shipped** (2026-08-23).
+- [x] `Cross-Origin-Resource-Policy` — **impactors-academy, ia-pro, and LOC
+      all shipped** (2026-08-23). **Not the same value everywhere on
+      purpose**: `same-origin` on every frontend, but `same-site` on LOC's
+      API — it's fetched cross-subdomain from `loctravels.com`, and CORP
+      isn't overridden by CORS. `same-origin` there would have silently
+      broken every page that fetches data. Caught in review before it
+      shipped; see LOC's `docs/BUILD-CHECKLIST.md` for the full reasoning.
+      Worth checking this same distinction before adding CORP to any future
+      API that a separate-subdomain frontend calls.
 - [ ] **ProspectBuddy Flask** — add all above headers via Flask `after_request` hook —
       confirmed 2026-08-05 still missing, no `after_request` hook exists
+
+**Found while working this item, not yet acted on:** LOC's `develope` branch
+is 46 commits behind `main` — missing not just this security-headers feature
+but a large amount of other shipped work (brand palette rebuild, favicon/icon
+fixes, contrast/motion fixes, and more). This was flagged once before
+(2026-08-19 org-status entry) and is still unresolved. Every fix in this CSP/
+headers pass landed on LOC's `main` only, same as whatever was already there
+— deliberately not merging 46 unreviewed commits into `develope` as a side
+effect of a headers task. This needs Markie's call: either fast-forward
+`develope` to `main`, or decide `develope` is effectively abandoned and
+retarget CI/staging at `main` instead.
 
 **Verify all headers:** run `securityheaders.com` on every public domain after shipping.
 
@@ -377,40 +421,86 @@ Every Next.js and FastAPI app must ship these headers. No exceptions.
 
 Every API route — public or internal — must be defended.
 
-- [ ] **Input validation on all routes** — never trust client input
-      - [ ] Next.js API routes: validate with Zod schemas (not manual `if` checks) —
-            **confirmed 2026-08-05: impactors-academy has no `zod` dependency at all**;
-            `api/contact/route.ts` uses manual `if` checks + `.slice()` truncation
-            (200/320/2000 chars) as a stopgap, not schema validation
+- [x] **Input validation on all routes** — never trust client input
+      - [x] Next.js API routes: validate with Zod schemas (not manual `if` checks) —
+            **impactors-academy shipped this earlier in the 2026-08-23 session**
+            (`ContactSchema`, `api/contact/route.ts`), and **ia-pro shipped the
+            same fix the same day** (`EnquirySchema`, `api/enquiry/route.ts`) —
+            both replace manual `if` checks with Zod, truncation-not-rejection
+            preserved on overlong fields (matches the prior stopgap's limits
+            exactly). prospectbuddy explicitly out of scope (paused project,
+            per Markie 2026-08-23 — do not start work on it).
       - [x] FastAPI (LOC): Pydantic models enforce type + length on every endpoint —
             **confirmed 2026-08-05**, all routes use typed `*Create`/`*Update` schema
             models, no raw dicts
-      - [ ] Flask (prospectbuddy): `marshmallow` or manual validation on all routes — still open
-      - [ ] Max field lengths enforced (truncation already done on some routes — verify all)
-- [ ] **Rate limiting** — see Cloudflare rules in 0C-2 (edge) PLUS app-level as backup
-      - [ ] Next.js: `upstash/ratelimit` with Redis (or simple in-memory for low traffic)
-      - [x] FastAPI (LOC): `slowapi` wired on `develope` (`app/core/rate_limit.py`,
-            limiter + `RateLimitExceeded` handler registered in `main.py`) — **not on
-            `main`**; per-route limits still need to be applied
-      - [ ] Flask: `flask-limiter` — confirmed 2026-08-05, still not present in prospectbuddy
-- [ ] **CORS policy locked down** — no wildcard `*` in production
-      - [ ] Next.js: CORS headers only on routes that need them; default is same-origin
+      - [x] Max field lengths enforced — verified on impactors-academy (contact:
+            200/320/2000) and ia-pro (enquiry: 120/254/2000) as part of the Zod
+            work above.
+- [x] **Rate limiting** — see Cloudflare rules in 0C-2 (edge) PLUS app-level as backup
+      - [x] Next.js: in-memory bucket (`src/lib/rate-limit.ts`) on impactors-academy's
+            `/api/contact` and ia-pro's `/api/enquiry`, both 2026-08-23 — the
+            "simple in-memory for low traffic" option this line always allowed,
+            not `upstash/ratelimit`. Valid because Coolify runs each app as a
+            single container; revisit if either ever scales to multiple
+            instances (an in-memory bucket doesn't share state across them).
+            **Still open**: the Cloudflare edge rules themselves (needs
+            dashboard access), and `/admin/login` on both apps — NextAuth's
+            credentials provider isn't a route either app's rate-limit fix
+            could just copy onto; needs its own design.
+      - [x] FastAPI (LOC): `slowapi` wired **on `main`, confirmed 2026-08-23**
+            (`app/core/rate_limit.py`, applied to the contact endpoint) — the
+            "not on main" note here was stale; see the CSP/headers correction
+            above from the same session. Not yet applied to every write
+            endpoint, only contact — the rest are gated by `require_editor_key`
+            instead, which is a different but real form of abuse resistance.
+- [x] **CORS policy locked down** — no wildcard `*` in production
+      - [x] Next.js: **audited 2026-08-23** — impactors-academy and ia-pro have
+            zero `Access-Control-Allow-Origin`/`cors()` usage on any API route.
+            Every cross-app call (mother dashboard ↔ ia-pro's posts/metrics
+            API, n8n ↔ posts API) is server-to-server, which CORS doesn't
+            govern at all — only the browser enforces it. Default same-origin
+            is correct and already in effect everywhere.
       - [x] FastAPI (LOC): `CORSMiddleware` with explicit `allow_origins` list —
             **confirmed 2026-08-05**, defaults to `["http://localhost:3000"]`,
             config-driven via `Settings`, not wildcard
-      - [ ] Flask (prospectbuddy): `flask-cors` with explicit origins
-- [ ] **CSRF protection**
-      - [ ] prospectbuddy: ✅ done (session token + `hmac.compare_digest`)
-      - [ ] Next.js apps: Server Actions are CSRF-safe by default (verify Next.js version behaviour)
+      - [ ] Flask (prospectbuddy): `flask-cors` with explicit origins — paused
+            project, not in scope (Markie 2026-08-23)
+- [x] **CSRF protection**
+      - [ ] prospectbuddy: ✅ done (session token + `hmac.compare_digest`) — paused, not in scope
+      - [x] Next.js apps: **verified 2026-08-23**, both on Next.js 16.x —
+            Server Actions get Next's built-in Origin/Host header check.
+            Plain admin API routes (not Server Actions) are protected by
+            NextAuth's default `sameSite: 'lax'` session cookie — confirmed
+            no override in either app's auth config — which blocks the
+            cookie from attaching to a cross-site POST/PATCH.
       - [ ] LOC FastAPI: add CSRF token to state-changing endpoints if browser forms are used
-- [ ] **Authentication on every sensitive route**
-      - [ ] All `/admin/*` routes: NextAuth session check on every request ✅ (verify)
-      - [ ] LOC editor endpoints: `require_editor_key` on all write routes ✅ confirmed
-      - [ ] No route returns sensitive data (emails, IDs, internal state) to unauthenticated requests
-- [ ] **Error responses never leak internals**
-      - [ ] `500` responses return `{"error": "Internal server error"}` — no stack traces in prod
-      - [ ] `404` and `403` responses are identical in timing (prevent user enumeration)
-- [ ] **SQL injection** — Drizzle ORM parameterises all queries ✅; verify LOC raw queries if any
+- [x] **Authentication on every sensitive route**
+      - [x] All `/admin/*` routes: NextAuth session check on every request —
+            **real gap found and fixed 2026-08-23**: ia-pro's admin Server
+            Actions had no independent check, relying solely on the layout
+            redirect, which doesn't reliably gate a directly-invoked Server
+            Action (documented Next.js behavior). Added `requireSession()` to
+            all 8 actions, matching impactors-academy's existing pattern
+            there. Verified live, not just typechecked.
+      - [x] LOC editor endpoints: `require_editor_key` on all write routes ✅ confirmed
+      - [x] No route returns sensitive data to unauthenticated requests —
+            spot-checked 2026-08-23: contact/enquiry submission endpoints are
+            write-only (accept data, never echo other rows back); admin
+            list/export endpoints all sit behind the session or editor-key
+            checks above.
+- [x] **Error responses never leak internals**
+      - [x] `500` responses return `{"error": "Internal server error"}` — no stack traces in prod —
+            **audited 2026-08-23**: every `catch` block across impactors-academy,
+            ia-pro, and LOC returns a fixed generic message; none interpolate
+            the caught error into the response. Next.js's and FastAPI's own
+            default unhandled-exception behavior (neither in debug mode) also
+            withholds stack traces in production regardless.
+      - [ ] `404` and `403` responses are identical in timing (prevent user
+            enumeration) — not verified; needs actual timing measurement, not
+            code inspection, to claim
+- [x] **SQL injection** — Drizzle ORM parameterises all queries ✅; **LOC
+      audited 2026-08-23**, no raw SQL string interpolation anywhere in the
+      FastAPI backend (SQLAlchemy ORM throughout)
 - [ ] **API versioning** — LOC already uses `/api/v1/`; all future APIs follow this pattern
 
 ---
@@ -424,16 +514,51 @@ Every API route — public or internal — must be defended.
       - [ ] Vaultwarden: encrypted by default (uses AES-256) ✅ once deployed
       - [ ] Backups encrypted before upload to R2:
             `pg_dump | gzip | openssl enc -aes-256-cbc | upload to R2`
-- [ ] **Data in transit** — HTTPS everywhere ✅ (Cloudflare + HSTS)
-- [ ] **PII handling (GDPR — applies because EU users will visit)**
-      - [ ] Data inventory documented: what PII is collected on each platform, where stored
-            (contacts.json → name/email/message; LOC inquiries → same; future: student accounts)
-      - [ ] Privacy policy page on impactors-academy + ia-pro + LOC
-      - [ ] Cookie consent banner (required for GA4 analytics in EU)
-      - [ ] Data deletion: user can request deletion — documented process per platform
-      - [ ] Data export: user can request their data — documented process
-      - [ ] Retention policy: contacts.json entries older than 2 years auto-purged (or documented)
-      - [ ] No PII in logs (Loki/Grafana must not log email addresses or names in request paths)
+- [x] **Data in transit** — HTTPS everywhere — confirmed 2026-08-23, HSTS
+      present on all three active apps (this session's CSP/headers pass),
+      Cloudflare proxying live in front of all three domains.
+- [x] **PII handling (GDPR — applies because EU users will visit)**
+      - [x] Data inventory documented — impactors-academy's `/privacy` page
+            already covers this well (what's collected, why, retention,
+            sharing, rights) — read in full 2026-08-23 while wiring the
+            consent banner. ia-pro and LOC now have their own too (below).
+      - [x] **Privacy policy page on ia-pro + LOC — shipped 2026-08-23.**
+            ia-pro's `/privacy` (all 4 locales, linked from the homepage
+            footer) says plainly what's actually true there: enquiry form
+            only, no analytics, no cookies at all — confirmed via grep
+            before writing it, not copied from impactors-academy's
+            GA4-specific language. LOC's `/privacy` (English only — matches
+            the `/promote` page's existing no-i18n precedent, and a wrong
+            legal translation is worse than none) turned out to fix a live
+            bug: LOC's footer already linked to `/privacy` (and `/about`,
+            `/contact`) and all three 404'd — only `/privacy` was in scope
+            here, `/about`/`/contact` are still dead links, flagged as their
+            own task. Both pages' contact address reuses
+            `pro@impactorsacademy.com`, the same org-wide privacy contact
+            impactors-academy's policy already uses — not new unverified
+            addresses. Both verified live in a real browser, zero console
+            errors.
+      - [x] **Cookie consent banner — shipped 2026-08-23**, impactors-academy
+            only (the only one of the three with GA4 wired in at all). GA4
+            was firing for every visitor with zero consent gate — the privacy
+            policy disclosed it, but disclosure isn't the same as the opt-in
+            consent GDPR/ePrivacy actually requires before a non-essential
+            cookie is set. `CookieConsent.tsx` + `AnalyticsScripts.tsx` +
+            `cookie-consent.ts`; GA4 confirmed absent before consent, loads
+            immediately on Accept, stays out on Decline, both persist.
+            Verified against a real production build, not `next dev`.
+      - [x] Data deletion / export process — documented on all three privacy
+            pages now ("Your rights" — email request, honored regardless of
+            jurisdiction).
+      - [x] Retention policy — documented on all three privacy pages now
+            ("How long we keep it").
+      - [x] No PII in logs — **audited 2026-08-23**: zero `console.error`/
+            `logger.error` calls in any API route handler across all three
+            active codebases (errors are caught and a generic message
+            returned, per the 0C-6 error-leakage audit) — there is
+            currently nothing logging a request body, an email, or a name
+            anywhere in application code. Moot until Loki/Grafana exist
+            (0C-9), but the code itself has no PII-logging landmine waiting.
 - [ ] **Backup strategy**
       - [ ] `pg_dump` cron: daily encrypted backup → Cloudflare R2 bucket `ia-backups`
       - [ ] Retention: 30 daily, 12 monthly, 3 yearly
@@ -450,12 +575,32 @@ Every API route — public or internal — must be defended.
 
 ### 0C-8 — Dependency & Supply Chain Security
 
-- [ ] **npm audit** in CI for all Node.js projects — fails build on HIGH/CRITICAL ✅ (to add)
-- [ ] **pip audit / safety** in CI for LOC and prospectbuddy Python projects
-- [ ] **GitHub Dependabot** enabled on all repos — auto-PRs for security updates
+- [x] **npm audit** in CI for all Node.js projects — **report-only, not
+      fail-on-HIGH** (deliberate: a hard fail would have blocked every PR
+      the day a new advisory landed against an already-accepted-risk
+      package like drizzle-kit's dev-only esbuild dependency). Shipped on
+      impactors-academy (earlier in the 2026-08-23 session), ia-pro, and
+      LOC's frontend job — all three now run `npm audit --audit-level=high || true`
+      in CI. Real findings fixed the same session where the fix was safe:
+      impactors-academy's postcss/sharp (via a next@16.2→16.3 minor bump),
+      ia-pro's nanoid HIGH advisory, LOC's 5 HIGH Next.js CVEs (via a
+      next@15.3→15.5 minor bump). LOC's own postcss/sharp pair needs a
+      15→16 major bump — deliberately not forced; flagged as its own future
+      task, not folded into this pass.
+- [x] **pip audit** in CI for LOC — `uvx pip-audit` added as a report-only
+      backend CI step 2026-08-23; found nothing. prospectbuddy out of scope
+      (paused project, per Markie 2026-08-23).
+- [x] **GitHub Dependabot** enabled on all three active repos — impactors-academy
+      already had it; ia-pro and LOC got `.github/dependabot.yml` 2026-08-23
+      (npm/uv/github-actions as applicable per repo, weekly, minor/patch
+      grouped). prospectbuddy and grindbuddy out of scope (paused).
 - [ ] **GitHub secret scanning** enabled on all repos — alerts on committed tokens
-- [ ] **License compliance** — no GPL-licensed packages in commercial products
-      (MIT, Apache-2.0, BSD are fine; GPL requires open-sourcing your code)
+- [x] **License compliance** — audited 2026-08-23 via `npx license-checker
+      --summary` across impactors-academy, ia-pro, and LOC's frontend: no
+      GPL-licensed packages in any of the three. Each has exactly one LGPL
+      entry (`@img/sharp-libvips-*`, sharp's native image-processing
+      bindings) — LGPL permits linking/using as a dependency without the
+      copyleft obligation full GPL would impose; not a concern.
 - [ ] **Docker image scanning** — Trivy or Docker Scout on all custom images in CI
 - [ ] **Subresource Integrity (SRI)** — any externally loaded script (CDN) gets
       `integrity` + `crossorigin` attributes; prefer self-hosting critical scripts
@@ -496,12 +641,78 @@ Every API route — public or internal — must be defended.
 Security is not set-and-forget. It requires regular testing.
 
 - [ ] **Pre-launch security check** (before any new platform goes live)
-      - [ ] `securityheaders.com` — all headers A or A+
-      - [ ] `observatory.mozilla.org` — score B+ minimum
-      - [ ] `testssl.sh` — TLS configuration clean
-      - [ ] OWASP Top 10 manual check (or automated via OWASP ZAP)
-      - [ ] `git log --all --full-history -- .env*` — confirm no secret ever committed
-      - [ ] Dependency audit clean (`npm audit`, `pip audit`)
+      - [ ] `securityheaders.com` — **attempted 2026-08-23, blocked**: the
+            scanner's own bot-detection returned 403 to WebFetch on both
+            impactorsacademy.com and pro.impactorsacademy.com. Not something
+            to keep retrying — needs a real browser or someone running it
+            manually. Substituted with a direct `curl -I` header audit
+            against all four live domains instead (below) — a real check,
+            but not the same as the tool's own A/A+ grading.
+      - [x] **Direct header audit (stand-in for the two scanners above) —
+            2026-08-23, all four live public domains via `curl -I`:**
+            `impactorsacademy.com` and `pro.impactorsacademy.com` — full
+            nonce-based CSP, HSTS w/ preload, COOP/CORP, X-Frame-Options,
+            X-Content-Type-Options, Referrer-Policy, Permissions-Policy all
+            present — this is an A/A+-shaped header set by
+            securityheaders.com's own published criteria, though the tool
+            itself couldn't confirm it. `loctravels.com` — same set present,
+            **but its CSP keeps `script-src 'unsafe-inline' 'unsafe-eval'`**
+            (documented, deliberate tradeoff from 2026-08-08 — Next.js's
+            inline bootstrap scripts, no nonce infra there), which
+            securityheaders.com specifically penalizes and would likely cap
+            around a B, not A/A+. `api.loctravels.com` — minimal `default-src
+            'none'` CSP, everything else present, the strongest of the four.
+      - [ ] `observatory.mozilla.org` — attempted via its API, wrong
+            endpoint/method for a GET-only fetch (scan is POST); not pursued
+            further this session
+      - [x] `testssl.sh` — **run 2026-08-24** (installed via Homebrew) against
+            impactorsacademy.com and pro.impactorsacademy.com. TLS itself
+            clean (TLS 1.2/1.3 only, no SSLv2/3/1.0/1.1, valid cert chain,
+            HSTS w/ preload). **Two real findings, both fixed the same
+            session, on all three active platforms:**
+            1. `x-powered-by: Next.js` leaking despite `poweredByHeader:
+               false` in source. impactors-academy/ia-pro: the Dockerfile
+               runner stage never copied `next.config.ts` into the image —
+               `next start` (not `output: 'standalone'`) re-reads the live
+               config file at boot for flags like this one that aren't
+               baked into the routes manifest, so it silently fell back to
+               Next's default. Reproduced locally before fixing (copied
+               only what the old Dockerfile copied, confirmed the header
+               appeared; added the config file back, confirmed it didn't).
+               LOC uses `output: 'standalone'` so didn't have this
+               Dockerfile bug, but had never set `poweredByHeader: false`
+               at all.
+            2. `NEXT_LOCALE` cookie missing `Secure`, on all three —
+               next-intl's own default omits it. Fixed with
+               `secure: true`, conditional on production only (a Secure
+               cookie is silently refused over `next dev`'s plain http,
+               which would break local dev otherwise). Verified both ways
+               on all three: real production builds send `Secure`, dev
+               doesn't, locale switching still works in dev.
+            **Also run against loctravels.com and api.loctravels.com** —
+            same two findings there too (LOC never set `poweredByHeader` at
+            all; same missing `Secure` cookie), both fixed the same
+            session. **All six fixes (2 issues × 3 platforms) reverified
+            live in production after deploy** — `curl`/`testssl.sh` against
+            all five public domains, `x-powered-by` gone and `Secure`
+            present on the cookie everywhere it applies.
+            One thing found but **not fixed — infra-only, needs the
+            Cloudflare dashboard**: loctravels.com's edge offers TLS 1.0
+            and 1.1 (deprecated), while impactorsacademy.com's edge
+            correctly restricts to 1.2/1.3 only. Likely a "Minimum TLS
+            Version" setting difference between the two zones.
+      - [ ] OWASP Top 10 manual check (or automated via OWASP ZAP) — not attempted
+      - [x] `git log --all --full-history -- .env*` — **confirmed 2026-08-23**
+            across all three active repos (impactors-academy, ia-pro, LOC):
+            zero `.env`/`.env.local`/`.env.production`/`.env.staging` ever
+            committed, in any of them. Also checked every `.env.example`
+            (impactors-academy, LOC backend, and ia-pro's — the last one
+            lives at `apps/pro/.env.example`, not the repo root, easy to
+            miss) for anything that looks like a real key/token/connection
+            string — none found.
+      - [x] Dependency audit clean — done earlier in this session (0C-8):
+            `npm audit`/`pip-audit` across all three, real findings fixed
+            where safe, remainder accepted-risk and documented.
 - [ ] **Quarterly security review** (all platforms)
       - [ ] Rotate secrets (NEXTAUTH_SECRET, ADMIN_PASSWORD, API keys)
       - [ ] Review Cloudflare Access audit logs for anomalies
@@ -1026,12 +1237,35 @@ Current honest state and what's needed:
             draft→skip, publish→create, re-save→update-in-place with no
             duplicates. **Not clicked through in a browser** (Chrome extension
             disconnected).
-      - [ ] **ACTION REQUIRED for production:** set `IA_PRO_API_URL` /
-            `IA_PRO_POSTS_API_KEY` and `LOC_API_URL` / `LOC_EDITOR_API_KEY` in
-            impactors-academy's Coolify env, plus matching `POSTS_API_KEY` in
-            ia-pro's and `EDITOR_API_KEY` in loc's. Unset = that platform
-            reports "not configured" on save rather than failing silently.
+      - [x] **CORRECTED 2026-08-21 — this was stale, not actually open.**
+            Checked directly in the Coolify UI: `IA_PRO_API_URL`,
+            `IA_PRO_POSTS_API_KEY`, `LOC_API_URL`, and `LOC_EDITOR_API_KEY` are
+            all already set on impactors-academy's production service —
+            someone configured these at some point without updating this
+            checklist (same drift pattern flagged elsewhere in this file).
+            Both URLs read back correct (`https://pro.impactorsacademy.com`,
+            `https://api.loctravels.com`). **Still genuinely unverified:**
+            whether each key's value actually matches its daughter's copy
+            (`POSTS_API_KEY` on ia-pro, `EDITOR_API_KEY` on loc) — Coolify
+            masks secret values and a safety check correctly blocked reading
+            them out programmatically to compare. The only real way to
+            confirm a match is to merge the Phase 6B feature branches and
+            watch whether the daughter cards go live or 403 — do not rotate
+            either key preemptively; both are load-bearing on other things
+            (loc's key gates every admin write endpoint, not just this).
       - [ ] prospectbuddy and grindbuddy have no blog — out of scope by design.
+- [x] **Post-delete propagation to daughters (2026-08-21)** — the feature
+      above mirrored create/update but never delete, so deleting a post on
+      the mother left orphaned copies live on both daughters. Fixed:
+      `deleteFromDaughters()` in impactors-academy's `src/lib/network.ts`
+      (best-effort, using the deleted row's `remote_refs`) plus a new
+      `DELETE /api/posts/[slug]` on ia-pro (loc already had `DELETE
+      /api/v1/blog/{slug}`, gated behind `require_editor_key`, so no backend
+      change needed there). Built by a second, concurrent Claude session
+      (`session_01CNPkbuknAi2fuUDGnX5SCN`) that branched off the in-flight
+      Phase 6B feature branches and merged straight to `main` on both repos
+      — **no test coverage added on either side**, and not verified in a
+      live browser. Worth closing next time this area is touched.
 
 ---
 
@@ -1044,6 +1278,77 @@ See `impactors-academy/docs/BUILD-CHECKLIST.md` for full detail.
 - [ ] Changelog process established — `/changelog-generator`
 - [ ] Google Search Console rich result check (structured data) — after 2026-08-16
 - [ ] OG link preview verified on WhatsApp/LinkedIn
+
+#### Mother Dashboard — Unified Admin for All Platforms
+
+> **Rule: the mother dashboard must be able to manage everything any daughter can.**
+> Each daughter dashboard keeps only the features relevant to its own platform.
+> The mother dashboard is the single place the team goes to operate every venture.
+
+**Current state (2026-08-20 audit):**
+
+| Feature | Mother (IA) | ia-pro | loc | Mother needs |
+|---|---|---|---|---|
+| Overview dashboard (entity counts, recent activity) | ⚠️ **2026-08-21: entity-count cards built** (`/admin` no longer redirects — see Phase 6B below) — still missing the recent-activity feed and health indicators | ❌ redirects to /enquiries | ✅ counts + recent inquiries | **Add recent-activity feed + health indicators to the new mother card** |
+| Blog posts CRUD | ✅ + revisions + concurrency | ✅ basic | ✅ basic | ✅ done |
+| Cross-post to daughters | ✅ checkboxes per post | — | — | ✅ done |
+| View daughter posts | ✅ shows remote posts | — | — | ✅ done |
+| Contacts / Enquiries / Inquiries | ✅ mark read (bulk) | ✅ mark read | ✅ read-only + CSV export | **Add CSV export, add daughter enquiries** |
+| Content requests (n8n pipeline) | ✅ create, approve/reject | — | — | ✅ done |
+| Affiliate products | ✅ CRUD + toggle | — | — | ✅ done |
+| Automations (n8n workflows) | ✅ view + toggle | — | — | ✅ done |
+| Ventures / Projects | ✅ read-only links, ⚠️ **2026-08-21: ia-pro projects also now managed at `/admin/ia-pro/projects`** (proxied, see below) | ✅ full CRUD (public/hidden) | — | ✅ done |
+| Experiences CRUD | ✅ **2026-08-21: `/admin/loc/experiences`, proxied** | — | ✅ full CRUD | ✅ done |
+| Properties CRUD | ✅ **2026-08-21: `/admin/loc/properties`, proxied** | — | ✅ full CRUD | ✅ done |
+| Products CRUD | ✅ **2026-08-21: `/admin/loc/products`, proxied** | — | ✅ full CRUD | ✅ done |
+| Analytics | ✅ GA4 links | ❌ | ❌ | **Expand: per-daughter analytics** |
+| Export (CSV) | ❌ | ❌ | ✅ inquiries | **Add** |
+| Platform switcher in sidebar | ❌ (external links only) | — | — | **Add** |
+
+**Implementation plan (ordered by impact):**
+
+Phase A — Platform Switcher + Overview
+- [ ] **Platform switcher in the sidebar**: dropdown or tabs — "All Platforms" / "IA Pro" /
+      "LOC". Selecting a daughter scopes the sidebar to that daughter's entities. "All" shows
+      the current mother-level items (contacts, posts, content requests, automations, ventures).
+- [x] **Overview dashboard** at `/admin`: entity counts per platform — **2026-08-21, see
+      Phase 6B below.** Posts, contacts/enquiries/inquiries, experiences, properties all
+      covered. Still open from this bullet: recent activity feed across all platforms,
+      platform health indicators (API reachable, last deploy time).
+
+Phase B — Daughter Entity Management from Mother
+- [x] **LOC entities on the mother (2026-08-21)**: Experiences, Properties, Products —
+      full create/edit/delete at `/admin/loc/experiences`, `/admin/loc/properties`,
+      `/admin/loc/products`. Proxied live to loc's existing REST API via `LOC_API_URL`/
+      `LOC_EDITOR_API_KEY` (same pattern as cross-posting) — no new loc backend code,
+      no local mother-side table. Blog Posts intentionally excluded from this bullet —
+      already covered by the existing cross-platform publishing feature above, which
+      works differently (mirrors a copy, not a live proxy) and shouldn't be duplicated.
+- [x] **ia-pro projects on the mother (2026-08-21)**: `/admin/ia-pro/projects`, full
+      create/edit/delete. ia-pro had no network-facing Projects API at all — added one
+      (`GET`/`POST /api/projects`, `PUT`/`DELETE /api/projects/[id]`, mirrors
+      `/api/posts`'s `X-API-Key` auth, reuses `POSTS_API_KEY`).
+      New generic proxy core: `impactors-academy/src/lib/daughter-crud.ts` — one
+      list/create/update/delete implementation shared by all four entities above, so a
+      fifth entity or a future daughter platform is a small addition, not new
+      architecture. Verified end-to-end in a real browser for all four: create, edit,
+      delete, against real local Postgres data on both loc and ia-pro.
+- [ ] **Daughter enquiries on the mother**: unified contacts view that pulls from all three
+      sources (mother contacts, ia-pro enquiries, LOC inquiries), filterable by platform.
+      CSV export across all or per-platform.
+
+Phase C — Cross-Platform Intelligence
+- [ ] **Per-daughter analytics**: each daughter section shows its own analytics (GA4, Umami,
+      or PostHog depending on platform type per `PLATFORM-STANDARDS.md`).
+- [ ] **Content sync status**: for each blog post, show which daughters it was published to,
+      whether the remote copy is in sync (matching slug + updated_at), and a "re-sync" action.
+- [ ] **Daughter health panel**: API health check for each daughter (call `/health` endpoint),
+      last deployment timestamp from Coolify, uptime status.
+
+**Daughter dashboards remain standalone:**
+Each daughter keeps its own `/admin` with only its own entities. The daughter dashboard is the
+fallback when the mother is down and the lightweight option for team members who only work on
+one platform. No features are removed from daughters — the mother adds a superset view.
 
 ### ia-pro (~85% · Phase 8 done)
 See `ia-pro/docs/BUILD-CHECKLIST.md` for full detail. (Header % corrected 2026-08-05 —
@@ -1219,22 +1524,66 @@ When resumed:
 The mother dashboard at `impactorsacademy.com/admin` is the founder-facing view.
 It should show the health of the org as a business, not as an infra stack.
 
+**Relationship to the "Mother Dashboard — Unified Admin" plan above:** this is
+Phase A's "Overview dashboard" bullet — entity counts, built. Phase A's
+recent-activity feed and health indicators are not part of this; neither is
+Phase B (daughter entity CRUD from the mother) or Phase C. Those remain open.
+
+**2026-08-21: Phase 3 (real numbers, server-side) built and verified locally.**
+`/admin` is now the dashboard itself (was a redirect straight to `/admin/contacts`)
+— three per-venture cards, real data, same server-to-server `X-API-Key` pattern
+as the cross-platform blog publishing in Phase 3 above. impactors-academy's own
+numbers are queried directly (`src/lib/metrics.ts` → own Postgres); IA Pro and
+Loc are read over the network from two new endpoints (`GET /api/metrics` on
+ia-pro, `GET /api/v1/admin/metrics` on loc), both reusing the existing shared
+keys (`POSTS_API_KEY`, `EDITOR_API_KEY`) rather than minting new secrets, both
+fail-closed 503 when unconfigured. Verified end-to-end in a real browser
+against real seeded data on all three; full detail in each project's
+`docs/BUILD-CHECKLIST.md`.
+
 **Per-venture cards (real-time, pulled from each project's DB/analytics):**
-- [ ] **IA Pro** — enquiries this week, total enquiries, services breakdown,
-      conversion rate (enquiry → booked call)
-- [ ] **LOC** — new inquiries, active stays/experiences, top destinations,
-      referral link click-through rates (when EXP-5 ships)
-- [ ] **impactors-academy** — contact form submissions, page views (Umami),
-      blog post count + last published
-- [ ] **prospectbuddy** — prospects scraped this week, cache freshness, cities covered
+- [x] **IA Pro** — enquiries this week, total enquiries, unread, top services
+      by count, blog post total/published/last-published. Conversion rate
+      (enquiry → booked call) still open — no booked-call data exists yet
+      anywhere to compute it from.
+- [x] **LOC** — new inquiries, experience/property counts, top destinations
+      (by experience count, not yet referral-driven). Referral click-through
+      rate still open — blocked on EXP-5, which hasn't shipped.
+- [x] **impactors-academy** — contact submissions (total/7d/unread), blog post
+      count + last published. Umami page views not wired into the card yet
+      (Phase 2 below still open) — GA4/Umami links remain on the separate
+      Analytics tab, unchanged.
+- [ ] **prospectbuddy** — prospects scraped this week, cache freshness, cities
+      covered. Deliberately skipped this pass — prospectbuddy is PAUSED and not
+      deployed, so there is no live API to call yet.
 - [ ] **Org-wide** — total team size, active ventures, uptime summary (Uptime Kuma API)
+
+**2026-08-21 — checked Coolify directly, this was stale.** All four env vars
+(`IA_PRO_API_URL`, `IA_PRO_POSTS_API_KEY`, `LOC_API_URL`, `LOC_EDITOR_API_KEY`)
+are already set on impactors-academy's production service, not missing as
+previously noted — see the corrected note in Phase 3 above. Both URLs verified
+correct. Key-*matching* between mother and daughter is still unverified (can't
+read masked values to compare, and rotating either blind risks breaking a
+config that may already be right — loc's key in particular gates every admin
+write endpoint, not just this). **The actual remaining gap is code, not
+config:** impactors-academy and ia-pro merged to `main` on 2026-08-21 — a
+second, concurrent Claude session (`session_01CNPkbuknAi2fuUDGnX5SCN`)
+branched off both feature branches to add delete-propagation (see Phase 3
+above), bundled it in, and merged straight to `main` on both repos before
+this session knew it was happening. `curl
+https://pro.impactorsacademy.com/api/metrics` confirms the route is live
+(403, not 404/503). **loc is still open** — PR #21, not yet merged.
+Merging it is the real test for the key-match question: the Loc card
+either goes live or shows "not connected," which proves the match either
+way without ever needing to see a secret value. **Still nobody has actually
+logged into production `/admin` to look at the cards** — that is the one
+step left that needs a human with the real `ADMIN_PASSWORD`.
 
 **Implementation path:**
 - Phase 1: static links out to Grafana + GA4 (already done for IA analytics tab)
-- Phase 2: embed Umami widgets directly in the dashboard iframes
-- Phase 3: server-side API calls to each project's DB → real numbers rendered
-  server-side in the mother dashboard (no extra API needed, same pattern as
-  the existing Contacts tab)
+- [ ] Phase 2: embed Umami widgets directly in the dashboard iframes — still open
+- [x] Phase 3: server-side API calls to each project's DB → real numbers rendered
+  server-side in the mother dashboard — **built 2026-08-21**, see above
 
 ### 6C — Alerting
 
