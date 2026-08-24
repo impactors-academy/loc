@@ -235,6 +235,21 @@ current without checking `git log origin/main..origin/develope` first.
       attaches `EDITOR_API_KEY` to everything it forwards, so that was an unauthenticated
       write path and a read of every lead. Fail-closed: unset Access config in production
       returns 503.
+- [x] **`/admin` was unreachable even after a valid Access JWT — found and fixed
+      2026-08-24.** The prior verifications above (08-08, 08-13) only proved the
+      *pre-auth* redirect to the Access login worked; nobody had exercised the
+      page past that point. `middleware.ts` matched `/admin*` and returned
+      `NextResponse.next()` straight after the JWT check, without ever calling
+      `intlMiddleware`. The real filesystem route is `[locale]/(admin)/admin`, so
+      a bare `/admin` URL (default-locale, unprefixed under `as-needed`) had
+      nothing to match and 404'd — for every authenticated admin, not just in
+      dev. Fixed by running `intlMiddleware(req)` for all page routes including
+      `/admin` first, then layering the Access check on top of its response
+      instead of bypassing it. Verified live locally: `/admin` now renders the
+      real Overview page (10 experiences, 6 properties, 3 blog posts, 3
+      products, live inquiry rows from Postgres). Could not verify against the
+      actual Cloudflare Access flow in production from here — that needs a real
+      Access login, which requires the operator.
 - [x] **`/admin` 500 root-caused and fixed — 2026-08-13.** `CF_ACCESS_TEAM_DOMAIN`
       and `CF_ACCESS_AUD` in Coolify were literally set to the placeholder
       instructional text from `.env.example` (`"set CF_ACCESS_TEAM_DOMAIN — e.g.

@@ -35,38 +35,42 @@ function deny(status: number, detail: string) {
 
 const intlMiddleware = createMiddleware(routing)
 
+async function checkAccess(req: NextRequest) {
+  // Unconfigured. In production that is a broken deployment, not a reason to
+  // serve the admin surface unauthenticated. Locally there is no Access in
+  // front of you, so the check has nothing to verify and stands aside.
+  if (!JWKS || !AUD) {
+    if (process.env.NODE_ENV === "production") {
+      return deny(503, "Cloudflare Access is not configured on this deployment. Admin is disabled.")
+    }
+    return null
+  }
+
+  const token = req.headers.get("Cf-Access-Jwt-Assertion") ?? req.cookies.get("CF_Authorization")?.value
+
+  if (!token) {
+    return deny(403, "Missing Cloudflare Access token.")
+  }
+
+  try {
+    await jwtVerify(token, JWKS, {
+      issuer: `https://${TEAM_DOMAIN}`,
+      audience: AUD,
+    })
+  } catch {
+    return deny(403, "Invalid Cloudflare Access token.")
+  }
+
+  return null
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Admin routes: verify Cloudflare Access JWT
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-    // Unconfigured. In production that is a broken deployment, not a reason to
-    // serve the admin surface unauthenticated. Locally there is no Access in
-    // front of you, so the check has nothing to verify and stands aside.
-    if (!JWKS || !AUD) {
-      if (process.env.NODE_ENV === "production") {
-        return deny(503, "Cloudflare Access is not configured on this deployment. Admin is disabled.")
-      }
-      return NextResponse.next()
-    }
-
-    const token =
-      req.headers.get("Cf-Access-Jwt-Assertion") ?? req.cookies.get("CF_Authorization")?.value
-
-    if (!token) {
-      return deny(403, "Missing Cloudflare Access token.")
-    }
-
-    try {
-      await jwtVerify(token, JWKS, {
-        issuer: `https://${TEAM_DOMAIN}`,
-        audience: AUD,
-      })
-    } catch {
-      return deny(403, "Invalid Cloudflare Access token.")
-    }
-
-    return NextResponse.next()
+  // API admin routes: verify Cloudflare Access JWT, no locale handling needed
+  if (pathname.startsWith("/api/admin")) {
+    const denied = await checkAccess(req)
+    return denied ?? NextResponse.next()
   }
 
   // API routes: pass through without locale handling
@@ -74,8 +78,17 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
-  // All other routes: handle locale detection and routing
-  return intlMiddleware(req)
+  // Every page route, including /admin, needs next-intl's rewrite: the
+  // filesystem route is [locale]/(admin)/admin, so without this the App
+  // Router has nothing to match a bare /admin URL against and 404s.
+  const intlResponse = intlMiddleware(req)
+
+  if (pathname.startsWith("/admin")) {
+    const denied = await checkAccess(req)
+    if (denied) return denied
+  }
+
+  return intlResponse
 }
 
 export const config = {
