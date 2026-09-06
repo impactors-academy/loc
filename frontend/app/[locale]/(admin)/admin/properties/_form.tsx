@@ -1,6 +1,6 @@
 "use client"
 
-import { COUNTRIES } from "@/lib/constants"
+import { COUNTRIES, CURRENCIES } from "@/lib/constants"
 import { api } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -31,6 +31,7 @@ export function PropertyForm({ initial, editSlug }: Props) {
     location: initial?.location ?? "",
     price_min: initial?.priceMin?.toString() ?? "",
     price_max: initial?.priceMax?.toString() ?? "",
+    currency: initial?.currency ?? "EUR",
     images: initial?.images ?? ([] as string[]),
     listing_tier: initial?.listingTier ?? "standard",
     owner_contact: initial?.ownerContact ?? "",
@@ -92,8 +93,14 @@ export function PropertyForm({ initial, editSlug }: Props) {
           </select>
         </div>
         <div><label className={label}>Location</label><input className={input} value={form.location} onChange={(e) => set("location", e.target.value)} /></div>
-        <div><label className={label}>Price Min (€)</label><input className={input} type="number" min="0" step="0.01" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} /></div>
-        <div><label className={label}>Price Max (€)</label><input className={input} type="number" min="0" step="0.01" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} /></div>
+        <div><label className={label}>Price Min</label><input className={input} type="number" min="0" step="0.01" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} /></div>
+        <div><label className={label}>Price Max</label><input className={input} type="number" min="0" step="0.01" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} /></div>
+        <div>
+          <label className={label}>Currency</label>
+          <select className={input} value={form.currency} onChange={(e) => set("currency", e.target.value)}>
+            {CURRENCIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
+        </div>
         <div><label className={label}>Owner Contact</label><input className={input} value={form.owner_contact} onChange={(e) => set("owner_contact", e.target.value)} /></div>
         <div className="col-span-2">
           <label className={label}>Images (one URL per row)</label>

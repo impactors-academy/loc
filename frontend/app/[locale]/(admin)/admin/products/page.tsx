@@ -1,6 +1,7 @@
 "use client"
 
 import { api } from "@/lib/api"
+import { formatAmount } from "@/lib/types"
 import type { Product } from "@/lib/types"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -46,7 +47,7 @@ export default function ProductsPage() {
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-loc-night">{item.title}</td>
                   <td className="px-4 py-3 text-loc-stone capitalize">{item.type}</td>
-                  <td className="px-4 py-3 text-loc-stone">€{item.price.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-loc-stone">{formatAmount(item.price, item.currency, 2)}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
                       <Link href={`/admin/products/${item.slug}/edit`} className="text-loc-terracotta hover:underline text-xs font-medium">Edit</Link>

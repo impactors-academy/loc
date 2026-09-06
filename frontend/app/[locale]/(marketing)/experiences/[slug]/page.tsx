@@ -84,7 +84,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
           ? {
               offers: {
                 "@type": "Offer",
-                priceCurrency: "EUR",
+                priceCurrency: experience.currency,
                 price: experience.priceMin,
                 url: `https://loctravels.com/experiences/${slug}`,
               },
@@ -169,7 +169,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
                   <p className="font-heading text-2xl font-semibold text-loc-terracotta">
-                    {formatPriceRange(experience.priceMin, experience.priceMax, "/ person")}
+                    {formatPriceRange(experience.priceMin, experience.priceMax, experience.currency, "/ person")}
                   </p>
                 </div>
               </>

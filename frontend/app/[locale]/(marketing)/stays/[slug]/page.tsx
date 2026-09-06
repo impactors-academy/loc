@@ -1,6 +1,6 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { api } from "@/lib/api"
-import { formatPriceRange } from "@/lib/types"
+import { formatAmount, formatPriceRange } from "@/lib/types"
 import { Home, MapPin } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
@@ -92,7 +92,9 @@ export default async function PropertyDetailPage({ params }: Props) {
           : {}),
         ...(property.priceMin != null
           ? {
-              priceRange: `€${property.priceMin}${property.priceMax != null ? `-€${property.priceMax}` : "+"}`,
+              priceRange: property.priceMax != null
+                ? `${formatAmount(property.priceMin, property.currency)}-${formatAmount(property.priceMax, property.currency)}`
+                : `${formatAmount(property.priceMin, property.currency)}+`,
             }
           : {}),
       }
@@ -172,7 +174,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
                   <p className="font-heading text-2xl font-semibold text-loc-terracotta">
-                    {formatPriceRange(property.priceMin, property.priceMax, "/ night")}
+                    {formatPriceRange(property.priceMin, property.priceMax, property.currency, "/ night")}
                   </p>
                 </div>
               </>
