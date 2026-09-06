@@ -435,8 +435,14 @@ have all since been deleted (2026-08-08).**
       `/images/og-default.jpg`, which doesn't exist on disk — every page
       without its own override was serving a broken image to link previews.
       Repointed to the existing `/images/hero.jpg` (1280×720).
-      - [ ] JSON-LD (`TouristAttraction`, `LodgingBusiness`, `Product` schemas) —
-            not done yet
+      - [x] JSON-LD, part 2 (2026-09-06) — `TouristAttraction` on experience
+            pages, `LodgingBusiness` on stay pages, `Product` on product
+            pages. Inline `<Script type="application/ld+json">` per page,
+            null-guarded when the API call fails (same fallback pattern as
+            the metadata). Uses EUR throughout, matching `formatPriceRange`
+            and every price display already in the app. Already covered by
+            the existing CSP `'unsafe-inline'` on `script-src`, kept
+            specifically for these blocks (see CSP note, Phase 0C).
 - [x] `robots.txt` present (2026-09-06, `app/robots.ts`) — disallows `/admin`,
       `/*/admin`, `/api/admin`; points to `/sitemap.xml`
 - [x] `sitemap.xml` (2026-09-06, `app/sitemap.ts`) — covers all static

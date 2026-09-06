@@ -3,6 +3,7 @@ import { ExternalLink, Tag } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import Script from "next/script"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -64,8 +65,33 @@ export default async function ProductDetailPage({ params }: Props) {
     ? (TYPE_GRADIENTS[product.type] ?? "from-loc-night via-loc-night/80 to-loc-stone")
     : "from-loc-night via-loc-night/80 to-loc-stone"
 
+  const jsonLd = product
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.title,
+        description: product.description ?? undefined,
+        url: `https://loctravels.com/products/${slug}`,
+        ...(product.imageUrl ? { image: [product.imageUrl] } : {}),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "EUR",
+          price: product.price,
+          url: product.purchaseUrl || `https://loctravels.com/products/${slug}`,
+          availability: "https://schema.org/InStock",
+        },
+      }
+    : null
+
   return (
     <main className="pt-24 pb-20">
+      {jsonLd && (
+        <Script
+          id="product-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
           <Link href="/" className="hover:text-loc-terracotta transition-colors">Home</Link>

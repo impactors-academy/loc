@@ -7,6 +7,7 @@ import { MapPin, Tag, User } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import Script from "next/script"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -62,8 +63,45 @@ export default async function ExperienceDetailPage({ params }: Props) {
   const gradient =
     experience ? (CATEGORY_GRADIENTS[experience.category] ?? "from-loc-night via-loc-night/80 to-loc-stone") : "from-loc-night via-loc-night/80 to-loc-stone"
 
+  const jsonLd = experience
+    ? {
+        "@context": "https://schema.org",
+        "@type": "TouristAttraction",
+        name: experience.title,
+        description: experience.description,
+        url: `https://loctravels.com/experiences/${slug}`,
+        ...(experience.images?.length ? { image: experience.images } : {}),
+        ...(experience.location
+          ? {
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: experience.location,
+                ...(experience.country ? { addressCountry: experience.country } : {}),
+              },
+            }
+          : {}),
+        ...(experience.priceMin != null
+          ? {
+              offers: {
+                "@type": "Offer",
+                priceCurrency: "EUR",
+                price: experience.priceMin,
+                url: `https://loctravels.com/experiences/${slug}`,
+              },
+            }
+          : {}),
+      }
+    : null
+
   return (
     <main className="pt-24 pb-20">
+      {jsonLd && (
+        <Script
+          id="experience-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       {/* Hero banner */}
       <div
         className={`relative h-72 md:h-96 bg-gradient-to-br ${gradient} overflow-hidden`}
