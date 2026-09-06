@@ -12,10 +12,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   try {
     const product = await api.products.get(slug)
+    const title = `${product.title} | LOC Store`
     return {
-      title: `${product.title} | LOC Store`,
+      title,
       description: product.description ?? undefined,
       alternates: { canonical: `/products/${slug}` },
+      openGraph: {
+        title,
+        description: product.description ?? undefined,
+        url: `/products/${slug}`,
+        type: "website",
+        ...(product.imageUrl ? { images: [{ url: product.imageUrl, alt: product.title }] } : {}),
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: product.description ?? undefined,
+        ...(product.imageUrl ? { images: [product.imageUrl] } : {}),
+      },
     }
   } catch {
     return { title: "Product | LOC Store" }

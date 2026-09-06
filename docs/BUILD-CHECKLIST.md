@@ -421,11 +421,27 @@ have all since been deleted (2026-08-08).**
 
 ## Phase 8 — Launch
 
-- [ ] SEO pass — OG/Twitter meta on experience/stay/product detail pages;
-      JSON-LD (`TouristAttraction`, `LodgingBusiness`, `Product` schemas)
-- [ ] `robots.txt` present; disallows editor/admin routes; points to sitemap
-- [ ] `sitemap.xml` — covers `/experiences/[slug]`, `/stays/[slug]`, `/products/[slug]`,
-      `/blog/[slug]` with `lastmod` from DB
+- [x] SEO pass, part 1 (2026-09-06) — OG/Twitter meta added on experience,
+      stay, and product detail pages (`generateMetadata` per page, uses the
+      item's own title/description/image; falls back to the site default
+      when the API call fails). Also fixed a pre-existing bug along the way:
+      the site-wide OG/Twitter fallback image referenced
+      `/images/og-default.jpg`, which doesn't exist on disk — every page
+      without its own override was serving a broken image to link previews.
+      Repointed to the existing `/images/hero.jpg` (1280×720).
+      - [ ] JSON-LD (`TouristAttraction`, `LodgingBusiness`, `Product` schemas) —
+            not done yet
+- [x] `robots.txt` present (2026-09-06, `app/robots.ts`) — disallows `/admin`,
+      `/*/admin`, `/api/admin`; points to `/sitemap.xml`
+- [x] `sitemap.xml` (2026-09-06, `app/sitemap.ts`) — covers all static
+      marketing pages plus `/experiences/[slug]`, `/stays/[slug]`,
+      `/products/[slug]`, `/blog/[slug]`, with per-locale `hreflang`
+      alternates; degrades gracefully to static-only entries if the API is
+      unreachable (verified against local dev with no backend running).
+      **Not done**: `lastmod` uses request time, not a real per-item value —
+      `Experience`/`Property`/`Product`/`BlogPost` don't expose an
+      `updated_at` field on the frontend today, so real `lastmod` needs that
+      added on the FastAPI side first.
 - [ ] Analytics before launch — GA4 or Plausible; track referral CTA clicks,
       inquiry form submissions, product page views, search queries
 - [ ] Social share preview verified (OG image renders correctly on WhatsApp/LinkedIn)
