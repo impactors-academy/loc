@@ -232,7 +232,26 @@ current without checking `git log origin/main..origin/develope` first.
       5/minute per IP and TestClient requests share one address.
 - [ ] Load test on hybrid search endpoint — pgvector + RRF under concurrent requests
 - [ ] Cross-browser/mobile check — mobile-first layout verified on real device or BrowserStack
-- [ ] Empty-state handling verified on all filter combinations (no results shown correctly)
+- [x] Empty-state handling verified on all filter combinations (2026-09-06)
+      — ran the actual stack locally (FastAPI + Postgres + Redis + the
+      Next.js frontend, seeded dev data: 10 experiences, 6 properties, 3
+      products, 3 blog posts) and drove it through Chrome rather than just
+      reading the code. Confirmed correct empty states for: experiences by
+      category+country with no matches, experiences by a nonsense search
+      query, stays by type+country with no matches, blog by a nonexistent
+      tag, and confirmed the non-empty path still renders correctly
+      (store grid, blog filtered to a real tag).
+      **Found and fixed**: `ArticleGrid`'s empty state always said "No
+      articles yet — Stories from around the world are coming soon.",
+      even when the actual cause was a `tag` filter matching zero posts
+      out of an otherwise non-empty blog — misleadingly implying the
+      whole blog was empty. Now says `No articles tagged "{tag}"` /
+      `Try a different tag.` when a tag filter is active, matching the
+      pattern `ExperienceGrid` already used for its search query.
+      **Noted, not fixed**: the stays filter chips are missing a
+      "Bivouac" option even though `bivouac` is a valid `PropertyType`
+      with its own gradient/label on the stay detail page — minor,
+      unrelated to empty-state correctness itself.
 
 ## Phase 6 — Security
 

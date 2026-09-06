@@ -35,8 +35,12 @@ export function ArticleGrid({ tag }: ArticleGridProps) {
   if (!data?.length) {
     return (
       <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">No articles yet</p>
-        <p className="text-loc-stone text-sm">Stories from around the world are coming soon.</p>
+        <p className="font-heading text-xl text-loc-night mb-2">
+          {tag ? `No articles tagged "${tag}"` : "No articles yet"}
+        </p>
+        <p className="text-loc-stone text-sm">
+          {tag ? "Try a different tag." : "Stories from around the world are coming soon."}
+        </p>
       </div>
     )
   }
