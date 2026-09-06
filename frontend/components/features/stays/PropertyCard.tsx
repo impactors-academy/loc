@@ -23,7 +23,7 @@ const TIER_BADGE: Record<string, string> = {
 export function PropertyCard({ property }: { property: Property }) {
   const typeLabel = TYPE_LABELS[property.type] ?? property.type
   const image = property.images?.[0] ?? getPoolImage(property.type, property.slug)
-  const priceDisplay = formatPriceRange(property.priceMin, property.priceMax, "/ night")
+  const priceDisplay = formatPriceRange(property.priceMin, property.priceMax, property.currency, "/ night")
   const tierLabel = TIER_BADGE[property.listingTier]
 
   return (

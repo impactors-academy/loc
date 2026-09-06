@@ -19,6 +19,7 @@ class Property(Base):
     location: Mapped[str | None] = mapped_column(String, index=True)
     price_min: Mapped[float | None] = mapped_column(Float)
     price_max: Mapped[float | None] = mapped_column(Float)
+    currency: Mapped[str] = mapped_column(String, nullable=False, default="EUR")
     images: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
     listing_tier: Mapped[str] = mapped_column(String, nullable=False, default="standard")
     owner_contact: Mapped[str | None] = mapped_column(String)

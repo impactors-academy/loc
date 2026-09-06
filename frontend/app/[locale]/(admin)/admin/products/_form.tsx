@@ -1,6 +1,7 @@
 "use client"
 
 import { api } from "@/lib/api"
+import { CURRENCIES } from "@/lib/constants"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import type { Product } from "@/lib/types"
@@ -26,6 +27,7 @@ export function ProductForm({ initial, editSlug }: Props) {
     description: initial?.description ?? "",
     type: initial?.type ?? "guide",
     price: initial?.price?.toString() ?? "",
+    currency: initial?.currency ?? "EUR",
     image_url: initial?.imageUrl ?? "",
     purchase_url: initial?.purchaseUrl ?? "",
   })
@@ -68,7 +70,13 @@ export function ProductForm({ initial, editSlug }: Props) {
             {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
         </div>
-        <div><label className={label}>Price (€) *</label><input className={input} type="number" min="0" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} required /></div>
+        <div><label className={label}>Price *</label><input className={input} type="number" min="0" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} required /></div>
+        <div>
+          <label className={label}>Currency</label>
+          <select className={input} value={form.currency} onChange={(e) => set("currency", e.target.value)}>
+            {CURRENCIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
+        </div>
         <div className="col-span-2"><label className={label}>Image URL</label><input className={input} type="url" value={form.image_url} onChange={(e) => set("image_url", e.target.value)} /></div>
         <div className="col-span-2"><label className={label}>Purchase URL *</label><input className={input} type="url" value={form.purchase_url} onChange={(e) => set("purchase_url", e.target.value)} required /></div>
       </div>

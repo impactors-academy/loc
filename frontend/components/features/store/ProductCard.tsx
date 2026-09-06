@@ -1,3 +1,4 @@
+import { formatAmount } from "@/lib/types"
 import type { Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { ExternalLink } from "lucide-react"
@@ -67,7 +68,7 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
           <span className="font-heading text-lg font-semibold text-loc-terracotta">
-            €{product.price.toFixed(2)}
+            {formatAmount(product.price, product.currency, 2)}
           </span>
           <a
             href={product.purchaseUrl}

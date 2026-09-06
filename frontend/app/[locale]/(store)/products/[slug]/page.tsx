@@ -1,4 +1,5 @@
 import { api } from "@/lib/api"
+import { formatAmount } from "@/lib/types"
 import { ExternalLink, Tag } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
@@ -75,7 +76,7 @@ export default async function ProductDetailPage({ params }: Props) {
         ...(product.imageUrl ? { image: [product.imageUrl] } : {}),
         offers: {
           "@type": "Offer",
-          priceCurrency: "EUR",
+          priceCurrency: product.currency,
           price: product.price,
           url: product.purchaseUrl || `https://loctravels.com/products/${slug}`,
           availability: "https://schema.org/InStock",
@@ -134,7 +135,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6 mb-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Price</p>
                   <p className="font-heading text-3xl font-semibold text-loc-terracotta">
-                    €{product.price.toFixed(2)}
+                    {formatAmount(product.price, product.currency, 2)}
                   </p>
                 </div>
 

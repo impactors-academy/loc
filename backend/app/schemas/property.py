@@ -10,6 +10,7 @@ class PropertyBase(BaseModel):
     location: str | None = None
     price_min: float | None = None
     price_max: float | None = None
+    currency: str = "EUR"
     images: list[str] = []
     listing_tier: str = "standard"
     owner_contact: str | None = None

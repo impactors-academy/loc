@@ -53,3 +53,10 @@ export const NAV_LINKS = [
 
 export const SITE_NAME = "LOC"
 export const SITE_TAGLINE = "Discover the World"
+
+export const CURRENCIES = [
+  { label: "EUR (€)", value: "EUR" },
+  { label: "USD ($)", value: "USD" },
+  { label: "GBP (£)", value: "GBP" },
+  { label: "MAD (dh)", value: "MAD" },
+]

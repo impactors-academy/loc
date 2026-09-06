@@ -1,6 +1,6 @@
 "use client"
 
-import { COUNTRIES, EXPERIENCE_CATEGORIES } from "@/lib/constants"
+import { COUNTRIES, CURRENCIES, EXPERIENCE_CATEGORIES } from "@/lib/constants"
 import { api } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -32,6 +32,7 @@ export function ExperienceForm({ initial, editSlug }: Props) {
     duration: initial?.duration ?? "",
     price_min: initial?.priceMin?.toString() ?? "",
     price_max: initial?.priceMax?.toString() ?? "",
+    currency: initial?.currency ?? "EUR",
     images: initial?.images ?? ([] as string[]),
     is_featured: initial?.isFeatured ?? false,
     provider_name: initial?.providerName ?? "",
@@ -112,12 +113,18 @@ export function ExperienceForm({ initial, editSlug }: Props) {
           <input className={input} placeholder="e.g. 2 hours" value={form.duration} onChange={(e) => set("duration", e.target.value)} />
         </div>
         <div>
-          <label className={label}>Price Min (€)</label>
+          <label className={label}>Price Min</label>
           <input className={input} type="number" min="0" step="0.01" value={form.price_min} onChange={(e) => set("price_min", e.target.value)} />
         </div>
         <div>
-          <label className={label}>Price Max (€)</label>
+          <label className={label}>Price Max</label>
           <input className={input} type="number" min="0" step="0.01" value={form.price_max} onChange={(e) => set("price_max", e.target.value)} />
+        </div>
+        <div>
+          <label className={label}>Currency</label>
+          <select className={input} value={form.currency} onChange={(e) => set("currency", e.target.value)}>
+            {CURRENCIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
         </div>
         <div>
           <label className={label}>Provider Name</label>

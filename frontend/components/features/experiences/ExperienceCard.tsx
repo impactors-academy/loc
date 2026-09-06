@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export function ExperienceCard({ experience }: { experience: Experience }) {
   const image = experience.images?.[0] ?? getPoolImage(experience.category, experience.slug)
-  const priceDisplay = formatPriceRange(experience.priceMin, experience.priceMax, "/ person")
+  const priceDisplay = formatPriceRange(experience.priceMin, experience.priceMax, experience.currency, "/ person")
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">

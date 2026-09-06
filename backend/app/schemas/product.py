@@ -7,6 +7,7 @@ class ProductBase(BaseModel):
     description: str | None = None
     type: str
     price: float
+    currency: str = "EUR"
     image_url: str | None = None
     purchase_url: str
 
