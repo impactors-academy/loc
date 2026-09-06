@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/git-sync-check.sh",
+            "timeout": 15,
+            "statusMessage": "Checking git sync status..."
+          }
+        ]
+      }
+    ]
+  }
+}

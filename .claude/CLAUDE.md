@@ -24,6 +24,11 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 
 ## On every session start
 
+0. A `SessionStart` hook (`.claude/hooks/git-sync-check.sh`) runs `git fetch`
+   and reports branch/ahead-behind/dirty-tree status — informational only,
+   never auto-stashes/pulls/commits. If it flags uncommitted changes before
+   you switch branches or pull, `git stash` first (`git stash pop` after).
+   Multiple people push here now — don't skip this.
 1. Read `docs/BUILD-CHECKLIST.md` in full — active branch is `develope`.
 2. Audit every unchecked item against actual code.
 3. Note ambiguous items as **Open Flags** — ask before acting.
