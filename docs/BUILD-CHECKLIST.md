@@ -202,7 +202,13 @@ current without checking `git log origin/main..origin/develope` first.
 ## Phase 5 — Testing & QA
 
 - [x] CI skeleton — ruff, pytest, eslint, tsc, next build all green on every push
-- [ ] Integration tests for inquiry flow end-to-end (form → FastAPI → DB → notify stub)
+- [x] Integration tests for inquiry flow end-to-end (2026-09-06,
+      `tests/api/v1/test_contact.py`) — form → FastAPI → DB → notify stub:
+      happy path persists the row correctly, default `source_type`, 422 on
+      missing field / invalid email with no row written, and the log-only
+      notify path (email disabled in test env) fires without raising.
+      Resets the rate limiter between tests since `/contact/` is capped at
+      5/minute per IP and TestClient requests share one address.
 - [ ] Load test on hybrid search endpoint — pgvector + RRF under concurrent requests
 - [ ] Cross-browser/mobile check — mobile-first layout verified on real device or BrowserStack
 - [ ] Empty-state handling verified on all filter combinations (no results shown correctly)
