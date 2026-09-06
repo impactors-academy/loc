@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     email_from: str = "noreply@loctravels.com"
     email_to: str = ""
 
+    # Cloudflare R2 — set to enable presigned image uploads from the admin UI.
+    # Not secret: r2_account_id, r2_bucket, r2_public_base_url.
+    # Secret (Vaultwarden -> Coolify, never committed): r2_access_key_id, r2_secret_access_key.
+    r2_account_id: str = ""
+    r2_access_key_id: str = ""
+    r2_secret_access_key: str = ""
+    r2_bucket: str = "loc-media"
+    r2_public_base_url: str = ""  # e.g. https://media.loctravels.com
+
     # extra="ignore": the repo root .env is shared with docker-compose, which defines
     # vars this app does not consume (PGADMIN_*, POSTGRES_*). Without this, any such
     # var raises "Extra inputs are not permitted" and the API refuses to boot.
@@ -56,6 +65,10 @@ class Settings(BaseSettings):
     @property
     def email_enabled(self) -> bool:
         return bool(self.smtp_host and self.email_to)
+
+    @property
+    def r2_enabled(self) -> bool:
+        return bool(self.r2_account_id and self.r2_access_key_id and self.r2_secret_access_key)
 
 
 settings = Settings()

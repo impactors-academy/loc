@@ -2,6 +2,7 @@
 
 import { COUNTRIES, CURRENCIES, EXPERIENCE_CATEGORIES } from "@/lib/constants"
 import { api } from "@/lib/api"
+import { ImageUploader } from "@/components/features/admin/ImageUploader"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import type { Experience } from "@/lib/types"
@@ -139,18 +140,8 @@ export function ExperienceForm({ initial, editSlug }: Props) {
           <input className={input} type="url" value={form.referral_url} onChange={(e) => set("referral_url", e.target.value)} />
         </div>
         <div className="col-span-2">
-          <label className={label}>Images (one URL per row)</label>
-          {form.images.map((url, i) => (
-            <div key={i} className="flex gap-2 mb-2">
-              <input className={input} value={url} onChange={(e) => {
-                const imgs = [...form.images]; imgs[i] = e.target.value; set("images", imgs)
-              }} />
-              <button type="button" onClick={() => set("images", form.images.filter((_, j) => j !== i))}
-                className="px-3 py-2 text-sm text-destructive border border-border rounded-lg hover:bg-destructive/5">✕</button>
-            </div>
-          ))}
-          <button type="button" onClick={() => set("images", [...form.images, ""])}
-            className="text-sm text-loc-terracotta hover:underline">+ Add image URL</button>
+          <label className={label}>Images</label>
+          <ImageUploader images={form.images} onChange={(imgs) => set("images", imgs)} />
         </div>
         <div className="col-span-2 flex items-center gap-3">
           <input id="featured" type="checkbox" checked={form.is_featured} onChange={(e) => set("is_featured", e.target.checked)} className="w-4 h-4 accent-loc-terracotta" />
