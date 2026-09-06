@@ -5,6 +5,7 @@ import { Home, MapPin } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import Script from "next/script"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -72,8 +73,40 @@ export default async function PropertyDetailPage({ params }: Props) {
   const gradient =
     property ? (TYPE_GRADIENTS[property.type] ?? "from-loc-night via-loc-night/80 to-loc-stone") : "from-loc-night via-loc-night/80 to-loc-stone"
 
+  const jsonLd = property
+    ? {
+        "@context": "https://schema.org",
+        "@type": "LodgingBusiness",
+        name: property.title,
+        description: property.description,
+        url: `https://loctravels.com/stays/${slug}`,
+        ...(property.images?.length ? { image: property.images } : {}),
+        ...(property.location
+          ? {
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: property.location,
+                ...(property.country ? { addressCountry: property.country } : {}),
+              },
+            }
+          : {}),
+        ...(property.priceMin != null
+          ? {
+              priceRange: `€${property.priceMin}${property.priceMax != null ? `-€${property.priceMax}` : "+"}`,
+            }
+          : {}),
+      }
+    : null
+
   return (
     <main className="pt-24 pb-20">
+      {jsonLd && (
+        <Script
+          id="property-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       {/* Hero banner */}
       <div
         className={`relative h-72 md:h-96 bg-gradient-to-br ${gradient} overflow-hidden`}
