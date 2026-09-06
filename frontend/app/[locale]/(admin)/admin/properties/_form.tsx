@@ -2,6 +2,7 @@
 
 import { COUNTRIES, CURRENCIES } from "@/lib/constants"
 import { api } from "@/lib/api"
+import { ImageUploader } from "@/components/features/admin/ImageUploader"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import type { Property } from "@/lib/types"
@@ -103,14 +104,8 @@ export function PropertyForm({ initial, editSlug }: Props) {
         </div>
         <div><label className={label}>Owner Contact</label><input className={input} value={form.owner_contact} onChange={(e) => set("owner_contact", e.target.value)} /></div>
         <div className="col-span-2">
-          <label className={label}>Images (one URL per row)</label>
-          {form.images.map((url, i) => (
-            <div key={i} className="flex gap-2 mb-2">
-              <input className={input} value={url} onChange={(e) => { const imgs = [...form.images]; imgs[i] = e.target.value; set("images", imgs) }} />
-              <button type="button" onClick={() => set("images", form.images.filter((_, j) => j !== i))} className="px-3 py-2 text-sm text-destructive border border-border rounded-lg hover:bg-destructive/5">✕</button>
-            </div>
-          ))}
-          <button type="button" onClick={() => set("images", [...form.images, ""])} className="text-sm text-loc-terracotta hover:underline">+ Add image URL</button>
+          <label className={label}>Images</label>
+          <ImageUploader images={form.images} onChange={(imgs) => set("images", imgs)} />
         </div>
       </div>
 

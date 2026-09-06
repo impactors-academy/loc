@@ -126,5 +126,12 @@ export const api = {
     leads: {
       list: () => adminFetcher<Record<string, unknown>[]>("/leads?limit=100"),
     },
+    uploads: {
+      presign: (contentType: string) =>
+        adminFetcher<{ upload_url: string; public_url: string }>("/uploads/presign", {
+          method: "POST",
+          body: JSON.stringify({ content_type: contentType }),
+        }),
+    },
   },
 }
