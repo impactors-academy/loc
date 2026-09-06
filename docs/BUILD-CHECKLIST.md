@@ -141,8 +141,29 @@ current without checking `git log origin/main..origin/develope` first.
 - [x] Data models: `Experience`, `Property`, `Product`, `Article`, `Inquiry`,
       `listing_tier`, `country`, `images` (JSONB), `is_featured`
 - [x] CI: ruff, pytest, eslint, tsc --noEmit, next build — all green
-- [ ] Production environment vars documented — all `DATABASE_URL`, `REDIS_URL`,
-      `NEXTAUTH_SECRET` etc. confirmed set in the Coolify UI (see `docs/DEPLOYMENT.md`)
+- [x] Production environment vars confirmed in the Coolify UI (2026-09-06)
+      — checked names only, never values. `NEXTAUTH_SECRET` doesn't apply
+      here (that's an impactors-academy/NextAuth var — LOC auths admin
+      write access via `EDITOR_API_KEY` instead); `DATABASE_URL` and
+      `REDIS_URL` aren't standalone Coolify secrets either — both are
+      built inline in `docker-compose.coolify.yml` from `POSTGRES_USER`/
+      `POSTGRES_PASSWORD`/`POSTGRES_DB` and the internal `redis` service
+      name, respectively. Confirmed present: `EDITOR_API_KEY`,
+      `POSTGRES_USER`, `POSTGRES_DB`, `POSTGRES_PASSWORD`, `CORS_ORIGINS`,
+      `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, `EMAIL_FROM`, service
+      FQDN/URL vars. `POSTGRES_PASSWORD` shows as a placeholder string in
+      Coolify's bulk "Developer view" — that's a display quirk of that
+      view, not a missing secret: the compose file gates it with Docker's
+      `${VAR:?fail}` syntax, which refuses to start the stack if the var
+      is genuinely empty, and the app is confirmed `Running (healthy)`.
+      **Found, not fixed:** `SMTP_HOST` and `EMAIL_TO` are both blank in
+      production, so `email_enabled` is `False` — every inquiry
+      submitted on the live site today is only logged
+      (`logger.info("New inquiry from ...")`), never emailed to anyone.
+      Documented as acceptable ("leave blank to log inquiries only") but
+      worth a deliberate decision: if the site is taking real leads, they
+      are currently sitting unnoticed in container logs until SMTP is
+      configured.
 
 ## Phase 4 — Build
 
