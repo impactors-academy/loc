@@ -28,9 +28,9 @@ export async function generateMetadata({
       description: t("description"),
       images: [
         {
-          url: "/images/og-default.jpg",
-          width: 1200,
-          height: 630,
+          url: "/images/hero.jpg",
+          width: 1280,
+          height: 720,
           alt: "LOC | Discover the World",
         },
       ],
@@ -39,7 +39,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: ["/images/og-default.jpg"],
+      images: ["/images/hero.jpg"],
       creator: "@loctravels",
     },
   }

@@ -14,9 +14,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   try {
     const prop = await api.properties.get(slug)
+    const title = `${prop.title} | LOC Stays`
+    const image = prop.images?.[0]
     return {
-      title: `${prop.title} | LOC Stays`,
+      title,
       description: prop.description,
+      alternates: { canonical: `/stays/${slug}` },
+      openGraph: {
+        title,
+        description: prop.description,
+        url: `/stays/${slug}`,
+        type: "website",
+        ...(image ? { images: [{ url: image, alt: prop.title }] } : {}),
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: prop.description,
+        ...(image ? { images: [image] } : {}),
+      },
     }
   } catch {
     return { title: "Stay | LOC" }
