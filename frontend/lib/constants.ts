@@ -40,6 +40,7 @@ export const PROPERTY_TYPES = [
   { label: "Gîte", value: "gite" },
   { label: "Riad", value: "riad" },
   { label: "Hotel", value: "hotel" },
+  { label: "Bivouac", value: "bivouac" },
 ]
 
 export const NAV_LINKS = [
