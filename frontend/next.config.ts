@@ -38,15 +38,16 @@ const r2UploadOrigin = process.env.R2_ACCOUNT_ID
   ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
   : "";
 
-const r2PublicOrigin = (() => {
+const r2PublicUrl = (() => {
   const raw = process.env.R2_PUBLIC_BASE_URL;
-  if (!raw) return "";
+  if (!raw) return null;
   try {
-    return new URL(raw).origin;
+    return new URL(raw);
   } catch {
-    return "";
+    return null;
   }
 })();
+const r2PublicOrigin = r2PublicUrl?.origin ?? "";
 
 const csp = [
   "default-src 'self'",
@@ -111,8 +112,16 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   output: process.env.NEXT_BUILD_STANDALONE === "true" ? "standalone" : undefined,
   images: {
+    // next/image enforces its own remote-host allowlist independently of the
+    // CSP img-src above — missing it here doesn't get silently ignored, it
+    // crashes the page render with "Invalid src prop ... hostname is not
+    // configured", which is exactly what happened to every property/experience
+    // page once a real R2-hosted photo was added.
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
+      ...(r2PublicUrl
+        ? [{ protocol: r2PublicUrl.protocol.replace(":", "") as "https" | "http", hostname: r2PublicUrl.hostname }]
+        : []),
     ],
   },
   async headers() {
