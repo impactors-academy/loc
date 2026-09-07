@@ -1,4 +1,9 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
+import { PriceConversion } from "@/components/shared/PriceConversion"
+import { PropertyGallery } from "@/components/features/stays/PropertyGallery"
+import { AmenitiesList } from "@/components/features/stays/AmenitiesList"
+import { HostCard } from "@/components/features/stays/HostCard"
+import { MapLink } from "@/components/features/stays/MapLink"
 import { api } from "@/lib/api"
 import { formatAmount, formatPriceRange } from "@/lib/types"
 import { Home, MapPin } from "lucide-react"
@@ -156,10 +161,13 @@ export default async function PropertyDetailPage({ params }: Props) {
           <div className="lg:col-span-2">
             {property ? (
               <>
+                {property.images.length > 0 && (
+                  <PropertyGallery images={property.images} title={property.title} />
+                )}
                 <p className="text-loc-stone leading-relaxed text-base mb-8">
                   {property.description}
                 </p>
-                <div className="flex flex-wrap gap-6 mb-10 border-t border-border pt-6">
+                <div className="flex flex-wrap items-center gap-6 mb-10 border-t border-border pt-6">
                   <div className="flex items-center gap-2 text-sm text-loc-stone">
                     <Home className="w-4 h-4 text-loc-terracotta" />
                     <span className="font-medium text-loc-night">
@@ -170,12 +178,16 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <MapPin className="w-4 h-4 text-loc-terracotta" />
                     <span>{property.location}</span>
                   </div>
+                  {property.location && <MapLink location={property.location} country={property.country} />}
                 </div>
+                <AmenitiesList amenities={property.amenities} />
+                <HostCard />
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
                   <p className="font-heading text-2xl font-semibold text-loc-terracotta">
                     {formatPriceRange(property.priceMin, property.priceMax, property.currency, "/ night")}
                   </p>
+                  <PriceConversion min={property.priceMin} max={property.priceMax} currency={property.currency} />
                 </div>
               </>
             ) : (

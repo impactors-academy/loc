@@ -76,6 +76,7 @@ export const FEATURED_PROPERTIES: Property[] = [
     images: ["https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800"],
     listingTier: "premium",
     ownerContact: null,
+    amenities: [],
   },
   {
     id: "2",
@@ -92,6 +93,7 @@ export const FEATURED_PROPERTIES: Property[] = [
     images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"],
     listingTier: "premium",
     ownerContact: null,
+    amenities: [],
   },
   {
     id: "3",
@@ -108,6 +110,7 @@ export const FEATURED_PROPERTIES: Property[] = [
     images: ["https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"],
     listingTier: "featured",
     ownerContact: null,
+    amenities: [],
   },
 ]
 

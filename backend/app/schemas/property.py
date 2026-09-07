@@ -14,6 +14,7 @@ class PropertyBase(BaseModel):
     images: list[str] = []
     listing_tier: str = "standard"
     owner_contact: str | None = None
+    amenities: list[str] = []
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 

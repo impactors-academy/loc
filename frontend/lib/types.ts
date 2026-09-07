@@ -35,6 +35,7 @@ export interface Property {
   images: string[]
   listingTier: string
   ownerContact: string | null
+  amenities: string[]
 }
 
 export interface Product {

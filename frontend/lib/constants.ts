@@ -60,3 +60,24 @@ export const CURRENCIES = [
   { label: "GBP (£)", value: "GBP" },
   { label: "MAD (dh)", value: "MAD" },
 ]
+
+// Value must match a key in components/features/stays/amenity-icons.ts —
+// that's what renders the icon next to each label on the listing page.
+export const PROPERTY_AMENITIES = [
+  { label: "Private pool", value: "pool" },
+  { label: "WiFi", value: "wifi" },
+  { label: "Air conditioning", value: "ac" },
+  { label: "Kitchen", value: "kitchen" },
+  { label: "Free parking", value: "parking" },
+  { label: "Washer", value: "washer" },
+  { label: "TV", value: "tv" },
+  { label: "Heating", value: "heating" },
+  { label: "Dedicated workspace", value: "workspace" },
+  { label: "Pets allowed", value: "pets" },
+  { label: "Breakfast included", value: "breakfast" },
+  { label: "Hot tub", value: "hot_tub" },
+  { label: "BBQ area", value: "bbq" },
+  { label: "Sea view", value: "sea_view" },
+  { label: "Mountain view", value: "mountain_view" },
+  { label: "Gym", value: "gym" },
+]
