@@ -27,6 +27,27 @@ const apiOrigin = (() => {
   }
 })();
 
+// The admin image uploader PUTs straight from the browser to R2's S3 endpoint
+// (bypassing this server), and once uploaded, property/experience/product
+// cards load the images from R2's public custom domain — both need naming
+// here or the browser silently blocks them as a CSP violation, which looks
+// identical to a CORS failure ("Failed to fetch") from the app's point of
+// view. Derived from env, like apiOrigin above, so an unset R2 setup just
+// omits the origin instead of pointing at nothing.
+const r2UploadOrigin = process.env.R2_ACCOUNT_ID
+  ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
+  : "";
+
+const r2PublicOrigin = (() => {
+  const raw = process.env.R2_PUBLIC_BASE_URL;
+  if (!raw) return "";
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return "";
+  }
+})();
+
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
@@ -34,12 +55,12 @@ const csp = [
   // next/font/google self-hosts the font files at build time, so no external
   // font origin is needed at runtime.
   "font-src 'self' data:",
-  "img-src 'self' data: blob: https://images.unsplash.com",
+  `img-src 'self' data: blob: https://images.unsplash.com ${r2PublicOrigin}`,
   // The browser calls the API host directly, so connect-src has to name it.
   // Derived from NEXT_PUBLIC_API_URL rather than hard-coded: in development
   // that is http://localhost:8000, and a hard-coded production host would block
   // every API call locally with a CSP error rather than an obvious failure.
-  `connect-src 'self' ${apiOrigin}`,
+  `connect-src 'self' ${apiOrigin} ${r2UploadOrigin}`,
   "media-src 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
