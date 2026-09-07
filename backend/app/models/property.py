@@ -23,3 +23,4 @@ class Property(Base):
     images: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
     listing_tier: Mapped[str] = mapped_column(String, nullable=False, default="standard")
     owner_contact: Mapped[str | None] = mapped_column(String)
+    amenities: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)

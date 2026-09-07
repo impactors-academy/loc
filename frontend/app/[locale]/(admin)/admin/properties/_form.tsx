@@ -1,6 +1,6 @@
 "use client"
 
-import { COUNTRIES, CURRENCIES } from "@/lib/constants"
+import { COUNTRIES, CURRENCIES, PROPERTY_AMENITIES } from "@/lib/constants"
 import { api } from "@/lib/api"
 import { ImageUploader } from "@/components/features/admin/ImageUploader"
 import { useRouter } from "next/navigation"
@@ -36,6 +36,7 @@ export function PropertyForm({ initial, editSlug }: Props) {
     images: initial?.images ?? ([] as string[]),
     listing_tier: initial?.listingTier ?? "standard",
     owner_contact: initial?.ownerContact ?? "",
+    amenities: initial?.amenities ?? ([] as string[]),
   })
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -106,6 +107,28 @@ export function PropertyForm({ initial, editSlug }: Props) {
         <div className="col-span-2">
           <label className={label}>Images</label>
           <ImageUploader images={form.images} onChange={(imgs) => set("images", imgs)} />
+        </div>
+        <div className="col-span-2">
+          <label className={label}>Amenities</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {PROPERTY_AMENITIES.map((a) => (
+              <label key={a.value} className="flex items-center gap-2 text-sm text-loc-night">
+                <input
+                  type="checkbox"
+                  checked={form.amenities.includes(a.value)}
+                  onChange={(e) =>
+                    set(
+                      "amenities",
+                      e.target.checked
+                        ? [...form.amenities, a.value]
+                        : form.amenities.filter((v) => v !== a.value)
+                    )
+                  }
+                />
+                {a.label}
+              </label>
+            ))}
+          </div>
         </div>
       </div>
 
