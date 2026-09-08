@@ -1,6 +1,7 @@
 import { PropertyFilters } from "@/components/features/stays/PropertyFilters"
 import { PropertyGrid } from "@/components/features/stays/PropertyGrid"
 import { SectionHeader } from "@/components/shared/SectionHeader"
+import { getVisitorPriceContext } from "@/lib/price-display"
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
@@ -16,6 +17,7 @@ interface Props {
 
 export default async function StaysPage({ searchParams }: Props) {
   const { type, country } = await searchParams
+  const priceContext = await getVisitorPriceContext()
 
   return (
     <main className="pt-24 pb-20">
@@ -30,7 +32,7 @@ export default async function StaysPage({ searchParams }: Props) {
         <Suspense fallback={<div className="h-10" />}>
           <PropertyFilters />
         </Suspense>
-        <PropertyGrid type={type} country={country} />
+        <PropertyGrid type={type} country={country} priceContext={priceContext} />
       </div>
     </main>
   )

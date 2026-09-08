@@ -1,5 +1,6 @@
-import { formatPriceRange } from "@/lib/types"
 import type { Property } from "@/lib/types"
+import type { VisitorPriceContext } from "@/lib/price-display"
+import { PriceDisplay } from "@/components/shared/PriceDisplay"
 import { getPoolImage } from "@/lib/images"
 import { Globe, MapPin } from "lucide-react"
 import Image from "next/image"
@@ -20,10 +21,14 @@ const TIER_BADGE: Record<string, string> = {
   premium: "Premium",
 }
 
-export function PropertyCard({ property }: { property: Property }) {
+interface Props {
+  property: Property
+  priceContext?: VisitorPriceContext | null
+}
+
+export function PropertyCard({ property, priceContext }: Props) {
   const typeLabel = TYPE_LABELS[property.type] ?? property.type
   const image = property.images?.[0] ?? getPoolImage(property.type, property.slug)
-  const priceDisplay = formatPriceRange(property.priceMin, property.priceMax, property.currency, "/ night")
   const tierLabel = TIER_BADGE[property.listingTier]
 
   return (
@@ -66,7 +71,15 @@ export function PropertyCard({ property }: { property: Property }) {
           {property.description}
         </p>
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="text-loc-terracotta font-semibold text-sm">{priceDisplay}</span>
+          <span className="text-loc-terracotta font-semibold text-sm">
+            <PriceDisplay
+              min={property.priceMin}
+              max={property.priceMax}
+              currency={property.currency}
+              suffix="/ night"
+              priceContext={priceContext}
+            />
+          </span>
           <Link
             href={`/stays/${property.slug}`}
             className="text-xs font-semibold text-loc-night bg-loc-sand hover:bg-loc-sand/70 px-4 py-2 rounded-full transition-colors"
