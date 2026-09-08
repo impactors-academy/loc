@@ -1,11 +1,12 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
-import { PriceConversion } from "@/components/shared/PriceConversion"
+import { PriceDisplay } from "@/components/shared/PriceDisplay"
 import { PropertyGallery } from "@/components/features/stays/PropertyGallery"
 import { AmenitiesList } from "@/components/features/stays/AmenitiesList"
 import { HostCard } from "@/components/features/stays/HostCard"
 import { MapLink } from "@/components/features/stays/MapLink"
 import { api } from "@/lib/api"
-import { formatAmount, formatPriceRange } from "@/lib/types"
+import { getVisitorPriceContext } from "@/lib/price-display-context"
+import { formatAmount } from "@/lib/types"
 import { Home, MapPin } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
@@ -74,6 +75,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   } catch {
     // render skeleton / not-found fallback below
   }
+  const priceContext = await getVisitorPriceContext()
 
   const gradient =
     property ? (TYPE_GRADIENTS[property.type] ?? "from-loc-night via-loc-night/80 to-loc-stone") : "from-loc-night via-loc-night/80 to-loc-stone"
@@ -185,9 +187,15 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
                   <p className="font-heading text-2xl font-semibold text-loc-terracotta">
-                    {formatPriceRange(property.priceMin, property.priceMax, property.currency, "/ night")}
+                    <PriceDisplay
+                      min={property.priceMin}
+                      max={property.priceMax}
+                      currency={property.currency}
+                      suffix="/ night"
+                      priceContext={priceContext}
+                      size="lg"
+                    />
                   </p>
-                  <PriceConversion min={property.priceMin} max={property.priceMax} currency={property.currency} />
                 </div>
               </>
             ) : (

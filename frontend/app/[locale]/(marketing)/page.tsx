@@ -2,6 +2,7 @@ import { ExperienceCard } from "@/components/features/experiences/ExperienceCard
 import { PropertyCard } from "@/components/features/stays/PropertyCard"
 import { HeroSection } from "@/components/shared/HeroSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
+import { getVisitorPriceContext } from "@/lib/price-display-context"
 import Image from "next/image"
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
@@ -16,6 +17,7 @@ import {
 
 export default async function HomePage() {
   const t = await getTranslations()
+  const priceContext = await getVisitorPriceContext()
 
   return (
     <>
@@ -210,7 +212,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURED_PROPERTIES.map((prop) => (
-              <PropertyCard key={prop.id} property={prop} />
+              <PropertyCard key={prop.id} property={prop} priceContext={priceContext} />
             ))}
           </div>
           <div className="mt-8 text-center md:hidden">

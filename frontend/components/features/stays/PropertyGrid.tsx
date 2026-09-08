@@ -4,15 +4,17 @@ import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useProperties } from "@/hooks/useProperties"
 import { motion } from "framer-motion"
 import { PropertyCard } from "./PropertyCard"
+import type { VisitorPriceContext } from "@/lib/price-display"
 
 interface PropertyGridProps {
   type?: string
   country?: string
+  priceContext?: VisitorPriceContext | null
 }
 
 const SKELETON = Array.from({ length: 6 })
 
-export function PropertyGrid({ type, country }: PropertyGridProps) {
+export function PropertyGrid({ type, country, priceContext }: PropertyGridProps) {
   const { data, isPending, isError } = useProperties(type, country)
 
   if (isPending) {
@@ -51,7 +53,7 @@ export function PropertyGrid({ type, country }: PropertyGridProps) {
     >
       {data.map((prop) => (
         <motion.div key={prop.id} variants={fadeInUp}>
-          <PropertyCard property={prop} />
+          <PropertyCard property={prop} priceContext={priceContext} />
         </motion.div>
       ))}
     </motion.div>
