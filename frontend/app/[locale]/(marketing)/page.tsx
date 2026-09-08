@@ -2,7 +2,7 @@ import { ExperienceCard } from "@/components/features/experiences/ExperienceCard
 import { PropertyCard } from "@/components/features/stays/PropertyCard"
 import { HeroSection } from "@/components/shared/HeroSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
-import { getVisitorPriceContext } from "@/lib/price-display"
+import { getVisitorPriceContext } from "@/lib/price-display-context"
 import Image from "next/image"
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"

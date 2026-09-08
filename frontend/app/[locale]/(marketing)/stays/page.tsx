@@ -1,7 +1,7 @@
 import { PropertyFilters } from "@/components/features/stays/PropertyFilters"
 import { PropertyGrid } from "@/components/features/stays/PropertyGrid"
 import { SectionHeader } from "@/components/shared/SectionHeader"
-import { getVisitorPriceContext } from "@/lib/price-display"
+import { getVisitorPriceContext } from "@/lib/price-display-context"
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
