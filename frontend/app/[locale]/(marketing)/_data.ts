@@ -77,6 +77,7 @@ export const FEATURED_PROPERTIES: Property[] = [
     listingTier: "premium",
     ownerContact: null,
     amenities: [],
+    videoUrl: null,
   },
   {
     id: "2",
@@ -94,6 +95,7 @@ export const FEATURED_PROPERTIES: Property[] = [
     listingTier: "premium",
     ownerContact: null,
     amenities: [],
+    videoUrl: null,
   },
   {
     id: "3",
@@ -111,6 +113,7 @@ export const FEATURED_PROPERTIES: Property[] = [
     listingTier: "featured",
     ownerContact: null,
     amenities: [],
+    videoUrl: null,
   },
 ]
 

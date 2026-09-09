@@ -29,6 +29,7 @@ export function ProductForm({ initial, editSlug }: Props) {
     price: initial?.price?.toString() ?? "",
     currency: initial?.currency ?? "EUR",
     image_url: initial?.imageUrl ?? "",
+    video_url: initial?.videoUrl ?? "",
     purchase_url: initial?.purchaseUrl ?? "",
   })
   const [error, setError] = useState("")
@@ -78,6 +79,7 @@ export function ProductForm({ initial, editSlug }: Props) {
           </select>
         </div>
         <div className="col-span-2"><label className={label}>Image URL</label><input className={input} type="url" value={form.image_url} onChange={(e) => set("image_url", e.target.value)} /></div>
+        <div className="col-span-2"><label className={label}>Video URL (YouTube)</label><input className={input} type="url" placeholder="https://www.youtube.com/watch?v=..." value={form.video_url} onChange={(e) => set("video_url", e.target.value)} /></div>
         <div className="col-span-2"><label className={label}>Purchase URL *</label><input className={input} type="url" value={form.purchase_url} onChange={(e) => set("purchase_url", e.target.value)} required /></div>
       </div>
 

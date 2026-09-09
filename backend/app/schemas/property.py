@@ -15,6 +15,7 @@ class PropertyBase(BaseModel):
     listing_tier: str = "standard"
     owner_contact: str | None = None
     amenities: list[str] = []
+    video_url: str | None = None
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 

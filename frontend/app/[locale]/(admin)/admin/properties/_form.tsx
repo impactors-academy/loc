@@ -37,6 +37,7 @@ export function PropertyForm({ initial, editSlug }: Props) {
     listing_tier: initial?.listingTier ?? "standard",
     owner_contact: initial?.ownerContact ?? "",
     amenities: initial?.amenities ?? ([] as string[]),
+    video_url: initial?.videoUrl ?? "",
   })
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -107,6 +108,16 @@ export function PropertyForm({ initial, editSlug }: Props) {
         <div className="col-span-2">
           <label className={label}>Images</label>
           <ImageUploader images={form.images} onChange={(imgs) => set("images", imgs)} />
+        </div>
+        <div className="col-span-2">
+          <label className={label}>Video URL (YouTube)</label>
+          <input
+            className={input}
+            type="url"
+            placeholder="https://www.youtube.com/watch?v=..."
+            value={form.video_url}
+            onChange={(e) => set("video_url", e.target.value)}
+          />
         </div>
         <div className="col-span-2">
           <label className={label}>Amenities</label>

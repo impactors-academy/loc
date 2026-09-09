@@ -1,6 +1,7 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { PriceDisplay } from "@/components/shared/PriceDisplay"
 import { PropertyGallery } from "@/components/features/stays/PropertyGallery"
+import { YouTubeEmbed } from "@/components/shared/YouTubeEmbed"
 import { AmenitiesList } from "@/components/features/stays/AmenitiesList"
 import { HostCard } from "@/components/features/stays/HostCard"
 import { MapLink } from "@/components/features/stays/MapLink"
@@ -165,6 +166,11 @@ export default async function PropertyDetailPage({ params }: Props) {
               <>
                 {property.images.length > 0 && (
                   <PropertyGallery images={property.images} title={property.title} />
+                )}
+                {property.videoUrl && (
+                  <div className="mb-8">
+                    <YouTubeEmbed url={property.videoUrl} title={property.title} />
+                  </div>
                 )}
                 <p className="text-loc-stone leading-relaxed text-base mb-8">
                   {property.description}

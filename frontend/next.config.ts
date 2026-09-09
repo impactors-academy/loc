@@ -63,6 +63,8 @@ const csp = [
   // every API call locally with a CSP error rather than an obvious failure.
   `connect-src 'self' ${apiOrigin} ${r2UploadOrigin}`,
   "media-src 'self'",
+  // Property/product video links embed as youtube-nocookie.com iframes.
+  "frame-src https://www.youtube-nocookie.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
