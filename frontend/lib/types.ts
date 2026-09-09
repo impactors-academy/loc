@@ -36,6 +36,7 @@ export interface Property {
   listingTier: string
   ownerContact: string | null
   amenities: string[]
+  videoUrl: string | null
 }
 
 export interface Product {
@@ -47,6 +48,7 @@ export interface Product {
   price: number
   currency: string
   imageUrl: string
+  videoUrl: string | null
   purchaseUrl: string
 }
 

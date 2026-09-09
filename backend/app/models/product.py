@@ -17,4 +17,5 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Float, nullable=False)
     currency: Mapped[str] = mapped_column(String, nullable=False, default="EUR")
     image_url: Mapped[str | None] = mapped_column(String)
+    video_url: Mapped[str | None] = mapped_column(String)
     purchase_url: Mapped[str] = mapped_column(String, nullable=False)

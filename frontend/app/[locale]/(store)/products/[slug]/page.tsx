@@ -1,4 +1,5 @@
 import { api } from "@/lib/api"
+import { YouTubeEmbed } from "@/components/shared/YouTubeEmbed"
 import { formatAmount } from "@/lib/types"
 import { ExternalLink, Tag } from "lucide-react"
 import type { Metadata } from "next"
@@ -131,6 +132,12 @@ export default async function ProductDetailPage({ params }: Props) {
                   {product.title}
                 </h1>
                 <p className="text-loc-stone leading-relaxed mb-8">{product.description}</p>
+
+                {product.videoUrl && (
+                  <div className="mb-8">
+                    <YouTubeEmbed url={product.videoUrl} title={product.title} />
+                  </div>
+                )}
 
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6 mb-6">
                   <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Price</p>
