@@ -24,28 +24,16 @@
     "staysPill": "Séjours",
     "guides": "Guides"
   },
-  "stats": {
-    "experiences": "Expériences",
-    "countries": "Pays",
-    "providers": "Prestataires locaux",
-    "travellers": "Voyageurs satisfaits"
-  },
-  "destinations": {
-    "eyebrow": "Parcourir par destination",
-    "title": "Destinations populaires",
-    "subtitle": "Choisissez un lieu et plongez-y. Expériences et séjours filtrés pour ce coin du monde."
-  },
   "categories": {
     "eyebrow": "Explorer par type",
     "title": "Que découvrirez-vous ?",
     "subtitle": "Des dunes du Sahara aux maisons de thé japonaises, une aventure différente attend à chaque tournant."
   },
-  "topExperiences": {
-    "eyebrow": "Sélectionnés pour vous",
-    "title": "Meilleures expériences",
-    "subtitle": "Des moments inoubliables créés par les meilleurs prestataires locaux du monde.",
-    "seeAll": "Voir toutes les expériences",
-    "seeAllMobile": "Voir toutes les expériences →"
+  "featuredCities": {
+    "eyebrow": "Là où nous sommes",
+    "title": "Villes en vedette",
+    "subtitle": "Les pays où LOC opère aujourd'hui, avec d'autres à venir.",
+    "comingSoon": "Bientôt disponible"
   },
   "howItWorks": {
     "eyebrow": "Simple par conception",
@@ -55,7 +43,7 @@
   "handpickedStays": {
     "eyebrow": "Des lieux où se sentir chez soi",
     "title": "Séjours sélectionnés",
-    "subtitle": "Ryokans, riads, villas et fermes, choisis pour leur caractère, leur confort et leur emplacement.",
+    "subtitle": "Villas et appartements, choisis pour leur caractère, leur confort et leur emplacement.",
     "seeAll": "Voir tous les séjours"
   },
   "cta": {

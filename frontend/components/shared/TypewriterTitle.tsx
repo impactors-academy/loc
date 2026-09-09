@@ -4,23 +4,10 @@ import { useEffect, useState } from "react"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 import { useTranslations } from "next-intl"
 
-const DESTINATIONS = [
-  "Morocco",
-  "Paris",
-  "Greece",
-  "Belgium",
-  "London",
-  "Madrid",
-  "Barcelona",
-  "Bali",
-  "Kyoto",
-  "Amsterdam",
-  "Santorini",
-  "Prague",
-  "Shenzhen",
-  "Hangzhou",
-  "the World",
-]
+// The countries LOC actually operates in (matches FEATURED_CITIES in
+// (marketing)/_data.ts) plus a closing flourish — not a list of aspirational
+// cities with no real listings behind them.
+const DESTINATIONS = ["Morocco", "Paris", "Belgium", "the World"]
 
 const TYPE_MS = 75
 const DELETE_MS = 40

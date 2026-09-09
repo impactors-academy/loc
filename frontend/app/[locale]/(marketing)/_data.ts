@@ -1,128 +1,34 @@
-import type { Experience, Property } from "@/lib/types"
-
-export const FEATURED_EXPERIENCES: Experience[] = [
+// The three countries LOC actually operates in. Not tied to live listing
+// inventory — Belgium has no products yet (comingSoon), and this is meant to
+// read as "where we are," not "browse real listings here." Each photo is a
+// landmark/iconic touristic site rather than a generic city street, and each
+// was opened directly (not just picked by ID) to confirm it actually shows
+// what its filename/search term implies before shipping it.
+export const FEATURED_CITIES = [
   {
-    id: "1",
-    slug: "kyoto-tea-ceremony",
-    title: "Traditional Tea Ceremony — Kyoto",
-    description:
-      "Step inside a 200-year-old machiya townhouse and learn the art of chado from a certified tea master. Matcha, wagashi sweets, and meditative silence included.",
-    category: "culture",
-    country: "Japan",
-    location: "Higashiyama, Kyoto",
-    duration: "2 hours",
-    priceMin: 45,
-    priceMax: 65,
-    currency: "EUR",
-    images: ["https://images.unsplash.com/photo-1743515483156-6bf698521774?w=800"],
-    isFeatured: true,
-    providerName: "Kyoto Tea House",
-    providerContact: null,
-    referralUrl: "#",
-  },
-  {
-    id: "2",
-    slug: "santorini-sailing-sunset",
-    title: "Catamaran Sunset Sail — Santorini",
-    description:
-      "Board a catamaran, snorkel above volcanic reef, and anchor off Oia for the world-famous sunset. BBQ dinner and open bar included.",
-    category: "water",
-    country: "Greece",
-    location: "Oia, Santorini",
-    duration: "5 hours",
-    priceMin: 110,
-    priceMax: 150,
-    currency: "EUR",
-    images: ["https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"],
-    isFeatured: true,
-    providerName: "Santorini Catamarans",
-    providerContact: null,
-    referralUrl: "#",
-  },
-  {
-    id: "3",
-    slug: "tuscany-cooking-class",
-    title: "Tuscan Farmhouse Cooking Class — Siena",
-    description:
-      "Make fresh pici pasta and wild boar ragù in a 14th-century farmhouse kitchen, followed by a long-table lunch in the olive grove with Brunello di Montalcino.",
-    category: "culinary",
-    country: "Italy",
-    location: "Chianti, Siena Province",
-    duration: "Full day",
-    priceMin: 95,
-    priceMax: 130,
-    currency: "EUR",
-    images: ["https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800"],
-    isFeatured: false,
-    providerName: "Casa Toscana",
-    providerContact: null,
-    referralUrl: "#",
-  },
-]
-
-export const FEATURED_PROPERTIES: Property[] = [
-  {
-    id: "1",
-    slug: "kyoto-ryokan-higashiyama",
-    title: "Ryokan Kiyomizu — Higashiyama, Kyoto",
-    description:
-      "A family-run ryokan on the stone-paved Ninenzaka lane with futon beds, yukata robes, and private hinoki wood baths. Kaiseki dinner included.",
-    type: "ryokan",
-    country: "Japan",
-    priceMin: 220,
-    priceMax: 380,
-    currency: "EUR",
-    location: "Higashiyama, Kyoto",
-    images: ["https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800"],
-    listingTier: "premium",
-    ownerContact: null,
-    amenities: [],
-    videoUrl: null,
-  },
-  {
-    id: "2",
-    slug: "provence-mas-villa",
-    title: "Mas Provençal — Luberon Valley",
-    description:
-      "An 18th-century stone farmhouse with a 12-metre pool and lavender terraces. Sleeps 8; private chef available. Ideal May–July for the bloom.",
-    type: "villa",
-    country: "France",
-    priceMin: 450,
-    priceMax: 750,
-    currency: "EUR",
-    location: "Lourmarin, Luberon",
-    images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"],
-    listingTier: "premium",
-    ownerContact: null,
-    amenities: [],
-    videoUrl: null,
-  },
-  {
-    id: "3",
-    slug: "riad-zouak-marrakech",
-    title: "Riad Zouak — Marrakech Medina",
-    description:
-      "Seven rooms around a central courtyard fountain, each adorned with hand-painted zellij tilework. Rooftop terrace with Atlas views.",
-    type: "riad",
     country: "Morocco",
-    priceMin: 120,
-    priceMax: 220,
-    currency: "EUR",
-    location: "Marrakech Medina",
-    images: ["https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"],
-    listingTier: "featured",
-    ownerContact: null,
-    amenities: [],
-    videoUrl: null,
+    tagline: "Jemaa el-Fnaa, Marrakech",
+    photo: "https://images.unsplash.com/photo-1517821115309-2c35b3906a7b?w=1600&auto=format&fit=crop&q=80",
+    comingSoon: false,
+  },
+  {
+    country: "France",
+    tagline: "The Eiffel Tower, Paris",
+    photo: "https://images.unsplash.com/photo-1439393161192-32360eb753f1?w=1600&auto=format&fit=crop&q=80",
+    comingSoon: false,
+  },
+  {
+    country: "Belgium",
+    tagline: "Grand Place, Brussels",
+    photo: "https://images.unsplash.com/photo-1548092304-e0205cb0031b?w=1600&auto=format&fit=crop&q=80",
+    comingSoon: true,
   },
 ]
 
-export const STATS = [
-  { value: "50+", label: "Curated Experiences" },
-  { value: "20+", label: "Countries" },
-  { value: "120+", label: "Handpicked Stays" },
-  { value: "1,000+", label: "Happy Travellers" },
-]
+// Real, verifiable claims only — no invented totals. Stay/country counts are
+// computed at render time in page.tsx (live property count, FEATURED_CITIES
+// length) rather than hardcoded here, so they can't silently go stale.
+export const COMMISSION_STAT = { value: "0%", label: "Booking Commission" }
 
 export const CATEGORIES = [
   {
@@ -156,49 +62,6 @@ export const CATEGORIES = [
     gradient: "from-purple-950 via-indigo-900 to-purple-800",
     icon: "🏯",
     imageUrl: "https://images.unsplash.com/photo-1743515483156-6bf698521774?w=800",
-  },
-]
-
-export const DESTINATIONS = [
-  {
-    country: "Japan",
-    tagline: "Temples & Traditions",
-    photo: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "France",
-    tagline: "Joie de Vivre",
-    photo: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Morocco",
-    tagline: "Dunes & Medinas",
-    photo: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Bali",
-    tagline: "Spiritual & Serene",
-    photo: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Greece",
-    tagline: "Islands & History",
-    photo: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "United Kingdom",
-    tagline: "Culture & Castles",
-    photo: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Italy",
-    tagline: "Art & Cuisine",
-    photo: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Belgium",
-    tagline: "Hidden European Gem",
-    photo: "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=600&auto=format&fit=crop&q=80",
   },
 ]
 

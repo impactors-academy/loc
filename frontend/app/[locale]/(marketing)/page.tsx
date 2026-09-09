@@ -1,23 +1,28 @@
-import { ExperienceCard } from "@/components/features/experiences/ExperienceCard"
 import { PropertyCard } from "@/components/features/stays/PropertyCard"
+import { FeaturedCitiesSlideshow } from "@/components/features/home/FeaturedCitiesSlideshow"
 import { HeroSection } from "@/components/shared/HeroSection"
 import { SectionHeader } from "@/components/shared/SectionHeader"
+import { api } from "@/lib/api"
 import { getVisitorPriceContext } from "@/lib/price-display-context"
 import Image from "next/image"
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
 import {
   CATEGORIES,
-  DESTINATIONS,
-  FEATURED_EXPERIENCES,
-  FEATURED_PROPERTIES,
+  COMMISSION_STAT,
+  FEATURED_CITIES,
   HOW_IT_WORKS,
-  STATS,
 } from "./_data"
+
+const TIER_RANK: Record<string, number> = { premium: 0, featured: 1, standard: 2 }
 
 export default async function HomePage() {
   const t = await getTranslations()
   const priceContext = await getVisitorPriceContext()
+  const properties = await api.properties.list().catch(() => [])
+  const featuredProperties = [...properties]
+    .sort((a, b) => (TIER_RANK[a.listingTier] ?? 9) - (TIER_RANK[b.listingTier] ?? 9))
+    .slice(0, 6)
 
   return (
     <>
@@ -34,54 +39,39 @@ export default async function HomePage() {
         imageUrl="/images/hero.jpg"
       />
 
-      {/* ── Trust stats ─────────────────────────────────────────────────── */}
-      <section className="bg-loc-sand py-10" aria-label="Platform statistics">
+      {/* ── Featured Cities ──────────────────────────────────────────────── */}
+      <section className="bg-loc-cream py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {STATS.map((stat) => (
-              <div key={stat.label}>
-                <p className="font-heading text-3xl font-semibold text-loc-terracotta">{stat.value}</p>
-                <p className="font-sans text-sm text-loc-stone mt-1">{stat.label}</p>
-              </div>
-            ))}
+          <SectionHeader
+            eyebrow={t("featuredCities.eyebrow")}
+            title={t("featuredCities.title")}
+            subtitle={t("featuredCities.subtitle")}
+          />
+          <div className="mt-10">
+            <FeaturedCitiesSlideshow cities={FEATURED_CITIES} comingSoonLabel={t("featuredCities.comingSoon")} />
           </div>
         </div>
       </section>
 
-      {/* ── Popular Destinations ────────────────────────────────────────── */}
-      <section className="bg-white py-20">
+      {/* ── Trust stats ─────────────────────────────────────────────────── */}
+      {/* Real, verifiable numbers only: live stay count and operating-country
+          count both come from the same data the sections above render, plus
+          one static product fact (no booking commission, ever). */}
+      <section className="bg-loc-sand py-10" aria-label="Platform statistics">
         <div className="container mx-auto px-4">
-          <SectionHeader
-            eyebrow={t("destinations.eyebrow")}
-            title={t("destinations.title")}
-            subtitle={t("destinations.subtitle")}
-          />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-10">
-            {DESTINATIONS.map((dest) => (
-              <Link
-                key={dest.country}
-                href={`/destinations/${encodeURIComponent(dest.country)}`}
-                className="group relative rounded-2xl overflow-hidden aspect-[3/4] flex flex-col justify-end hover:scale-[1.02] transition-transform duration-300 shadow-md"
-              >
-                <Image
-                  src={dest.photo}
-                  alt={dest.country}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                />
-                <div
-                  className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/10 to-black/70"
-                  aria-hidden="true"
-                />
-                <div className="relative z-10 p-4">
-                  <h3 className="font-heading text-white text-base font-semibold leading-tight">
-                    {dest.country}
-                  </h3>
-                  <p className="font-sans text-white/70 text-xs mt-0.5">{dest.tagline}</p>
-                </div>
-              </Link>
-            ))}
+          <div className="grid grid-cols-3 gap-6 text-center">
+            <div>
+              <p className="font-heading text-3xl font-semibold text-loc-terracotta">{properties.length}</p>
+              <p className="font-sans text-sm text-loc-stone mt-1">Handpicked Stays</p>
+            </div>
+            <div>
+              <p className="font-heading text-3xl font-semibold text-loc-terracotta">{FEATURED_CITIES.length}</p>
+              <p className="font-sans text-sm text-loc-stone mt-1">Countries</p>
+            </div>
+            <div>
+              <p className="font-heading text-3xl font-semibold text-loc-terracotta">{COMMISSION_STAT.value}</p>
+              <p className="font-sans text-sm text-loc-stone mt-1">{COMMISSION_STAT.label}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -139,38 +129,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Top Experiences ─────────────────────────────────────────────── */}
-      <section className="bg-loc-cream py-20">
-        <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <SectionHeader
-              eyebrow={t("topExperiences.eyebrow")}
-              title={t("topExperiences.title")}
-              subtitle={t("topExperiences.subtitle")}
-            />
-            <Link
-              href="/experiences"
-              className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-loc-terracotta hover:text-loc-terracotta/80 transition-colors mb-10 shrink-0"
-            >
-              {t("topExperiences.seeAll")} <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURED_EXPERIENCES.map((exp) => (
-              <ExperienceCard key={exp.id} experience={exp} />
-            ))}
-          </div>
-          <div className="mt-8 text-center md:hidden">
-            <Link
-              href="/experiences"
-              className="inline-flex items-center gap-1 text-sm font-medium text-loc-terracotta"
-            >
-              {t("topExperiences.seeAllMobile")}
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── How LOC Works ───────────────────────────────────────────────── */}
       <section className="bg-white py-20">
         <div className="container mx-auto px-4">
@@ -195,6 +153,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Handpicked Stays ────────────────────────────────────────────── */}
+      {featuredProperties.length > 0 && (
       <section className="bg-loc-sand/30 py-20">
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
@@ -211,7 +170,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURED_PROPERTIES.map((prop) => (
+            {featuredProperties.map((prop) => (
               <PropertyCard key={prop.id} property={prop} priceContext={priceContext} />
             ))}
           </div>
@@ -225,6 +184,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── Partner CTA ─────────────────────────────────────────────────── */}
       <section className="bg-loc-night py-24">

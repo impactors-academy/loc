@@ -24,28 +24,16 @@
     "staysPill": "Estadias",
     "guides": "Guias"
   },
-  "stats": {
-    "experiences": "Experiências",
-    "countries": "Países",
-    "providers": "Prestadores locais",
-    "travellers": "Viajantes satisfeitos"
-  },
-  "destinations": {
-    "eyebrow": "Explorar por destino",
-    "title": "Destinos populares",
-    "subtitle": "Escolha um lugar e mergulhe. Experiências e estadias filtradas para esse canto do mundo."
-  },
   "categories": {
     "eyebrow": "Explorar por tipo",
     "title": "O que vai descobrir?",
     "subtitle": "Das dunas do Saara às casas de chá japonesas, uma aventura diferente espera em cada esquina."
   },
-  "topExperiences": {
-    "eyebrow": "Selecionados para si",
-    "title": "Melhores experiências",
-    "subtitle": "Momentos inesquecíveis criados pelos melhores prestadores locais do mundo.",
-    "seeAll": "Ver todas as experiências",
-    "seeAllMobile": "Ver todas as experiências →"
+  "featuredCities": {
+    "eyebrow": "Onde estamos",
+    "title": "Cidades em destaque",
+    "subtitle": "Os países onde a LOC opera hoje, com mais a caminho.",
+    "comingSoon": "Brevemente"
   },
   "howItWorks": {
     "eyebrow": "Simples por design",
@@ -55,7 +43,7 @@
   "handpickedStays": {
     "eyebrow": "Lugares para se sentir em casa",
     "title": "Estadias selecionadas",
-    "subtitle": "Ryokans, riads, vilas e casas de campo, escolhidos pelo seu carácter, conforto e localização.",
+    "subtitle": "Vilas e apartamentos, escolhidos pelo seu carácter, conforto e localização.",
     "seeAll": "Ver todas as estadias"
   },
   "cta": {

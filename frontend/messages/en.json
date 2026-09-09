@@ -24,28 +24,16 @@
     "staysPill": "Stays",
     "guides": "Guides"
   },
-  "stats": {
-    "experiences": "Experiences",
-    "countries": "Countries",
-    "providers": "Local Providers",
-    "travellers": "Happy Travellers"
-  },
-  "destinations": {
-    "eyebrow": "Browse by destination",
-    "title": "Popular Destinations",
-    "subtitle": "Pick a place and dive in. Experiences and stays filtered just for that corner of the world."
-  },
   "categories": {
     "eyebrow": "Explore by type",
     "title": "What will you discover?",
     "subtitle": "From Sahara dunes to Japanese tea houses, a different adventure waits around every corner."
   },
-  "topExperiences": {
-    "eyebrow": "Handpicked for you",
-    "title": "Top Experiences",
-    "subtitle": "Unforgettable moments crafted by the world's finest local providers.",
-    "seeAll": "See all experiences",
-    "seeAllMobile": "See all experiences →"
+  "featuredCities": {
+    "eyebrow": "Where we are",
+    "title": "Featured Cities",
+    "subtitle": "The countries LOC operates in today, with more on the way.",
+    "comingSoon": "Coming soon"
   },
   "howItWorks": {
     "eyebrow": "Simple by design",
@@ -55,7 +43,7 @@
   "handpickedStays": {
     "eyebrow": "Places to call home",
     "title": "Handpicked Stays",
-    "subtitle": "Ryokans, riads, villas, and farmhouses, selected for their character, comfort, and location.",
+    "subtitle": "Villas and apartments, selected for their character, comfort, and location.",
     "seeAll": "See all stays"
   },
   "cta": {
