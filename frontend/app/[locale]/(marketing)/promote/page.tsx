@@ -1,90 +1,56 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { Check } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Promote Your Tourism Business | LOC",
-  description:
-    "Reach thousands of active travellers through LOC's global platform. Featured placements, social media content, and full marketing packages for tourism businesses worldwide.",
-  alternates: { canonical: "/promote" },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("promotePage")
+  return {
+    title: `${t("metaTitle")} | LOC`,
+    description: t("metaDescription"),
+    alternates: { canonical: "/promote" },
+  }
 }
 
-const PACKAGES = [
-  {
-    name: "Visibility",
-    price: "€149",
-    period: "/ month",
-    description: "Get your listing in front of travelers actively searching.",
-    features: [
-      "Featured badge on listing card",
-      "Priority placement in search results",
-      "Listed in the 'Handpicked' homepage section",
-      "Monthly performance report",
-    ],
-    cta: "Get started",
-    highlight: false,
-  },
-  {
-    name: "Content",
-    price: "€349",
-    period: "/ month",
-    description: "Let our team create content that drives real bookings.",
-    features: [
-      "Everything in Visibility",
-      "2× short-form video (Reels/TikTok ready)",
-      "4× curated social posts per month",
-      "Dedicated blog feature article",
-      "Branded photography session (on request)",
-    ],
-    cta: "Most popular",
-    highlight: true,
-  },
-  {
-    name: "Growth",
-    price: "€599",
-    period: "/ month",
-    description: "Full-stack marketing for serious tourism businesses.",
-    features: [
-      "Everything in Content",
-      "Premium listing tier (top of all results)",
-      "Monthly strategy call with the LOC team",
-      "Custom landing page on loctravels.com",
-      "Priority lead routing to your inbox",
-      "Quarterly analytics report",
-    ],
-    cta: "Let's talk",
-    highlight: false,
-  },
-]
+// Prices/periods/highlight flags are data, not copy — kept here rather than
+// in messages/*.json. Names, descriptions, and features are translated via
+// promotePage.packages in each locale (same order, same length).
+const PACKAGE_META = [
+  { price: "€149", period: "/ month", highlight: false },
+  { price: "€349", period: "/ month", highlight: true },
+  { price: "€599", period: "/ month", highlight: false },
+] as const
 
-const WHY_LOC = [
-  {
-    icon: "🎯",
-    title: "High-intent audience",
-    desc: "Visitors come to LOC specifically to find experiences and stays, not to scroll. Your listing reaches people ready to book.",
-  },
-  {
-    icon: "🤝",
-    title: "No commission on bookings",
-    desc: "We charge flat placement fees, not a percentage of every booking. More revenue stays with you.",
-  },
-  {
-    icon: "📍",
-    title: "Local credibility",
-    desc: "LOC surfaces providers who are genuinely embedded in their destination. Our audience trusts our curation, and your listing inherits that trust.",
-  },
-]
+const WHY_LOC_ICONS = ["🎯", "🤝", "📍"] as const
 
-export default function PromotePage() {
+interface PackageCopy {
+  name: string
+  description: string
+  features: string[]
+  cta: string
+}
+
+interface WhyLocCopy {
+  title: string
+  desc: string
+}
+
+export default async function PromotePage() {
+  const t = await getTranslations("promotePage")
+  const packagesCopy = t.raw("packages") as PackageCopy[]
+  const whyLocCopy = t.raw("whyLoc") as WhyLocCopy[]
+  const packages = PACKAGE_META.map((meta, i) => ({ ...meta, ...packagesCopy[i] }))
+  const whyLoc = WHY_LOC_ICONS.map((icon, i) => ({ icon, ...whyLocCopy[i] }))
+
   return (
     <main className="pt-24 pb-20">
       {/* Hero */}
       <section className="container mx-auto px-4 text-center max-w-2xl mb-16">
         <SectionHeader
-          eyebrow="For Businesses"
-          title="Grow with LOC"
-          subtitle="Connect your experience or property with thousands of travellers actively searching for authentic destinations around the world."
+          eyebrow={t("eyebrow")}
+          title={t("title")}
+          subtitle={t("subtitle")}
           center
         />
       </section>
@@ -93,7 +59,7 @@ export default function PromotePage() {
       <section className="bg-loc-sand/30 py-14 mb-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {WHY_LOC.map((item) => (
+            {whyLoc.map((item) => (
               <div key={item.title} className="text-center px-4">
                 <span className="text-4xl mb-4 block">{item.icon}</span>
                 <h3 className="font-heading text-lg font-semibold text-loc-night mb-2">{item.title}</h3>
@@ -107,13 +73,13 @@ export default function PromotePage() {
       {/* Packages */}
       <section className="container mx-auto px-4 mb-20">
         <SectionHeader
-          eyebrow="Pricing"
-          title="Choose your package"
-          subtitle="Flat monthly fees. No booking commissions. Cancel any time."
+          eyebrow={t("pricingEyebrow")}
+          title={t("pricingTitle")}
+          subtitle={t("pricingSubtitle")}
           center
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-          {PACKAGES.map((pkg) => (
+          {packages.map((pkg) => (
             <div
               key={pkg.name}
               className={`relative rounded-2xl border p-8 flex flex-col ${
@@ -124,7 +90,7 @@ export default function PromotePage() {
             >
               {pkg.highlight && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-loc-amber text-loc-night text-xs font-semibold px-4 py-1 rounded-full">
-                  Most popular
+                  {t("mostPopular")}
                 </span>
               )}
               <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${pkg.highlight ? "text-white/70" : "text-loc-terracotta"}`}>
@@ -158,9 +124,9 @@ export default function PromotePage() {
       <section className="container mx-auto px-4 max-w-2xl">
         <div className="rounded-2xl bg-white border border-border p-8 shadow-sm">
           <SectionHeader
-            eyebrow="Get in touch"
-            title="Ready to grow your business?"
-            subtitle="Tell us about your business and the package you're interested in. We'll get back to you within 24 hours."
+            eyebrow={t("inquiryEyebrow")}
+            title={t("inquiryTitle")}
+            subtitle={t("inquirySubtitle")}
           />
           <div className="mt-8">
             <InquiryForm subject="Business promotion inquiry" />

@@ -9,6 +9,7 @@ import { api } from "@/lib/api"
 import { getVisitorPriceContext } from "@/lib/price-display-context"
 import { formatAmount } from "@/lib/types"
 import { Home, MapPin } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -57,18 +58,12 @@ const TYPE_GRADIENTS: Record<string, string> = {
   bivouac: "from-stone-950 via-stone-800 to-stone-700",
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  apartment: "Apartment",
-  villa: "Villa",
-  riad: "Riad",
-  ryokan: "Ryokan",
-  gite: "Gîte",
-  hotel: "Hotel",
-  bivouac: "Bivouac",
-}
-
 export default async function PropertyDetailPage({ params }: Props) {
   const { slug } = await params
+  const t = await getTranslations("stayDetailPage")
+  const tCommon = await getTranslations("common")
+  const tNav = await getTranslations("nav")
+  const tp = await getTranslations("propertyTypes")
 
   let property: Awaited<ReturnType<typeof api.properties.get>> | null = null
   try {
@@ -136,7 +131,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           {property && (
             <>
               <span className="inline-block mb-3 px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full uppercase tracking-wide w-fit">
-                {TYPE_LABELS[property.type] ?? property.type}
+                {tp.has(property.type) ? tp(property.type) : property.type}
               </span>
               <h1 className="font-heading text-3xl md:text-4xl font-semibold text-white text-balance">
                 {property.title}
@@ -152,9 +147,9 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       <div className="container mx-auto px-4 mt-10">
         <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
-          <Link href="/" className="hover:text-loc-terracotta transition-colors">Home</Link>
+          <Link href="/" className="hover:text-loc-terracotta transition-colors">{t("breadcrumbHome")}</Link>
           <span>/</span>
-          <Link href="/stays" className="hover:text-loc-terracotta transition-colors">Stays</Link>
+          <Link href="/stays" className="hover:text-loc-terracotta transition-colors">{tNav("stays")}</Link>
           <span>/</span>
           <span className="text-loc-night">{property?.title ?? slug}</span>
         </div>
@@ -179,7 +174,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div className="flex items-center gap-2 text-sm text-loc-stone">
                     <Home className="w-4 h-4 text-loc-terracotta" />
                     <span className="font-medium text-loc-night">
-                      {TYPE_LABELS[property.type] ?? property.type}
+                      {tp.has(property.type) ? tp(property.type) : property.type}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-loc-stone">
@@ -191,13 +186,13 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <AmenitiesList amenities={property.amenities} />
                 <HostCard />
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
-                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
+                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">{t("startingFrom")}</p>
                   <p className="font-heading text-2xl font-semibold text-loc-terracotta">
                     <PriceDisplay
                       min={property.priceMin}
                       max={property.priceMax}
                       currency={property.currency}
-                      suffix="/ night"
+                      suffix={tCommon("perNight")}
                       priceContext={priceContext}
                       size="lg"
                     />
@@ -217,10 +212,10 @@ export default async function PropertyDetailPage({ params }: Props) {
           <aside className="lg:col-span-1">
             <div className="sticky top-28 rounded-2xl border border-border bg-white p-6 shadow-sm">
               <p className="font-heading text-lg font-semibold text-loc-night mb-1">
-                Enquire about this stay
+                {t("enquireTitle")}
               </p>
               <p className="text-loc-stone text-sm mb-6">
-                Message the host directly, no middleman, no platform fees.
+                {t("enquireBody")}
               </p>
               <InquiryForm subject={`Inquiry about stay: ${property?.title ?? slug}`} />
             </div>

@@ -1,4 +1,7 @@
+"use client"
+
 import { MapPinned } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface Props {
   location: string
@@ -10,6 +13,7 @@ interface Props {
 // fields that already exist. An embedded map needs a geocoded lat/lng, which
 // none of these listings have; upgrade path if that's added later.
 export function MapLink({ location, country }: Props) {
+  const t = useTranslations("stayDetailPage")
   const query = encodeURIComponent([location, country].filter(Boolean).join(", "))
   return (
     <a
@@ -19,7 +23,7 @@ export function MapLink({ location, country }: Props) {
       className="inline-flex items-center gap-2 text-sm text-loc-terracotta hover:underline"
     >
       <MapPinned className="w-4 h-4" />
-      Open in Maps
+      {t("openInMaps")}
     </a>
   )
 }

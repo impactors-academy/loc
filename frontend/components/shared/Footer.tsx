@@ -12,10 +12,10 @@ export function Footer() {
     {
       heading: t("explore"),
       links: [
+        { label: nav("blog"), href: "/blog" as const },
+        { label: nav("store"), href: "/store" as const },
         { label: nav("experiences"), href: "/experiences" as const },
         { label: nav("stays"), href: "/stays" as const },
-        { label: nav("store"), href: "/store" as const },
-        { label: nav("blog"), href: "/blog" as const },
       ],
     },
     {

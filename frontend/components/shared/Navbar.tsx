@@ -9,12 +9,15 @@ import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { LanguageSwitcher } from "./LanguageSwitcher"
 
+// Ordered to match Phase 1 monetization priority (Blog, Digital Products,
+// Promote — see LOC Phase 1 Strategy Presentation), not by feature age.
+// Experiences/Stays stay fully live, just not presented as the lead.
 const NAV_KEYS = [
-  { key: "experiences", href: "/experiences" },
-  { key: "stays", href: "/stays" },
   { key: "blog", href: "/blog" },
   { key: "store", href: "/store" },
   { key: "promote", href: "/promote" },
+  { key: "experiences", href: "/experiences" },
+  { key: "stays", href: "/stays" },
 ] as const
 
 export function Navbar() {

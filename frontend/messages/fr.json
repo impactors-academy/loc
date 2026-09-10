@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LOC | Découvrez le Monde | Expériences, Séjours & Trésors Cachés",
-    "description": "Découvrez les meilleures expériences touristiques, séjours et trésors cachés à travers le monde, du Japon au Maroc, de Bali à Bordeaux. Sélectionnés par des passionnés de voyage."
+    "title": "LOC | Découvrez le Maroc | Expériences, Séjours & Trésors Cachés",
+    "description": "Découvrez les meilleures expériences touristiques, séjours et trésors cachés au Maroc, sélectionnés par ceux qui y vivent — bientôt en France et en Belgique."
   },
   "nav": {
     "experiences": "Expériences",
@@ -13,7 +13,7 @@
     "listWithUs": "Rejoignez-nous"
   },
   "hero": {
-    "eyebrow": "Global · Authentique · Sélectionné",
+    "eyebrow": "Au service des touristes",
     "discover": "Découvrez",
     "subtitle": "Expériences, séjours et trésors cachés. Sélectionnés par ceux qui y vivent.",
     "cta": "Explorer les expériences",
@@ -22,50 +22,41 @@
     "wellness": "Bien-être",
     "cultural": "Culture",
     "staysPill": "Séjours",
-    "guides": "Guides"
-  },
-  "stats": {
-    "experiences": "Expériences",
-    "countries": "Pays",
-    "providers": "Prestataires locaux",
-    "travellers": "Voyageurs satisfaits"
-  },
-  "destinations": {
-    "eyebrow": "Parcourir par destination",
-    "title": "Destinations populaires",
-    "subtitle": "Choisissez un lieu et plongez-y. Expériences et séjours filtrés pour ce coin du monde."
-  },
-  "categories": {
-    "eyebrow": "Explorer par type",
-    "title": "Que découvrirez-vous ?",
-    "subtitle": "Des dunes du Sahara aux maisons de thé japonaises, une aventure différente attend à chaque tournant."
-  },
-  "topExperiences": {
-    "eyebrow": "Sélectionnés pour vous",
-    "title": "Meilleures expériences",
-    "subtitle": "Des moments inoubliables créés par les meilleurs prestataires locaux du monde.",
-    "seeAll": "Voir toutes les expériences",
-    "seeAllMobile": "Voir toutes les expériences →"
+    "guides": "Guides",
+    "destinations": ["Maroc", "Paris", "Belgique", "le Monde"],
+    "searchSuggestions": ["Riad à Marrakech", "Appartement à Guéliz", "Villa avec piscine à Marrakech", "Appartement à Tanger"]
   },
   "howItWorks": {
     "eyebrow": "Simple par conception",
     "title": "Comment fonctionne LOC",
-    "subtitle": "Nous connectons les voyageurs curieux avec des prestataires locaux authentiques, directement, sans moteur de réservation intermédiaire."
+    "subtitle": "Nous connectons les voyageurs curieux avec des prestataires locaux authentiques, directement.",
+    "steps": [
+      {
+        "title": "Parcourir & Découvrir",
+        "desc": "Explorez des expériences sélectionnées, des séjours triés sur le volet et des trésors cachés, filtrés selon votre style de voyage."
+      },
+      {
+        "title": "Se connecter directement",
+        "desc": "Contactez les prestataires et les hôtes via notre simple formulaire de demande. Sans intermédiaire, sans frais cachés."
+      },
+      {
+        "title": "Vivre l'expérience",
+        "desc": "Partez en sachant que chaque détail a été vérifié par des voyageurs qui connaissent et aiment la destination."
+      }
+    ]
   },
   "handpickedStays": {
     "eyebrow": "Des lieux où se sentir chez soi",
     "title": "Séjours sélectionnés",
-    "subtitle": "Ryokans, riads, villas et fermes, choisis pour leur caractère, leur confort et leur emplacement.",
+    "subtitle": "Villas et appartements, choisis pour leur caractère, leur confort et leur emplacement.",
     "seeAll": "Voir tous les séjours"
   },
-  "cta": {
-    "title": "Votre prochaine aventure commence ici",
-    "subtitle": "Qu'il s'agisse d'un trek au lever du soleil à Bali ou d'une dégustation de vin à Bordeaux, le monde regorge de moments qui vous attendent.",
-    "explore": "Explorer les expériences",
-    "stays": "Parcourir les séjours"
+  "homepage": {
+    "commissionLabel": "Commission de réservation",
+    "statsLabel": "Statistiques de la plateforme"
   },
   "footer": {
-    "tagline": "Votre connecteur touristique mondial. Expériences sélectionnées, séjours triés sur le volet et guides de voyage numériques du monde entier.",
+    "tagline": "Votre connecteur voyage au Maroc, en France et en Belgique. Expériences sélectionnées, séjours triés sur le volet et guides de voyage numériques.",
     "explore": "Explorer",
     "forBusinesses": "Pour les entreprises",
     "company": "Entreprise",
@@ -76,25 +67,6 @@
     "contactUs": "Nous contacter",
     "privacyPolicy": "Politique de confidentialité",
     "rights": "Tous droits réservés. Fait pour les voyageurs curieux du monde entier."
-  },
-  "experiencesPage": {
-    "title": "Expériences à travers le monde",
-    "subtitle": "Aventures, retraites bien-être, circuits culinaires et bien plus, sélectionnés par ceux qui connaissent chaque destination.",
-    "eyebrow": "Expériences sélectionnées"
-  },
-  "staysPage": {
-    "title": "Hébergements",
-    "subtitle": "Ryokans, riads, villas, gîtes et appartements, chacun sélectionné pour son caractère, son confort et son emplacement.",
-    "eyebrow": "Séjours triés sur le volet"
-  },
-  "storePage": {
-    "title": "Boutique de voyage numérique",
-    "subtitle": "Guides, itinéraires et cours vidéo pour des destinations du monde entier, téléchargeables instantanément.",
-    "eyebrow": "Ressources de voyage"
-  },
-  "blogPage": {
-    "title": "Récits & Guides de voyage",
-    "eyebrow": "Depuis le terrain"
   },
   "inquiry": {
     "title": "Contactez-nous",
@@ -113,17 +85,214 @@
     "perPerson": "/ personne",
     "perNight": "/ nuit",
     "featured": "En vedette",
+    "premium": "Premium",
     "viewDetails": "Voir les détails",
     "bookNow": "Réserver",
+    "buyNow": "Acheter",
+    "readMore": "Lire la suite",
     "inquire": "Demander",
     "search": "Rechercher",
     "noResults": "Aucun résultat trouvé.",
     "loading": "Chargement..."
   },
+  "propertyTypes": {
+    "filterLabel": "Filtrer par type de propriété",
+    "all": "Tous",
+    "apartment": "Appartement",
+    "villa": "Villa",
+    "riad": "Riad",
+    "ryokan": "Ryokan",
+    "gite": "Gîte",
+    "hotel": "Hôtel",
+    "bivouac": "Bivouac"
+  },
+  "productTypes": {
+    "guide": "Guide de voyage",
+    "map": "Carte",
+    "photography": "Photographie",
+    "template": "Modèle",
+    "itinerary": "Itinéraire",
+    "course": "Cours"
+  },
+  "experienceCategories": {
+    "filterLabel": "Filtrer par catégorie",
+    "searchPlaceholder": "Rechercher des expériences…",
+    "all": "Toutes",
+    "adventure": "Aventure",
+    "wellness": "Bien-être",
+    "culture": "Culture",
+    "culinary": "Culinaire",
+    "water": "Nautique",
+    "aerial": "Aérien"
+  },
+  "countries": {
+    "filterLabel": "Filtrer par pays",
+    "all": "Tous les pays",
+    "Morocco": "Maroc",
+    "France": "France",
+    "Belgium": "Belgique"
+  },
   "partnerCta": {
     "eyebrow": "Pour les entreprises",
     "title": "Développez votre activité avec LOC",
-    "subtitle": "Listez votre expérience, propriété ou service touristique et atteignez des milliers de voyageurs recherchant activement des destinations authentiques.",
+    "subtitle": "Listez votre expérience, propriété ou service touristique et atteignez des voyageurs recherchant activement des expériences authentiques au Maroc, en France et en Belgique.",
     "cta": "Rejoignez-nous"
+  },
+  "aboutPage": {
+    "title": "Un connecteur voyage pour le Maroc, la France et la Belgique",
+    "metaDescription": "LOC est un connecteur voyage au Maroc, en France et en Belgique — expériences sélectionnées, séjours triés sur le volet et guides de voyage numériques.",
+    "eyebrow": "À propos",
+    "subtitle": "Expériences sélectionnées, séjours triés sur le volet et guides de voyage numériques.",
+    "howItWorksTitle": "Comment fonctionne LOC",
+    "howItWorksBody": "Nous connectons les voyageurs curieux avec des prestataires locaux authentiques, directement. Parcourez des expériences, des séjours et des produits locaux sélectionnés par des personnes qui vivent réellement dans les endroits qu'elles couvrent — lorsque quelque chose vous plaît, vous les contactez et le prestataire prend le relais.",
+    "discoveryTitle": "Découverte, pas réservation",
+    "discoveryBody": "LOC ne traite jamais les réservations ou les paiements lui-même. Chaque demande va directement au prestataire de l'expérience, du séjour ou du produit, qui gère le reste directement avec vous.",
+    "partOfTitle": "Fait partie d'Impactors Academy",
+    "partOfBody": "LOC est l'une des ventures créées par <link>Impactors Academy</link>, une plateforme qui construit des ventures dans le tourisme, le sport, la finance et la technologie.",
+    "getInTouch": "Une question ? Contactez-nous"
+  },
+  "contactPage": {
+    "title": "Nous contacter",
+    "metaDescription": "Contactez l'équipe LOC — questions, retours, ou toute autre chose.",
+    "eyebrow": "Contactez-nous",
+    "subtitle": "Des questions sur une expérience, un séjour ou autre chose — envoyez-nous un message et nous vous répondrons."
+  },
+  "promotePage": {
+    "metaTitle": "Promouvoir votre activité touristique",
+    "metaDescription": "Atteignez des voyageurs recherchant activement des expériences et des séjours au Maroc, en France et en Belgique via LOC. Placements en vedette, contenu sur les réseaux sociaux et packs marketing complets pour les entreprises touristiques.",
+    "eyebrow": "Pour les entreprises",
+    "title": "Développez-vous avec LOC",
+    "subtitle": "Connectez votre expérience ou propriété à des voyageurs recherchant activement des séjours et expériences authentiques au Maroc, en France et en Belgique.",
+    "mostPopular": "Le plus populaire",
+    "whyLoc": [
+      {
+        "title": "Une audience à forte intention",
+        "desc": "Les visiteurs viennent sur LOC spécifiquement pour trouver des expériences et des séjours, pas pour naviguer sans but. Votre annonce atteint des personnes prêtes à réserver."
+      },
+      {
+        "title": "Aucune commission sur les réservations",
+        "desc": "Nous facturons des frais de placement fixes, pas un pourcentage de chaque réservation. Plus de revenus restent chez vous."
+      },
+      {
+        "title": "Crédibilité locale",
+        "desc": "LOC met en avant des prestataires réellement implantés dans leur destination. Notre audience fait confiance à notre sélection, et votre annonce hérite de cette confiance."
+      }
+    ],
+    "pricingEyebrow": "Tarifs",
+    "pricingTitle": "Choisissez votre pack",
+    "pricingSubtitle": "Frais mensuels fixes. Aucune commission sur les réservations. Annulez à tout moment.",
+    "packages": [
+      {
+        "name": "Visibilité",
+        "description": "Placez votre annonce devant des voyageurs activement à la recherche.",
+        "features": [
+          "Badge en vedette sur la fiche",
+          "Placement prioritaire dans les résultats de recherche",
+          "Listé dans la section « Sélection » de la page d'accueil",
+          "Rapport de performance mensuel"
+        ],
+        "cta": "Commencer"
+      },
+      {
+        "name": "Contenu",
+        "description": "Laissez notre équipe créer du contenu qui génère de vraies réservations.",
+        "features": [
+          "Tout ce qui est inclus dans Visibilité",
+          "2× vidéos courtes (prêtes pour Reels/TikTok)",
+          "4× publications sociales sélectionnées par mois",
+          "Article de blog dédié",
+          "Séance photo de marque (sur demande)"
+        ],
+        "cta": "Le plus populaire"
+      },
+      {
+        "name": "Croissance",
+        "description": "Marketing complet pour les entreprises touristiques sérieuses.",
+        "features": [
+          "Tout ce qui est inclus dans Contenu",
+          "Niveau d'annonce premium (en haut de tous les résultats)",
+          "Appel stratégique mensuel avec l'équipe LOC",
+          "Page d'atterrissage personnalisée sur loctravels.com",
+          "Routage prioritaire des prospects vers votre boîte de réception",
+          "Rapport d'analyse trimestriel"
+        ],
+        "cta": "Discutons-en"
+      }
+    ],
+    "inquiryEyebrow": "Contactez-nous",
+    "inquiryTitle": "Prêt à développer votre activité ?",
+    "inquirySubtitle": "Parlez-nous de votre activité et du pack qui vous intéresse. Nous vous répondrons sous 24 heures."
+  },
+  "experiencesPage": {
+    "metaTitle": "Expériences au Maroc",
+    "metaDescription": "Découvrez des aventures, des retraites bien-être, des circuits culinaires et des expériences culturelles au Maroc, sélectionnés par des locaux — la France et la Belgique arrivent bientôt.",
+    "eyebrow": "Explorer le Maroc",
+    "title": "Expériences",
+    "subtitle": "Aventures, retraites bien-être, circuits culinaires et plus, sélectionnés par ceux qui connaissent le mieux le Maroc.",
+    "loadError": "Impossible de charger les expériences pour le moment. Veuillez réessayer plus tard.",
+    "noResults": "Aucune expérience trouvée",
+    "noResultsFor": "Aucun résultat pour « {q} »",
+    "tryDifferent": "Essayez une autre recherche, catégorie ou destination."
+  },
+  "experienceDetailPage": {
+    "breadcrumbHome": "Accueil",
+    "startingFrom": "À partir de",
+    "interestedTitle": "Intéressé par cette expérience ?",
+    "interestedBody": "Envoyez un message et le prestataire vous répondra directement.",
+    "opensProviderPage": "Ouvre la page de réservation du prestataire",
+    "planYourTrip": "Planifiez votre voyage"
+  },
+  "staysPage": {
+    "metaTitle": "Séjours au Maroc",
+    "metaDescription": "Parcourez des villas et appartements triés sur le volet au Maroc, avec contact direct de l'hôte et sans frais cachés — la France et la Belgique arrivent bientôt.",
+    "eyebrow": "Lieux de séjour",
+    "title": "Séjours",
+    "subtitle": "Villas et appartements au Maroc, chacun sélectionné pour son caractère, son confort et son emplacement.",
+    "loadError": "Impossible de charger les propriétés pour le moment. Veuillez réessayer plus tard.",
+    "noResults": "Aucune propriété trouvée",
+    "tryDifferent": "Essayez un autre type ou revenez bientôt."
+  },
+  "stayDetailPage": {
+    "breadcrumbHome": "Accueil",
+    "startingFrom": "À partir de",
+    "enquireTitle": "Renseignez-vous sur ce séjour",
+    "enquireBody": "Contactez l'hôte directement, sans intermédiaire, sans frais de plateforme.",
+    "amenitiesTitle": "Ce que propose ce logement",
+    "hostedDirectly": "Hébergé directement par le propriétaire",
+    "messageThroughForm": "Contactez-les via le formulaire — sans intermédiaire, sans frais de plateforme",
+    "openInMaps": "Ouvrir dans Maps"
+  },
+  "storePage": {
+    "metaTitle": "Guides de voyage & produits numériques",
+    "metaDescription": "Téléchargez des guides de voyage sélectionnés, des itinéraires et des outils de planification pour le Maroc, la France et la Belgique, conçus par des personnes qui y vivent — téléchargement instantané.",
+    "eyebrow": "Produits numériques",
+    "title": "Voyagez plus intelligemment avec LOC",
+    "subtitle": "Guides, itinéraires et outils de planification pour le Maroc, la France et la Belgique, téléchargeables instantanément.",
+    "loadError": "Impossible de charger les produits pour le moment. Veuillez réessayer plus tard.",
+    "noProducts": "Aucun produit pour le moment",
+    "comingSoon": "Revenez bientôt. De nouveaux guides arrivent."
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "Accueil",
+    "price": "Prix",
+    "buyNow": "Acheter",
+    "secureCheckout": "Paiement sécurisé via notre partenaire de confiance"
+  },
+  "blogPage": {
+    "metaTitle": "Guide de voyage & récits",
+    "metaDescription": "Découvrez des trésors cachés, des conseils locaux et des récits de voyage au Maroc, en France et en Belgique, écrits par des personnes qui y vivent.",
+    "eyebrow": "Depuis le terrain",
+    "title": "Récits de voyage",
+    "subtitle": "Trésors cachés, conseils locaux et guides de destination écrits par des personnes qui y vivent.",
+    "loadError": "Impossible de charger les articles pour le moment. Veuillez réessayer plus tard.",
+    "noArticles": "Aucun article pour le moment",
+    "noArticlesTagged": "Aucun article marqué « {tag} »",
+    "tryDifferentTag": "Essayez un autre mot-clé.",
+    "comingSoon": "Des récits du Maroc, de la France et de la Belgique arrivent bientôt."
+  },
+  "blogDetailPage": {
+    "breadcrumbHome": "Accueil",
+    "backToStories": "Retour à tous les récits",
+    "relatedArticles": "Vous pourriez aussi aimer"
   }
 }

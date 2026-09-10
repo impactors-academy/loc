@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LOC | Discover the World | Experiences, Stays & Hidden Gems",
-    "description": "Discover the best tourism experiences, stays, and hidden gems around the world, from Japan to Morocco, Bali to Bordeaux. Curated by people who love to travel."
+    "title": "LOC | Discover Morocco | Experiences, Stays & Hidden Gems",
+    "description": "Discover the best tourism experiences, stays, and hidden gems in Morocco, curated by people who live there — expanding next into France and Belgium."
   },
   "nav": {
     "experiences": "Experiences",
@@ -13,7 +13,7 @@
     "listWithUs": "List with us"
   },
   "hero": {
-    "eyebrow": "Global · Authentic · Curated",
+    "eyebrow": "Serving Tourists",
     "discover": "Discover",
     "subtitle": "Experiences, stays, and hidden gems. Curated by people who live there.",
     "cta": "Explore Experiences",
@@ -22,50 +22,41 @@
     "wellness": "Wellness",
     "cultural": "Cultural",
     "staysPill": "Stays",
-    "guides": "Guides"
-  },
-  "stats": {
-    "experiences": "Experiences",
-    "countries": "Countries",
-    "providers": "Local Providers",
-    "travellers": "Happy Travellers"
-  },
-  "destinations": {
-    "eyebrow": "Browse by destination",
-    "title": "Popular Destinations",
-    "subtitle": "Pick a place and dive in. Experiences and stays filtered just for that corner of the world."
-  },
-  "categories": {
-    "eyebrow": "Explore by type",
-    "title": "What will you discover?",
-    "subtitle": "From Sahara dunes to Japanese tea houses, a different adventure waits around every corner."
-  },
-  "topExperiences": {
-    "eyebrow": "Handpicked for you",
-    "title": "Top Experiences",
-    "subtitle": "Unforgettable moments crafted by the world's finest local providers.",
-    "seeAll": "See all experiences",
-    "seeAllMobile": "See all experiences →"
+    "guides": "Guides",
+    "destinations": ["Morocco", "Paris", "Belgium", "the World"],
+    "searchSuggestions": ["Marrakech riad", "Guéliz apartment", "Marrakech villa pool", "Tangier apartment"]
   },
   "howItWorks": {
     "eyebrow": "Simple by design",
     "title": "How LOC Works",
-    "subtitle": "We connect curious travellers with authentic local providers, directly, with no booking engine in the way."
+    "subtitle": "We connect curious travellers with authentic local providers, directly.",
+    "steps": [
+      {
+        "title": "Browse & Discover",
+        "desc": "Explore curated experiences, handpicked stays, and hidden gems, filtered to match your travel style."
+      },
+      {
+        "title": "Connect Directly",
+        "desc": "Reach out to providers and hosts through our simple inquiry form. No middleman, no hidden fees."
+      },
+      {
+        "title": "Live the Experience",
+        "desc": "Set off knowing every detail has been vetted by travellers who know and love the destination."
+      }
+    ]
   },
   "handpickedStays": {
     "eyebrow": "Places to call home",
     "title": "Handpicked Stays",
-    "subtitle": "Ryokans, riads, villas, and farmhouses, selected for their character, comfort, and location.",
+    "subtitle": "Villas and apartments, selected for their character, comfort, and location.",
     "seeAll": "See all stays"
   },
-  "cta": {
-    "title": "Your next adventure starts here",
-    "subtitle": "Whether it's a sunrise trek in Bali or a wine tasting in Bordeaux, the world is full of moments waiting for you.",
-    "explore": "Explore Experiences",
-    "stays": "Browse Stays"
+  "homepage": {
+    "commissionLabel": "Booking Commission",
+    "statsLabel": "Platform statistics"
   },
   "footer": {
-    "tagline": "Your global tourism connector. Curated experiences, handpicked stays, and digital travel guides from around the world.",
+    "tagline": "Your travel connector in Morocco, France, and Belgium. Curated experiences, handpicked stays, and digital travel guides.",
     "explore": "Explore",
     "forBusinesses": "For Businesses",
     "company": "Company",
@@ -76,25 +67,6 @@
     "contactUs": "Contact Us",
     "privacyPolicy": "Privacy Policy",
     "rights": "All rights reserved. Made for curious travellers everywhere."
-  },
-  "experiencesPage": {
-    "title": "Experiences Around the World",
-    "subtitle": "Adventures, wellness retreats, culinary tours, and more, curated by people who know each destination best.",
-    "eyebrow": "Curated experiences"
-  },
-  "staysPage": {
-    "title": "Places to Stay",
-    "subtitle": "Ryokans, riads, villas, gîtes, and apartments, each one selected for its character, comfort, and location.",
-    "eyebrow": "Handpicked stays"
-  },
-  "storePage": {
-    "title": "Digital Travel Store",
-    "subtitle": "Guides, itineraries, and video courses for destinations around the world, downloadable instantly.",
-    "eyebrow": "Travel resources"
-  },
-  "blogPage": {
-    "title": "Travel Stories & Guides",
-    "eyebrow": "From the field"
   },
   "inquiry": {
     "title": "Get in Touch",
@@ -113,17 +85,214 @@
     "perPerson": "/ person",
     "perNight": "/ night",
     "featured": "Featured",
+    "premium": "Premium",
     "viewDetails": "View Details",
     "bookNow": "Book Now",
+    "buyNow": "Buy now",
+    "readMore": "Read more",
     "inquire": "Inquire",
     "search": "Search",
     "noResults": "No results found.",
     "loading": "Loading..."
   },
+  "propertyTypes": {
+    "filterLabel": "Filter by property type",
+    "all": "All",
+    "apartment": "Apartment",
+    "villa": "Villa",
+    "riad": "Riad",
+    "ryokan": "Ryokan",
+    "gite": "Gîte",
+    "hotel": "Hotel",
+    "bivouac": "Bivouac"
+  },
+  "productTypes": {
+    "guide": "Travel Guide",
+    "map": "Map",
+    "photography": "Photography",
+    "template": "Template",
+    "itinerary": "Itinerary",
+    "course": "Course"
+  },
+  "experienceCategories": {
+    "filterLabel": "Filter by category",
+    "searchPlaceholder": "Search experiences…",
+    "all": "All",
+    "adventure": "Adventure",
+    "wellness": "Wellness",
+    "culture": "Cultural",
+    "culinary": "Culinary",
+    "water": "Water",
+    "aerial": "Aerial"
+  },
+  "countries": {
+    "filterLabel": "Filter by country",
+    "all": "All countries",
+    "Morocco": "Morocco",
+    "France": "France",
+    "Belgium": "Belgium"
+  },
   "partnerCta": {
     "eyebrow": "For Businesses",
     "title": "Grow your business with LOC",
-    "subtitle": "List your experience, property, or tourism service and reach thousands of travellers actively searching for authentic destinations around the world.",
+    "subtitle": "List your experience, property, or tourism service and reach travellers actively searching for authentic experiences in Morocco, France, and Belgium.",
     "cta": "List with us"
+  },
+  "aboutPage": {
+    "title": "A travel connector for Morocco, France & Belgium",
+    "metaDescription": "LOC is a travel connector in Morocco, France, and Belgium — curated experiences, handpicked stays, and digital travel guides.",
+    "eyebrow": "About",
+    "subtitle": "Curated experiences, handpicked stays, and digital travel guides.",
+    "howItWorksTitle": "How LOC works",
+    "howItWorksBody": "We connect curious travellers with authentic local providers, directly. Browse experiences, stays, and local products curated by people who actually live in the places they cover — when something looks right, you reach out and the provider takes it from there.",
+    "discoveryTitle": "Discovery, not booking",
+    "discoveryBody": "LOC never processes bookings or payments itself. Every inquiry goes straight to the experience, stay, or product's own provider, who handles the rest directly with you.",
+    "partOfTitle": "Part of Impactors Academy",
+    "partOfBody": "LOC is one of the ventures built by <link>Impactors Academy</link>, a platform building ventures across tourism, sport, finance, and technology.",
+    "getInTouch": "Have a question? Get in touch"
+  },
+  "contactPage": {
+    "title": "Contact Us",
+    "metaDescription": "Get in touch with the LOC team — questions, feedback, or anything else.",
+    "eyebrow": "Get in touch",
+    "subtitle": "Questions about an experience, a stay, or anything else — send us a message and we'll get back to you."
+  },
+  "promotePage": {
+    "metaTitle": "Promote Your Tourism Business",
+    "metaDescription": "Reach travellers actively searching for experiences and stays in Morocco, France, and Belgium through LOC. Featured placements, social media content, and full marketing packages for tourism businesses.",
+    "eyebrow": "For Businesses",
+    "title": "Grow with LOC",
+    "subtitle": "Connect your experience or property with travellers actively searching for authentic stays and experiences in Morocco, France, and Belgium.",
+    "mostPopular": "Most popular",
+    "whyLoc": [
+      {
+        "title": "High-intent audience",
+        "desc": "Visitors come to LOC specifically to find experiences and stays, not to scroll. Your listing reaches people ready to book."
+      },
+      {
+        "title": "No commission on bookings",
+        "desc": "We charge flat placement fees, not a percentage of every booking. More revenue stays with you."
+      },
+      {
+        "title": "Local credibility",
+        "desc": "LOC surfaces providers who are genuinely embedded in their destination. Our audience trusts our curation, and your listing inherits that trust."
+      }
+    ],
+    "pricingEyebrow": "Pricing",
+    "pricingTitle": "Choose your package",
+    "pricingSubtitle": "Flat monthly fees. No booking commissions. Cancel any time.",
+    "packages": [
+      {
+        "name": "Visibility",
+        "description": "Get your listing in front of travelers actively searching.",
+        "features": [
+          "Featured badge on listing card",
+          "Priority placement in search results",
+          "Listed in the 'Handpicked' homepage section",
+          "Monthly performance report"
+        ],
+        "cta": "Get started"
+      },
+      {
+        "name": "Content",
+        "description": "Let our team create content that drives real bookings.",
+        "features": [
+          "Everything in Visibility",
+          "2× short-form video (Reels/TikTok ready)",
+          "4× curated social posts per month",
+          "Dedicated blog feature article",
+          "Branded photography session (on request)"
+        ],
+        "cta": "Most popular"
+      },
+      {
+        "name": "Growth",
+        "description": "Full-stack marketing for serious tourism businesses.",
+        "features": [
+          "Everything in Content",
+          "Premium listing tier (top of all results)",
+          "Monthly strategy call with the LOC team",
+          "Custom landing page on loctravels.com",
+          "Priority lead routing to your inbox",
+          "Quarterly analytics report"
+        ],
+        "cta": "Let's talk"
+      }
+    ],
+    "inquiryEyebrow": "Get in touch",
+    "inquiryTitle": "Ready to grow your business?",
+    "inquirySubtitle": "Tell us about your business and the package you're interested in. We'll get back to you within 24 hours."
+  },
+  "experiencesPage": {
+    "metaTitle": "Morocco Experiences",
+    "metaDescription": "Discover curated adventures, wellness retreats, culinary tours, and cultural experiences in Morocco, handpicked by locals — France and Belgium coming next.",
+    "eyebrow": "Explore Morocco",
+    "title": "Experiences",
+    "subtitle": "Adventures, wellness retreats, culinary tours, and more, curated by people who know Morocco best.",
+    "loadError": "Could not load experiences right now. Please try again later.",
+    "noResults": "No experiences found",
+    "noResultsFor": "No results for \"{q}\"",
+    "tryDifferent": "Try a different search, category, or destination."
+  },
+  "experienceDetailPage": {
+    "breadcrumbHome": "Home",
+    "startingFrom": "Starting from",
+    "interestedTitle": "Interested in this experience?",
+    "interestedBody": "Send a message and the provider will get back to you directly.",
+    "opensProviderPage": "Opens provider booking page",
+    "planYourTrip": "Plan your trip"
+  },
+  "staysPage": {
+    "metaTitle": "Morocco Stays",
+    "metaDescription": "Browse handpicked villas and apartments in Morocco, with direct host contact and no hidden fees — France and Belgium coming next.",
+    "eyebrow": "Places to Stay",
+    "title": "Stays",
+    "subtitle": "Villas and apartments in Morocco, each one selected for its character, comfort, and location.",
+    "loadError": "Could not load properties right now. Please try again later.",
+    "noResults": "No properties found",
+    "tryDifferent": "Try a different type or check back soon."
+  },
+  "stayDetailPage": {
+    "breadcrumbHome": "Home",
+    "startingFrom": "Starting from",
+    "enquireTitle": "Enquire about this stay",
+    "enquireBody": "Message the host directly, no middleman, no platform fees.",
+    "amenitiesTitle": "What this place offers",
+    "hostedDirectly": "Hosted directly by the owner",
+    "messageThroughForm": "Message them through the form — no middleman, no platform fees",
+    "openInMaps": "Open in Maps"
+  },
+  "storePage": {
+    "metaTitle": "Travel Guides & Digital Products",
+    "metaDescription": "Download curated travel guides, itineraries, and planning tools for Morocco, France, and Belgium, crafted by people who live there — downloadable instantly.",
+    "eyebrow": "Digital Products",
+    "title": "Travel smarter with LOC",
+    "subtitle": "Guides, itineraries, and planning tools for Morocco, France, and Belgium, downloadable instantly.",
+    "loadError": "Could not load products right now. Please try again later.",
+    "noProducts": "No products yet",
+    "comingSoon": "Check back soon. New guides are on the way."
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "Home",
+    "price": "Price",
+    "buyNow": "Buy now",
+    "secureCheckout": "Secure checkout via our trusted partner"
+  },
+  "blogPage": {
+    "metaTitle": "Travel Guide & Stories",
+    "metaDescription": "Discover hidden gems, local tips, and travel stories from Morocco, France, and Belgium, written by people who live there.",
+    "eyebrow": "From the field",
+    "title": "Travel Stories",
+    "subtitle": "Hidden gems, local tips, and destination guides written by people who live there.",
+    "loadError": "Could not load articles right now. Please try again later.",
+    "noArticles": "No articles yet",
+    "noArticlesTagged": "No articles tagged \"{tag}\"",
+    "tryDifferentTag": "Try a different tag.",
+    "comingSoon": "Stories from Morocco, France, and Belgium are coming soon."
+  },
+  "blogDetailPage": {
+    "breadcrumbHome": "Home",
+    "backToStories": "Back to all stories",
+    "relatedArticles": "You Might Also Like"
   }
 }

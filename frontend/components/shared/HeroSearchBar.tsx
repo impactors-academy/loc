@@ -6,17 +6,6 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 
-const SUGGESTIONS = [
-  "Kyoto tea ceremony",
-  "Bali surf lesson",
-  "Marrakech riad",
-  "Santorini sunset sail",
-  "Bordeaux wine tasting",
-  "Tokyo street food",
-  "Provence cycling tour",
-  "Brussels chocolate workshop",
-]
-
 const HOLD_MS = 2400
 const FADE_MS = 350
 
@@ -26,6 +15,8 @@ export function HeroSearchBar() {
   const [visible, setVisible] = useState(true)
   const router = useRouter()
   const t = useTranslations("common")
+  const th = useTranslations("hero")
+  const suggestions = th.raw("searchSuggestions") as string[]
   const prefersReducedMotion = usePrefersReducedMotion()
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -35,7 +26,7 @@ export function HeroSearchBar() {
     timerRef.current = setInterval(() => {
       setVisible(false)
       setTimeout(() => {
-        setSuggIdx((i) => (i + 1) % SUGGESTIONS.length)
+        setSuggIdx((i) => (i + 1) % suggestions.length)
         setVisible(true)
       }, FADE_MS)
     }, HOLD_MS + FADE_MS)
@@ -43,7 +34,7 @@ export function HeroSearchBar() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [prefersReducedMotion, query])
+  }, [prefersReducedMotion, query, suggestions.length])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -58,7 +49,7 @@ export function HeroSearchBar() {
       onSubmit={handleSubmit}
       className="w-full max-w-xl mx-auto mb-10"
       role="search"
-      aria-label="Search experiences"
+      aria-label={t("search")}
     >
       <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/30 rounded-full px-2 py-2 focus-within:bg-white/15 focus-within:border-white/50 transition-all shadow-lg shadow-black/20">
         <Search
@@ -71,7 +62,7 @@ export function HeroSearchBar() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={prefersReducedMotion ? SUGGESTIONS[0] : ""}
+            placeholder={prefersReducedMotion ? suggestions[0] : ""}
             className="w-full bg-transparent text-white placeholder:text-white/50 text-sm px-3 py-1.5 outline-none"
           />
           {showAnimatedPlaceholder && (
@@ -87,7 +78,7 @@ export function HeroSearchBar() {
               }}
               aria-hidden="true"
             >
-              {SUGGESTIONS[suggIdx]}
+              {suggestions[suggIdx]}
             </span>
           )}
         </div>

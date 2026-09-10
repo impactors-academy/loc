@@ -2,13 +2,16 @@ import { PropertyFilters } from "@/components/features/stays/PropertyFilters"
 import { PropertyGrid } from "@/components/features/stays/PropertyGrid"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { getVisitorPriceContext } from "@/lib/price-display-context"
+import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
-export const metadata: Metadata = {
-  title: "Stays Around the World | LOC",
-  description:
-    "Browse handpicked ryokans, riads, villas, gîtes, and apartments around the world, with direct contact and no hidden fees.",
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("staysPage")
+  return {
+    title: `${t("metaTitle")} | LOC`,
+    description: t("metaDescription"),
+  }
 }
 
 interface Props {
@@ -18,15 +21,16 @@ interface Props {
 export default async function StaysPage({ searchParams }: Props) {
   const { type, country } = await searchParams
   const priceContext = await getVisitorPriceContext()
+  const t = await getTranslations("staysPage")
 
   return (
     <main className="pt-24 pb-20">
       <div className="container mx-auto px-4">
         <div className="mb-10">
           <SectionHeader
-            eyebrow="Places to Stay"
-            title="Stays"
-            subtitle="Ryokans, riads, villas, gîtes, and apartments, each one selected for its character, comfort, and location."
+            eyebrow={t("eyebrow")}
+            title={t("title")}
+            subtitle={t("subtitle")}
           />
         </div>
         <Suspense fallback={<div className="h-10" />}>

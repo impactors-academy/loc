@@ -2,6 +2,7 @@ import { api } from "@/lib/api"
 import { YouTubeEmbed } from "@/components/shared/YouTubeEmbed"
 import { formatAmount } from "@/lib/types"
 import { ExternalLink, Tag } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -46,15 +47,11 @@ const TYPE_GRADIENTS: Record<string, string> = {
   template: "from-indigo-950 via-blue-900 to-indigo-800",
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  guide: "Travel Guide",
-  map: "Map",
-  photography: "Photography Pack",
-  template: "Template",
-}
-
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
+  const t = await getTranslations("productDetailPage")
+  const tNav = await getTranslations("nav")
+  const tp = await getTranslations("productTypes")
 
   let product: Awaited<ReturnType<typeof api.products.get>> | null = null
   try {
@@ -96,9 +93,9 @@ export default async function ProductDetailPage({ params }: Props) {
       )}
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
-          <Link href="/" className="hover:text-loc-terracotta transition-colors">Home</Link>
+          <Link href="/" className="hover:text-loc-terracotta transition-colors">{t("breadcrumbHome")}</Link>
           <span>/</span>
-          <Link href="/store" className="hover:text-loc-terracotta transition-colors">Store</Link>
+          <Link href="/store" className="hover:text-loc-terracotta transition-colors">{tNav("store")}</Link>
           <span>/</span>
           <span className="text-loc-night">{product?.title ?? slug}</span>
         </div>
@@ -125,7 +122,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <div className="flex items-center gap-2 mb-4">
                   <Tag size={14} className="text-loc-terracotta" />
                   <span className="text-xs font-medium text-loc-stone uppercase tracking-wide">
-                    {TYPE_LABELS[product.type] ?? product.type}
+                    {tp.has(product.type) ? tp(product.type) : product.type}
                   </span>
                 </div>
                 <h1 className="font-heading text-3xl font-semibold text-loc-night mb-4">
@@ -140,7 +137,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 )}
 
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6 mb-6">
-                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Price</p>
+                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">{t("price")}</p>
                   <p className="font-heading text-3xl font-semibold text-loc-terracotta">
                     {formatAmount(product.price, product.currency, 2)}
                   </p>
@@ -152,10 +149,10 @@ export default async function ProductDetailPage({ params }: Props) {
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 bg-loc-terracotta text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-loc-terracotta/90 transition-all hover:scale-[1.02] shadow-md"
                 >
-                  Buy now <ExternalLink size={16} />
+                  {t("buyNow")} <ExternalLink size={16} />
                 </a>
                 <p className="text-xs text-loc-stone/70 text-center mt-3">
-                  Secure checkout via our trusted partner
+                  {t("secureCheckout")}
                 </p>
               </>
             ) : (

@@ -11,7 +11,7 @@
     --loc-copper:     #C9885C;  /* logo mark — 7.03:1 on black, 2.93:1 on white */
     --loc-terracotta: #A16036;  /* working accent on light — 4.95:1 on white     */
     --loc-sand:       #F7EDD8;  /* highlight backgrounds, stat strips             */
-    --loc-amber:      #D4A44C;  /* decorative only — 2.28:1 as text on white     */
+    --loc-amber:      #FFB852;  /* org-assigned venture color, 12.01:1 on black, 9.87:1 on loc-night — decorative/dark-surface only, fails on white/cream */
     --loc-slate:      #1B3644;  /* cool anchor (Wada #296) — white 12.67:1       */
     --loc-night:      #231B15;  /* heading ink — logo hue near-black, 16.27:1    */
     --loc-stone:      #7F694D;  /* body/meta text — 5.02:1 on page               */
