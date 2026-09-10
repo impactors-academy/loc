@@ -31,3 +31,12 @@ dev = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.ruff.lint]
+# Pin the rule set explicitly. Ruff's own default selection has changed
+# between releases (we run "ruff>=0.9.0", unpinned) and a newer default
+# started flagging FastAPI's required `Depends()`-as-default pattern (B008)
+# and every `dict(...)` call site (C408) across the whole codebase. Neither
+# is a real bug here; without this, any ruff release bump can silently break
+# CI on unrelated PRs.
+select = ["E4", "E7", "E9", "F"]
