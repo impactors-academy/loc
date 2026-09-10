@@ -1,23 +1,27 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { SectionHeader } from "@/components/shared/SectionHeader"
+import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 
-// English only, for now — same call as /privacy and the existing /promote
-// precedent in this route group.
-export const metadata: Metadata = {
-  title: "Contact Us | LOC",
-  description: "Get in touch with the LOC team — questions, feedback, or anything else.",
-  alternates: { canonical: "/contact" },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("contactPage")
+  return {
+    title: `${t("title")} | LOC`,
+    description: t("metaDescription"),
+    alternates: { canonical: "/contact" },
+  }
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const t = await getTranslations("contactPage")
+
   return (
     <main className="pt-24 pb-20">
       <section className="container mx-auto px-4 text-center max-w-2xl mb-16">
         <SectionHeader
-          eyebrow="Get in touch"
-          title="Contact Us"
-          subtitle="Questions about an experience, a stay, or anything else — send us a message and we'll get back to you."
+          eyebrow={t("eyebrow")}
+          title={t("title")}
+          subtitle={t("subtitle")}
           center
         />
       </section>

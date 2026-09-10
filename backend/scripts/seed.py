@@ -212,113 +212,218 @@ EXPERIENCES = [
     ),
 ]
 
+# The org's real listings, mirrored from production (api.loctravels.com) so
+# local dev shows the same inventory as the live site instead of unrelated
+# global demo data. Images are the real R2-hosted first photo for each
+# listing; prices/tiers/descriptions match production as of 2026-09-10.
+# Re-sync by re-running the export in loc's session notes if listings change.
 PROPERTIES = [
-    # ── France ─────────────────────────────────────────────────────────────
     dict(
-        slug="paris-marais-apartment",
-        type="apartment",
-        title="Le Marais Pied-à-Terre | Paris 4e",
-        description=(
-            "A 65 m² Haussmann apartment on Rue de Bretagne, two blocks from "
-            "the covered market. Original parquet floors, exposed beams, and a "
-            "cast-iron balcony overlooking an interior courtyard."
-        ),
-        country="France",
-        location="Le Marais, Paris",
-        price_min=180.0,
-        price_max=280.0,
-        images=["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200"],
-        listing_tier="featured",
-        owner_contact="lemarais.stays@example.com",
-    ),
-    dict(
-        slug="provence-mas-villa",
+        slug="villa-bahamas-designer-interiors-marrakech",
         type="villa",
-        title="Mas Provençal | Luberon Valley",
+        title="Villa Bahamas — Designer Interiors, Marrakech",
         description=(
-            "An 18th-century stone mas (farmhouse) with a 12-metre pool, lavender "
-            "terraces, and views to the Luberon ridge. Sleeps 8; private chef "
-            "available. Ideal May–July for the bloom."
-        ),
-        country="France",
-        location="Lourmarin, Luberon, Provence",
-        price_min=450.0,
-        price_max=750.0,
-        images=["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200"],
-        listing_tier="premium",
-        owner_contact="luberon.villas@example.com",
-    ),
-    # ── UK ─────────────────────────────────────────────────────────────────
-    dict(
-        slug="cotswolds-farmhouse",
-        type="gite",
-        title="The Old Woolstore | Cotswolds",
-        description=(
-            "A converted 17th-century wool merchant's house in the village of "
-            "Bourton-on-the-Water. Inglenook fireplace, garden with hot tub, "
-            "and four bedrooms sleeping up to seven."
-        ),
-        country="United Kingdom",
-        location="Bourton-on-the-Water, Gloucestershire",
-        price_min=250.0,
-        price_max=420.0,
-        images=["https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=1200"],
-        listing_tier="featured",
-        owner_contact="cotswolds.stays@example.com",
-    ),
-    # ── Japan ──────────────────────────────────────────────────────────────
-    dict(
-        slug="kyoto-ryokan-higashiyama",
-        type="ryokan",
-        title="Ryokan Kiyomizu | Higashiyama, Kyoto",
-        description=(
-            "A family-run ryokan on the stone-paved Ninenzaka lane. Eight rooms with "
-            "futon beds, yukata robes, and private hinoki wood baths. "
-            "Kaiseki dinner and matcha breakfast included."
-        ),
-        country="Japan",
-        location="Higashiyama, Kyoto",
-        price_min=220.0,
-        price_max=380.0,
-        images=["https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200"],
-        listing_tier="premium",
-        owner_contact="kiyomizu.ryokan@example.com",
-    ),
-    # ── Bali ───────────────────────────────────────────────────────────────
-    dict(
-        slug="ubud-jungle-villa",
-        type="villa",
-        title="Jungle Edge Villa | Ubud, Bali",
-        description=(
-            "A three-bedroom villa cantilevered over a river gorge in Penestanan. "
-            "Infinity pool that merges with the rice-terrace horizon, open-air "
-            "dining pavilion, and a private spa gazebo."
-        ),
-        country="Indonesia",
-        location="Penestanan, Ubud, Bali",
-        price_min=280.0,
-        price_max=450.0,
-        images=["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200"],
-        listing_tier="featured",
-        owner_contact="ubudjungle.villas@example.com",
-    ),
-    # ── Morocco ────────────────────────────────────────────────────────────
-    dict(
-        slug="riad-zouak-marrakech",
-        type="riad",
-        title="Riad Zouak | Hidden Gem in Marrakech Medina",
-        description=(
-            "Seven rooms arranged around a central courtyard fountain, each adorned "
-            "with hand-painted zellij tilework. Rooftop terrace with Atlas views, "
-            "daily hammam access, and a candlelit dinner option on request."
+            "A sleek, designer-finished villa built around curved bouclé sofas and a "
+            "travertine coffee table, with floor-to-ceiling glass that folds open onto "
+            "a lit garden, private pool, and outdoor dining terrace. Built for guests "
+            "who want a five-star interior without leaving the villa."
         ),
         country="Morocco",
-        location="Marrakech Medina",
-        price_min=120.0,
-        price_max=220.0,
-        images=["https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1200"],
+        location="Marrakech",
+        price_min=1600.0,
+        price_max=2400.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/f3375e62ab3a4399be805b50df50f29e.jpg"],
+        listing_tier="premium",
+    ),
+    dict(
+        slug="4-bedroom-villa-route-de-fes-marrakech",
+        type="villa",
+        title="4-Bedroom Villa — Route de Fès, Marrakech",
+        description=(
+            "A professionally interior-designed 4-bedroom villa with brass pendant "
+            "lighting, a curated terracotta-and-cream palette, and a bedroom that "
+            "opens directly onto the pool terrace through floor-to-ceiling glass."
+        ),
+        country="Morocco",
+        location="Route de Fès, Marrakech",
+        price_min=2200.0,
+        price_max=3200.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/d29fc6f41aad463594c660eae36b3a77.jpg"],
+        listing_tier="premium",
+    ),
+    dict(
+        slug="villa-mima-marrakech",
+        type="villa",
+        title="Villa Mima — Marrakech",
+        description=(
+            "A group-friendly villa with a private pool, sun loungers under wide "
+            "umbrellas, a table-tennis table, and a trampoline on the lawn — built "
+            "for families and groups who want to stay in rather than go out."
+        ),
+        country="Morocco",
+        location="Marrakech",
+        price_min=1800.0,
+        price_max=2500.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/5a90b192bdf14b7aa8a071be64114a06.jpg"],
+        listing_tier="premium",
+    ),
+    dict(
+        slug="loc-1003a-gueliz-marrakech",
+        type="apartment",
+        title="The Atelier Apartment, Guéliz",
+        description=(
+            "The most design-led of the three Guéliz units: recessed arched wall "
+            "niches styled with small sculptural objects, sculptural black dining and "
+            "coffee tables, and a private terracotta-tiled balcony overlooking "
+            "Guéliz's pink rooftops."
+        ),
+        country="Morocco",
+        location="Guéliz, Marrakech",
+        price_min=1150.0,
+        price_max=1600.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/fc9b2a94c2df447a9b0e0a4acf8b6149.jpg"],
         listing_tier="featured",
-        owner_contact="riad.zouak@example.com",
+    ),
+    dict(
+        slug="villa-emna-marrakech",
+        type="villa",
+        title="Villa Emna — Marrakech",
+        description=(
+            "A sleek, minimalist two-story villa in ochre-render with a covered "
+            "carport and tall palms, set on a quiet residential street in a gated "
+            "modern development."
+        ),
+        country="Morocco",
+        location="Marrakech",
+        price_min=1400.0,
+        price_max=2000.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/83390b0824d14676863c74fb52fe600d.jpg"],
+        listing_tier="featured",
+    ),
+    dict(
+        slug="villa-gina-marrakech",
+        type="villa",
+        title="Villa Gina — Marrakech",
+        description=(
+            "A well-equipped modern villa with a full kitchen — gas hob, built-in "
+            "oven, dishwasher and washing machine — plus a private rooftop terrace "
+            "with sun loungers and Moroccan-style lounge seating for evenings above "
+            "the rooftops."
+        ),
+        country="Morocco",
+        location="Marrakech",
+        price_min=1200.0,
+        price_max=1700.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/38bd4ec5a84641698e9460fb629f7f9c.jpg"],
+        listing_tier="featured",
+    ),
+    dict(
+        slug="villa-kais-marrakech",
+        type="villa",
+        title="Villa Kais — Marrakech",
+        description=(
+            "A boutique villa with a standout feature: twin bamboo-framed cabana "
+            "daybeds, curtained in white linen, set in a private bamboo-screened "
+            "courtyard — a quiet, design-forward outdoor lounge."
+        ),
+        country="Morocco",
+        location="Marrakech",
+        price_min=1400.0,
+        price_max=2000.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/529e086598d54a03a66406241255755f.jpg"],
+        listing_tier="featured",
+    ),
+    dict(
+        slug="loc-1002a-gueliz-marrakech",
+        type="apartment",
+        title="The Cobalt & Gold Apartment, Guéliz",
+        description=(
+            "The boldest apartment in Guéliz: a full living room in royal-blue velvet "
+            "sofas and armchairs with gold-and-navy accents, gilded coral-branch wall "
+            "art, and an ornate gold coffered ceiling over a formal dining table."
+        ),
+        country="Morocco",
+        location="Guéliz, Marrakech",
+        price_min=1100.0,
+        price_max=1600.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/a8b0a589da08423bab12e9925ee8d946.jpg"],
+        listing_tier="featured",
+    ),
+    dict(
+        slug="villa-dalia-marrakech",
+        type="villa",
+        title="Villa Dalia — Marrakech",
+        description=(
+            "A family-friendly villa built around a large private garden — full-size "
+            "trampoline, a table-tennis table, and mature palms behind a "
+            "bougainvillea-covered privacy wall."
+        ),
+        country="Morocco",
+        location="Marrakech",
+        price_min=1300.0,
+        price_max=1900.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/55f9ea0d328b4ceb82a4e2f6eed18eab.jpg"],
+        listing_tier="featured",
+    ),
+    dict(
+        slug="loc-1001a-gueliz-marrakech",
+        type="apartment",
+        title="The Cove-Lit Apartment, Guéliz",
+        description=(
+            "Every room is trimmed in the same continuous warm-amber cove lighting "
+            "recessed into the ceiling edge, giving the whole apartment one "
+            "consistent, calm glow — a quiet, well-lit modern base in Marrakech's "
+            "upscale Guéliz district."
+        ),
+        country="Morocco",
+        location="Guéliz, Marrakech",
+        price_min=900.0,
+        price_max=1300.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/09e2d8ab38b9428fa2f7e6874d9fb7c1.jpg"],
+        listing_tier="standard",
+    ),
+    dict(
+        slug="villa-perle-rouge-private-pool-terrace-marrakech",
+        type="villa",
+        title="Villa Perle Rouge — Private Pool & Terrace, Marrakech",
+        description=(
+            "A striking modern villa wrapped in warm ochre render, built around a "
+            "private infinity-edge pool lit for evening swims. Floor-to-ceiling glass "
+            "doors open the bedrooms and lounge straight onto the terrace."
+        ),
+        country="Morocco",
+        location="Marrakech",
+        price_min=1000.0,
+        price_max=1700.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/9a55ddeb36564d8d8a57ab2550a6e1e9.jpg"],
+        listing_tier="standard",
+    ),
+    dict(
+        slug="modern-2br-apartment-doha-val-fleurie-tangier",
+        type="apartment",
+        title="Modern 2BR Apartment — Doha Val Fleurie, Tangier",
+        description=(
+            "A clean, modern 2-bedroom apartment on a high floor of the Doha Val "
+            "Fleurie residence, with a fully equipped kitchen and bright living space."
+        ),
+        country="Morocco",
+        location="Doha Val Fleurie, Tangier",
+        price_min=700.0,
+        price_max=1000.0,
+        currency="MAD",
+        images=["https://media.loctravels.com/properties/3eb256e0d6834c42aa9892f9bc6c18bf.jpg"],
+        listing_tier="standard",
     ),
 ]
 

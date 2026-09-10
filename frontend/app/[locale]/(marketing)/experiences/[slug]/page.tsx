@@ -4,6 +4,7 @@ import { ReferralButton } from "@/components/features/experiences/ReferralButton
 import { api } from "@/lib/api"
 import { formatPriceRange } from "@/lib/types"
 import { MapPin, Tag, User } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -52,6 +53,9 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 
 export default async function ExperienceDetailPage({ params }: Props) {
   const { slug } = await params
+  const t = await getTranslations("experienceDetailPage")
+  const tCommon = await getTranslations("common")
+  const tNav = await getTranslations("nav")
 
   let experience: Awaited<ReturnType<typeof api.experiences.get>> | null = null
   try {
@@ -137,9 +141,9 @@ export default async function ExperienceDetailPage({ params }: Props) {
 
       <div className="container mx-auto px-4 mt-10">
         <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
-          <Link href="/" className="hover:text-loc-terracotta transition-colors">Home</Link>
+          <Link href="/" className="hover:text-loc-terracotta transition-colors">{t("breadcrumbHome")}</Link>
           <span>/</span>
-          <Link href="/experiences" className="hover:text-loc-terracotta transition-colors">Experiences</Link>
+          <Link href="/experiences" className="hover:text-loc-terracotta transition-colors">{tNav("experiences")}</Link>
           <span>/</span>
           <span className="text-loc-night">{experience?.title ?? slug}</span>
         </div>
@@ -167,9 +171,9 @@ export default async function ExperienceDetailPage({ params }: Props) {
                   </div>
                 </div>
                 <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
-                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">Starting from</p>
+                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">{t("startingFrom")}</p>
                   <p className="font-heading text-2xl font-semibold text-loc-terracotta">
-                    {formatPriceRange(experience.priceMin, experience.priceMax, experience.currency, "/ person")}
+                    {formatPriceRange(experience.priceMin, experience.priceMax, experience.currency, tCommon("perPerson"))}
                   </p>
                 </div>
               </>
@@ -186,21 +190,21 @@ export default async function ExperienceDetailPage({ params }: Props) {
           <aside className="lg:col-span-1">
             <div className="sticky top-28 rounded-2xl border border-border bg-white p-6 shadow-sm">
               <p className="font-heading text-lg font-semibold text-loc-night mb-1">
-                Interested in this experience?
+                {t("interestedTitle")}
               </p>
               <p className="text-loc-stone text-sm mb-4">
-                Send a message and the provider will get back to you directly.
+                {t("interestedBody")}
               </p>
               {experience?.referralUrl && (
                 <div className="mb-5">
                   <ReferralButton slug={slug} referralUrl={experience.referralUrl} />
-                  <p className="text-center text-xs text-loc-stone mt-2">Opens provider booking page</p>
+                  <p className="text-center text-xs text-loc-stone mt-2">{t("opensProviderPage")}</p>
                 </div>
               )}
               <InquiryForm subject={`Inquiry about experience: ${experience?.title ?? slug}`} />
               {experience?.country && (
                 <div className="mt-5">
-                  <AffiliateLinks country={experience.country} heading="Plan your trip" />
+                  <AffiliateLinks country={experience.country} heading={t("planYourTrip")} />
                 </div>
               )}
             </div>

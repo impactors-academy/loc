@@ -3,12 +3,14 @@
 import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useProducts } from "@/hooks/useProducts"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 import { ProductCard } from "./ProductCard"
 
 const SKELETON = Array.from({ length: 6 })
 
 export function ProductGrid() {
   const { data, isPending, isError } = useProducts()
+  const t = useTranslations("storePage")
 
   if (isPending) {
     return (
@@ -23,7 +25,7 @@ export function ProductGrid() {
   if (isError) {
     return (
       <p className="text-loc-stone text-sm py-16 text-center">
-        Could not load products right now. Please try again later.
+        {t("loadError")}
       </p>
     )
   }
@@ -31,8 +33,8 @@ export function ProductGrid() {
   if (!data?.length) {
     return (
       <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">No products yet</p>
-        <p className="text-loc-stone text-sm">Check back soon. new guides are on the way.</p>
+        <p className="font-heading text-xl text-loc-night mb-2">{t("noProducts")}</p>
+        <p className="text-loc-stone text-sm">{t("comingSoon")}</p>
       </div>
     )
   }

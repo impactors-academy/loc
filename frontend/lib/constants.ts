@@ -11,6 +11,10 @@ export const QUERY_KEYS = {
   blogPost: (slug: string) => ["blog-posts", slug] as const,
 } as const
 
+// `value` only — labels are translated at the call site (public filters use
+// next-intl `experienceCategories.*`/`propertyTypes.*`/`countries.*` keys;
+// the admin forms, which stay English like every other admin screen, use
+// `label` directly).
 export const EXPERIENCE_CATEGORIES = [
   { label: "All", value: "" },
   { label: "Adventure", value: "adventure" },
@@ -21,14 +25,12 @@ export const EXPERIENCE_CATEGORIES = [
   { label: "Aerial", value: "aerial" },
 ]
 
+// The countries LOC actually operates in (see FEATURED_CITIES history /
+// LOC Phase 1 Strategy) — was previously an 8-country list including five
+// with zero real listings (Japan, Bali, Greece, UK, Italy).
 export const COUNTRIES = [
-  { label: "Japan", value: "Japan" },
-  { label: "France", value: "France" },
   { label: "Morocco", value: "Morocco" },
-  { label: "Bali", value: "Bali" },
-  { label: "Greece", value: "Greece" },
-  { label: "UK", value: "United Kingdom" },
-  { label: "Italy", value: "Italy" },
+  { label: "France", value: "France" },
   { label: "Belgium", value: "Belgium" },
 ]
 
@@ -43,16 +45,7 @@ export const PROPERTY_TYPES = [
   { label: "Bivouac", value: "bivouac" },
 ]
 
-export const NAV_LINKS = [
-  { label: "Experiences", href: "/experiences" },
-  { label: "Stays", href: "/stays" },
-  { label: "Blog", href: "/blog" },
-  { label: "Store", href: "/store" },
-  { label: "Promote", href: "/promote" },
-]
-
 export const SITE_NAME = "LOC"
-export const SITE_TAGLINE = "Discover the World"
 
 export const CURRENCIES = [
   { label: "EUR (€)", value: "EUR" },

@@ -2,10 +2,13 @@
 
 import { COUNTRIES, PROPERTY_TYPES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
 
 export function PropertyFilters() {
+  const tp = useTranslations("propertyTypes")
+  const tc = useTranslations("countries")
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeType = searchParams.get("type") ?? ""
@@ -24,7 +27,7 @@ export function PropertyFilters() {
   return (
     <div className="space-y-4 mb-8">
       {/* Type pills */}
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by property type">
+      <div className="flex flex-wrap gap-2" role="group" aria-label={tp("filterLabel")}>
         {PROPERTY_TYPES.map((t) => (
           <button
             key={t.value}
@@ -37,13 +40,13 @@ export function PropertyFilters() {
                 : "border-border text-loc-stone hover:border-loc-terracotta hover:text-loc-terracotta"
             )}
           >
-            {t.label}
+            {tp(t.value || "all")}
           </button>
         ))}
       </div>
 
       {/* Country pills */}
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by country">
+      <div className="flex flex-wrap gap-2" role="group" aria-label={tc("filterLabel")}>
         <button
           onClick={() => push({ country: "" })}
           aria-pressed={activeCountry === ""}
@@ -54,7 +57,7 @@ export function PropertyFilters() {
               : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
           )}
         >
-          All countries
+          {tc("all")}
         </button>
         {COUNTRIES.map((c) => (
           <button
@@ -68,7 +71,7 @@ export function PropertyFilters() {
                 : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
             )}
           >
-            {c.label}
+            {tc(c.value)}
           </button>
         ))}
       </div>

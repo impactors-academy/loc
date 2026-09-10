@@ -4,11 +4,6 @@ import { useEffect, useState } from "react"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 import { useTranslations } from "next-intl"
 
-// The countries LOC actually operates in (matches FEATURED_CITIES in
-// (marketing)/_data.ts) plus a closing flourish — not a list of aspirational
-// cities with no real listings behind them.
-const DESTINATIONS = ["Morocco", "Paris", "Belgium", "the World"]
-
 const TYPE_MS = 75
 const DELETE_MS = 40
 const PAUSE_AFTER_TYPE = 1600
@@ -23,12 +18,13 @@ export function TypewriterTitle() {
   const [phase, setPhase] = useState<Phase>("typing")
   const prefersReducedMotion = usePrefersReducedMotion()
   const t = useTranslations("hero")
+  const destinations = t.raw("destinations") as string[]
 
   useEffect(() => {
     if (prefersReducedMotion) return
 
-    const dest = DESTINATIONS[idx]
-    const isFinal = idx === DESTINATIONS.length - 1
+    const dest = destinations[idx]
+    const isFinal = idx === destinations.length - 1
 
     let timer: ReturnType<typeof setTimeout>
 
@@ -58,9 +54,9 @@ export function TypewriterTitle() {
     }
 
     return () => clearTimeout(timer)
-  }, [text, idx, phase, prefersReducedMotion])
+  }, [text, idx, phase, prefersReducedMotion, destinations])
 
-  const longest = DESTINATIONS.reduce((a, b) => (a.length > b.length ? a : b))
+  const longest = destinations.reduce((a, b) => (a.length > b.length ? a : b))
 
   return (
     <h1
@@ -77,7 +73,7 @@ export function TypewriterTitle() {
           {longest}
         </span>
         <span className="col-start-1 row-start-1 text-loc-amber whitespace-nowrap">
-          {prefersReducedMotion ? DESTINATIONS[DESTINATIONS.length - 1] : text}
+          {prefersReducedMotion ? destinations[destinations.length - 1] : text}
           {!prefersReducedMotion && (
             <span
               className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"

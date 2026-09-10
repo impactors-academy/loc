@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { api } from "@/lib/api"
 import { staggerContainer, fadeInUp } from "@/lib/animations"
+import { useTranslations } from "next-intl"
 import { ArticleCard } from "./ArticleCard"
 
 interface RelatedArticlesProps {
@@ -11,6 +12,7 @@ interface RelatedArticlesProps {
 }
 
 export function RelatedArticles({ slug }: RelatedArticlesProps) {
+  const t = useTranslations("blogDetailPage")
   const { data: posts, isPending } = useQuery({
     queryKey: ["blog", slug, "related"],
     queryFn: () => api.blog.related(slug),
@@ -21,7 +23,7 @@ export function RelatedArticles({ slug }: RelatedArticlesProps) {
 
   return (
     <section className="mt-20 pt-12 border-t border-border">
-      <h2 className="font-heading text-2xl font-semibold text-loc-night mb-8">You Might Also Like</h2>
+      <h2 className="font-heading text-2xl font-semibold text-loc-night mb-8">{t("relatedArticles")}</h2>
       <motion.div
         variants={staggerContainer}
         initial="hidden"

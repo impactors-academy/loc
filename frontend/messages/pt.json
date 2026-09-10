@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LOC | Descubra o Mundo | Experiências, Estadias & Tesouros Escondidos",
-    "description": "Descubra as melhores experiências turísticas, estadias e tesouros escondidos pelo mundo, do Japão ao Marrocos, de Bali a Bordeaux. Selecionados por quem ama viajar."
+    "title": "LOC | Descubra Marrocos | Experiências, Estadias & Tesouros Escondidos",
+    "description": "Descubra as melhores experiências turísticas, estadias e tesouros escondidos em Marrocos, selecionados por quem vive lá — em breve em França e na Bélgica."
   },
   "nav": {
     "experiences": "Experiências",
@@ -13,7 +13,7 @@
     "listWithUs": "Junte-se a nós"
   },
   "hero": {
-    "eyebrow": "Global · Autêntico · Selecionado",
+    "eyebrow": "Ao serviço dos turistas",
     "discover": "Descubra",
     "subtitle": "Experiências, estadias e tesouros escondidos. Selecionados por quem vive lá.",
     "cta": "Explorar experiências",
@@ -22,23 +22,28 @@
     "wellness": "Bem-estar",
     "cultural": "Cultural",
     "staysPill": "Estadias",
-    "guides": "Guias"
-  },
-  "categories": {
-    "eyebrow": "Explorar por tipo",
-    "title": "O que vai descobrir?",
-    "subtitle": "Das dunas do Saara às casas de chá japonesas, uma aventura diferente espera em cada esquina."
-  },
-  "featuredCities": {
-    "eyebrow": "Onde estamos",
-    "title": "Cidades em destaque",
-    "subtitle": "Os países onde a LOC opera hoje, com mais a caminho.",
-    "comingSoon": "Brevemente"
+    "guides": "Guias",
+    "destinations": ["Marrocos", "Paris", "Bélgica", "o Mundo"],
+    "searchSuggestions": ["Riad em Marraquexe", "Apartamento em Guéliz", "Vila com piscina em Marraquexe", "Apartamento em Tânger"]
   },
   "howItWorks": {
     "eyebrow": "Simples por design",
     "title": "Como funciona o LOC",
-    "subtitle": "Conectamos viajantes curiosos com prestadores locais autênticos, diretamente, sem motor de reservas intermediário."
+    "subtitle": "Conectamos viajantes curiosos com prestadores locais autênticos, diretamente.",
+    "steps": [
+      {
+        "title": "Explorar e descobrir",
+        "desc": "Explore experiências selecionadas, estadias escolhidas a dedo e tesouros escondidos, filtrados de acordo com o seu estilo de viagem."
+      },
+      {
+        "title": "Ligar diretamente",
+        "desc": "Contacte prestadores e anfitriões através do nosso simples formulário de contacto. Sem intermediários, sem taxas ocultas."
+      },
+      {
+        "title": "Viver a experiência",
+        "desc": "Parta sabendo que cada detalhe foi verificado por viajantes que conhecem e adoram o destino."
+      }
+    ]
   },
   "handpickedStays": {
     "eyebrow": "Lugares para se sentir em casa",
@@ -46,14 +51,12 @@
     "subtitle": "Vilas e apartamentos, escolhidos pelo seu carácter, conforto e localização.",
     "seeAll": "Ver todas as estadias"
   },
-  "cta": {
-    "title": "A sua próxima aventura começa aqui",
-    "subtitle": "Seja um trek ao nascer do sol em Bali ou uma degustação de vinhos em Bordeaux, o mundo está cheio de momentos à sua espera.",
-    "explore": "Explorar experiências",
-    "stays": "Ver estadias"
+  "homepage": {
+    "commissionLabel": "Comissão de reserva",
+    "statsLabel": "Estatísticas da plataforma"
   },
   "footer": {
-    "tagline": "O seu conector turístico global. Experiências selecionadas, estadias escolhidas a dedo e guias de viagem digitais de todo o mundo.",
+    "tagline": "O seu conector de viagens em Marrocos, França e Bélgica. Experiências selecionadas, estadias escolhidas a dedo e guias de viagem digitais.",
     "explore": "Explorar",
     "forBusinesses": "Para empresas",
     "company": "Empresa",
@@ -64,25 +67,6 @@
     "contactUs": "Contacte-nos",
     "privacyPolicy": "Política de privacidade",
     "rights": "Todos os direitos reservados. Feito para viajantes curiosos em todo o mundo."
-  },
-  "experiencesPage": {
-    "title": "Experiências pelo mundo",
-    "subtitle": "Aventuras, retiros de bem-estar, tours culinários e mais, selecionados por quem conhece cada destino.",
-    "eyebrow": "Experiências selecionadas"
-  },
-  "staysPage": {
-    "title": "Alojamentos",
-    "subtitle": "Ryokans, riads, vilas, gîtes e apartamentos, cada um selecionado pelo seu carácter, conforto e localização.",
-    "eyebrow": "Estadias escolhidas a dedo"
-  },
-  "storePage": {
-    "title": "Loja de viagem digital",
-    "subtitle": "Guias, itinerários e cursos em vídeo para destinos de todo o mundo, descarregáveis instantaneamente.",
-    "eyebrow": "Recursos de viagem"
-  },
-  "blogPage": {
-    "title": "Histórias e guias de viagem",
-    "eyebrow": "Do terreno"
   },
   "inquiry": {
     "title": "Entre em contacto",
@@ -101,17 +85,214 @@
     "perPerson": "/ pessoa",
     "perNight": "/ noite",
     "featured": "Destaque",
+    "premium": "Premium",
     "viewDetails": "Ver detalhes",
     "bookNow": "Reservar",
+    "buyNow": "Comprar agora",
+    "readMore": "Ler mais",
     "inquire": "Perguntar",
     "search": "Pesquisar",
     "noResults": "Nenhum resultado encontrado.",
     "loading": "A carregar..."
   },
+  "propertyTypes": {
+    "filterLabel": "Filtrar por tipo de propriedade",
+    "all": "Todos",
+    "apartment": "Apartamento",
+    "villa": "Vila",
+    "riad": "Riad",
+    "ryokan": "Ryokan",
+    "gite": "Gîte",
+    "hotel": "Hotel",
+    "bivouac": "Bivaque"
+  },
+  "productTypes": {
+    "guide": "Guia de viagem",
+    "map": "Mapa",
+    "photography": "Fotografia",
+    "template": "Modelo",
+    "itinerary": "Itinerário",
+    "course": "Curso"
+  },
+  "experienceCategories": {
+    "filterLabel": "Filtrar por categoria",
+    "searchPlaceholder": "Pesquisar experiências…",
+    "all": "Todas",
+    "adventure": "Aventura",
+    "wellness": "Bem-estar",
+    "culture": "Cultural",
+    "culinary": "Culinária",
+    "water": "Aquática",
+    "aerial": "Aérea"
+  },
+  "countries": {
+    "filterLabel": "Filtrar por país",
+    "all": "Todos os países",
+    "Morocco": "Marrocos",
+    "France": "França",
+    "Belgium": "Bélgica"
+  },
   "partnerCta": {
     "eyebrow": "Para empresas",
     "title": "Faça crescer o seu negócio com o LOC",
-    "subtitle": "Liste a sua experiência, propriedade ou serviço turístico e alcance milhares de viajantes que procuram ativamente destinos autênticos.",
+    "subtitle": "Liste a sua experiência, propriedade ou serviço turístico e alcance viajantes que procuram ativamente experiências autênticas em Marrocos, França e Bélgica.",
     "cta": "Junte-se a nós"
+  },
+  "aboutPage": {
+    "title": "Um conector de viagens para Marrocos, França e Bélgica",
+    "metaDescription": "O LOC é um conector de viagens em Marrocos, França e Bélgica — experiências selecionadas, estadias escolhidas a dedo e guias de viagem digitais.",
+    "eyebrow": "Sobre nós",
+    "subtitle": "Experiências selecionadas, estadias escolhidas a dedo e guias de viagem digitais.",
+    "howItWorksTitle": "Como funciona o LOC",
+    "howItWorksBody": "Conectamos viajantes curiosos com prestadores locais autênticos, diretamente. Explore experiências, estadias e produtos locais selecionados por pessoas que realmente vivem nos locais que cobrem — quando algo lhe interessar, contacta-os e o prestador trata do resto.",
+    "discoveryTitle": "Descoberta, não reserva",
+    "discoveryBody": "O LOC nunca processa reservas ou pagamentos. Cada pedido de contacto vai diretamente para o prestador da experiência, estadia ou produto, que trata do resto diretamente consigo.",
+    "partOfTitle": "Parte da Impactors Academy",
+    "partOfBody": "O LOC é uma das ventures criadas pela <link>Impactors Academy</link>, uma plataforma que constrói ventures nas áreas de turismo, desporto, finanças e tecnologia.",
+    "getInTouch": "Tem alguma pergunta? Entre em contacto"
+  },
+  "contactPage": {
+    "title": "Contacte-nos",
+    "metaDescription": "Entre em contacto com a equipa do LOC — perguntas, feedback ou qualquer outra coisa.",
+    "eyebrow": "Entre em contacto",
+    "subtitle": "Perguntas sobre uma experiência, uma estadia ou qualquer outra coisa — envie-nos uma mensagem e responderemos."
+  },
+  "promotePage": {
+    "metaTitle": "Promova o seu negócio turístico",
+    "metaDescription": "Alcance viajantes que procuram ativamente experiências e estadias em Marrocos, França e Bélgica através do LOC. Destaques, conteúdo para redes sociais e pacotes de marketing completos para negócios turísticos.",
+    "eyebrow": "Para empresas",
+    "title": "Cresça com o LOC",
+    "subtitle": "Conecte a sua experiência ou propriedade a viajantes que procuram ativamente estadias e experiências autênticas em Marrocos, França e Bélgica.",
+    "mostPopular": "Mais popular",
+    "whyLoc": [
+      {
+        "title": "Audiência de alta intenção",
+        "desc": "Os visitantes vêm ao LOC especificamente para encontrar experiências e estadias, não para navegar sem rumo. O seu anúncio alcança pessoas prontas para reservar."
+      },
+      {
+        "title": "Sem comissão sobre reservas",
+        "desc": "Cobramos taxas fixas de colocação, não uma percentagem de cada reserva. Mais receita fica consigo."
+      },
+      {
+        "title": "Credibilidade local",
+        "desc": "O LOC destaca prestadores genuinamente enraizados no seu destino. A nossa audiência confia na nossa curadoria, e o seu anúncio herda essa confiança."
+      }
+    ],
+    "pricingEyebrow": "Preços",
+    "pricingTitle": "Escolha o seu pacote",
+    "pricingSubtitle": "Taxas mensais fixas. Sem comissões sobre reservas. Cancele quando quiser.",
+    "packages": [
+      {
+        "name": "Visibilidade",
+        "description": "Coloque o seu anúncio diante de viajantes que procuram ativamente.",
+        "features": [
+          "Selo de destaque no cartão do anúncio",
+          "Colocação prioritária nos resultados de pesquisa",
+          "Incluído na secção 'Selecionados' da página inicial",
+          "Relatório de desempenho mensal"
+        ],
+        "cta": "Começar"
+      },
+      {
+        "name": "Conteúdo",
+        "description": "Deixe a nossa equipa criar conteúdo que gera reservas reais.",
+        "features": [
+          "Tudo incluído em Visibilidade",
+          "2× vídeos curtos (prontos para Reels/TikTok)",
+          "4× publicações sociais selecionadas por mês",
+          "Artigo de blog dedicado",
+          "Sessão fotográfica de marca (a pedido)"
+        ],
+        "cta": "Mais popular"
+      },
+      {
+        "name": "Crescimento",
+        "description": "Marketing completo para negócios turísticos sérios.",
+        "features": [
+          "Tudo incluído em Conteúdo",
+          "Nível de anúncio premium (topo de todos os resultados)",
+          "Chamada estratégica mensal com a equipa do LOC",
+          "Página de destino personalizada em loctravels.com",
+          "Encaminhamento prioritário de contactos para a sua caixa de entrada",
+          "Relatório de análise trimestral"
+        ],
+        "cta": "Vamos conversar"
+      }
+    ],
+    "inquiryEyebrow": "Entre em contacto",
+    "inquiryTitle": "Pronto para fazer crescer o seu negócio?",
+    "inquirySubtitle": "Conte-nos sobre o seu negócio e o pacote que lhe interessa. Responderemos dentro de 24 horas."
+  },
+  "experiencesPage": {
+    "metaTitle": "Experiências em Marrocos",
+    "metaDescription": "Descubra aventuras, retiros de bem-estar, tours culinários e experiências culturais em Marrocos, selecionados por locais — França e Bélgica chegam em breve.",
+    "eyebrow": "Explore Marrocos",
+    "title": "Experiências",
+    "subtitle": "Aventuras, retiros de bem-estar, tours culinários e muito mais, selecionados por quem conhece melhor Marrocos.",
+    "loadError": "Não foi possível carregar as experiências neste momento. Tente novamente mais tarde.",
+    "noResults": "Nenhuma experiência encontrada",
+    "noResultsFor": "Sem resultados para \"{q}\"",
+    "tryDifferent": "Tente outra pesquisa, categoria ou destino."
+  },
+  "experienceDetailPage": {
+    "breadcrumbHome": "Início",
+    "startingFrom": "A partir de",
+    "interestedTitle": "Interessado nesta experiência?",
+    "interestedBody": "Envie uma mensagem e o prestador responderá diretamente.",
+    "opensProviderPage": "Abre a página de reserva do prestador",
+    "planYourTrip": "Planeie a sua viagem"
+  },
+  "staysPage": {
+    "metaTitle": "Estadias em Marrocos",
+    "metaDescription": "Explore vilas e apartamentos escolhidos a dedo em Marrocos, com contacto direto com o anfitrião e sem taxas ocultas — França e Bélgica chegam em breve.",
+    "eyebrow": "Lugares para ficar",
+    "title": "Estadias",
+    "subtitle": "Vilas e apartamentos em Marrocos, cada um selecionado pelo seu carácter, conforto e localização.",
+    "loadError": "Não foi possível carregar as propriedades neste momento. Tente novamente mais tarde.",
+    "noResults": "Nenhuma propriedade encontrada",
+    "tryDifferent": "Tente outro tipo ou volte em breve."
+  },
+  "stayDetailPage": {
+    "breadcrumbHome": "Início",
+    "startingFrom": "A partir de",
+    "enquireTitle": "Pergunte sobre esta estadia",
+    "enquireBody": "Contacte o anfitrião diretamente, sem intermediários, sem taxas de plataforma.",
+    "amenitiesTitle": "O que este lugar oferece",
+    "hostedDirectly": "Hospedado diretamente pelo proprietário",
+    "messageThroughForm": "Contacte-os através do formulário — sem intermediários, sem taxas de plataforma",
+    "openInMaps": "Abrir no Maps"
+  },
+  "storePage": {
+    "metaTitle": "Guias de viagem e produtos digitais",
+    "metaDescription": "Descarregue guias de viagem, itinerários e ferramentas de planeamento selecionados para Marrocos, França e Bélgica, criados por pessoas que vivem lá — descarregamento instantâneo.",
+    "eyebrow": "Produtos digitais",
+    "title": "Viaje de forma mais inteligente com o LOC",
+    "subtitle": "Guias, itinerários e ferramentas de planeamento para Marrocos, França e Bélgica, descarregáveis instantaneamente.",
+    "loadError": "Não foi possível carregar os produtos neste momento. Tente novamente mais tarde.",
+    "noProducts": "Ainda não há produtos",
+    "comingSoon": "Volte em breve. Novos guias estão a caminho."
+  },
+  "productDetailPage": {
+    "breadcrumbHome": "Início",
+    "price": "Preço",
+    "buyNow": "Comprar agora",
+    "secureCheckout": "Checkout seguro através do nosso parceiro de confiança"
+  },
+  "blogPage": {
+    "metaTitle": "Guia de viagem e histórias",
+    "metaDescription": "Descubra tesouros escondidos, dicas locais e histórias de viagem de Marrocos, França e Bélgica, escritas por pessoas que vivem lá.",
+    "eyebrow": "Do terreno",
+    "title": "Histórias de viagem",
+    "subtitle": "Tesouros escondidos, dicas locais e guias de destinos escritos por pessoas que vivem lá.",
+    "loadError": "Não foi possível carregar os artigos neste momento. Tente novamente mais tarde.",
+    "noArticles": "Ainda não há artigos",
+    "noArticlesTagged": "Nenhum artigo marcado com \"{tag}\"",
+    "tryDifferentTag": "Tente outra etiqueta.",
+    "comingSoon": "Histórias de Marrocos, França e Bélgica chegam em breve."
+  },
+  "blogDetailPage": {
+    "breadcrumbHome": "Início",
+    "backToStories": "Voltar a todas as histórias",
+    "relatedArticles": "Também pode gostar"
   }
 }

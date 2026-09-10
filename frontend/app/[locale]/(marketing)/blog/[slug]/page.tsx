@@ -1,6 +1,7 @@
 import { api } from "@/lib/api"
 import { RelatedArticles } from "@/components/features/blog/RelatedArticles"
 import { CalendarDays } from "lucide-react"
+import { getLocale, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -30,6 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
+  const t = await getTranslations("blogDetailPage")
+  const tNav = await getTranslations("nav")
+  const locale = await getLocale()
 
   let post: Awaited<ReturnType<typeof api.blog.get>> | null = null
   try {
@@ -39,7 +43,7 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const date = post
-    ? new Date(post.publishedAt).toLocaleDateString("en-GB", {
+    ? new Date(post.publishedAt).toLocaleDateString(locale, {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -50,9 +54,9 @@ export default async function BlogPostPage({ params }: Props) {
     <main className="pt-24 pb-20">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
-          <Link href="/" className="hover:text-loc-terracotta transition-colors">Home</Link>
+          <Link href="/" className="hover:text-loc-terracotta transition-colors">{t("breadcrumbHome")}</Link>
           <span>/</span>
-          <Link href="/blog" className="hover:text-loc-terracotta transition-colors">Blog</Link>
+          <Link href="/blog" className="hover:text-loc-terracotta transition-colors">{tNav("blog")}</Link>
           <span>/</span>
           <span className="text-loc-night line-clamp-1">{post?.title ?? slug}</span>
         </div>
@@ -126,7 +130,7 @@ export default async function BlogPostPage({ params }: Props) {
             href="/blog"
             className="inline-flex items-center gap-2 text-sm font-medium text-loc-terracotta hover:text-loc-terracotta/80 transition-colors"
           >
-            ← Back to all stories
+            ← {t("backToStories")}
           </Link>
         </div>
       </div>
