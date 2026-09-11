@@ -13,6 +13,7 @@ export default function BlogPage() {
     setLoading(true)
     api.admin.blog.list().then(setItems).finally(() => setLoading(false))
   }
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate fetch-on-mount; setLoading(true) here is intentional, not a bug
   useEffect(load, [])
 
   const handleDelete = async (slug: string, title: string) => {
