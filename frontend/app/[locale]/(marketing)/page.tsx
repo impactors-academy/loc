@@ -39,21 +39,14 @@ export default async function HomePage() {
       />
 
       {/* ── Trust stats ─────────────────────────────────────────────────── */}
-      {/* Real, verifiable numbers only: live stay count comes from the same
-          data Handpicked Stays below renders, plus one static product fact
-          (no booking commission, ever). No "Countries" or "Experiences"
-          stat here — nothing to honestly count yet. */}
+      {/* Real, verifiable numbers only: one static product fact (no booking
+          commission, ever). No stay/property count, no "Countries" or
+          "Experiences" stat here — nothing else to honestly count yet. */}
       <section className="bg-loc-sand py-10" aria-label={t("homepage.statsLabel")}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-6 text-center max-w-md mx-auto">
-            <div>
-              <p className="font-heading text-3xl font-semibold text-loc-terracotta">{properties.length}</p>
-              <p className="font-sans text-sm text-loc-stone mt-1">{t("handpickedStays.title")}</p>
-            </div>
-            <div>
-              <p className="font-heading text-3xl font-semibold text-loc-terracotta">{COMMISSION_STAT.value}</p>
-              <p className="font-sans text-sm text-loc-stone mt-1">{t("homepage.commissionLabel")}</p>
-            </div>
+          <div className="text-center max-w-md mx-auto">
+            <p className="font-heading text-3xl font-semibold text-loc-terracotta">{COMMISSION_STAT.value}</p>
+            <p className="font-sans text-sm text-loc-stone mt-1">{t("homepage.commissionLabel")}</p>
           </div>
         </div>
       </section>
