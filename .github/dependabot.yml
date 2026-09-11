@@ -10,6 +10,14 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # eslint-plugin-react (pulled in via eslint-config-next) only supports
+      # ESLint up to ^9.7 as of its latest release (7.37.5) — ESLint 10
+      # crashes it outright (resolveBasedir/getFilename incompatibility).
+      # No fix available until eslint-plugin-react ships ESLint 10 support
+      # upstream. Remove this once that happens.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: uv
     directory: /backend
