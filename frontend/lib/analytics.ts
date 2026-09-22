@@ -1,9 +1,7 @@
 declare global {
   interface Window {
-    plausible?: (
-      event: string,
-      options?: { props?: Record<string, string | number> }
-    ) => void
+    gtag?: (...args: unknown[]) => void
+    dataLayer?: unknown[]
   }
 }
 
@@ -11,7 +9,7 @@ export function trackEvent(
   name: string,
   props?: Record<string, string | number>
 ) {
-  if (typeof window !== "undefined" && typeof window.plausible === "function") {
-    window.plausible(name, props ? { props } : undefined)
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", name, props ?? {})
   }
 }

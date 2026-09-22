@@ -499,17 +499,19 @@ have all since been deleted (2026-08-08).**
       `Experience`/`Property`/`Product`/`BlogPost` don't expose an
       `updated_at` field on the frontend today, so real `lastmod` needs that
       added on the FastAPI side first.
-- [x] Analytics — Plausible wired (2026-09-22). `components/shared/Analytics.tsx`
-      injects the Plausible script (`afterInteractive`, `defer`) when
-      `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` is set; no-op otherwise so local dev is
-      unaffected. CSP updated: `script-src` and `connect-src` both include
-      `https://plausible.io` when the env var is present. Custom events tracked
-      via `lib/analytics.ts` `trackEvent()` wrapper (graceful no-op if Plausible
-      script hasn't loaded): "Referral Click" (with `slug` prop) on
-      `ReferralButton`, "Inquiry Submitted" (with `subject` prop) on
-      `InquiryForm` success. Cookieless, GDPR-compliant — no consent banner
-      needed. **To activate in production:** (1) create a Plausible account and
-      add `loctravels.com` as a site, (2) set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=loctravels.com`
+- [x] Analytics — GA4 wired (2026-09-22). `components/shared/Analytics.tsx`
+      injects the GTM loader script + inline `gtag('config', ...)` init when
+      `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set; no-op otherwise so local dev is
+      unaffected. CSP updated: `script-src` gains `googletagmanager.com`;
+      `connect-src` gains `google-analytics.com`, `analytics.google.com`, and
+      `googletagmanager.com`; `img-src` gains `google-analytics.com` for the
+      GA pixel. Custom events tracked via `lib/analytics.ts` `trackEvent()`
+      (`window.gtag("event", ...)` wrapper, graceful no-op before script loads):
+      "Referral Click" (with `slug` prop) on `ReferralButton`,
+      "Inquiry Submitted" (with `subject` prop) on `InquiryForm` success.
+      **To activate in production:** (1) create a GA4 property at
+      analytics.google.com, add a Web data stream for `loctravels.com`, copy the
+      Measurement ID (G-XXXXXXXXXX), (2) set `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`
       in Coolify and redeploy.
 - [ ] Social share preview verified (OG image renders correctly on WhatsApp/LinkedIn)
       — paste `loctravels.com/experiences/[any-slug]` into a WhatsApp message
