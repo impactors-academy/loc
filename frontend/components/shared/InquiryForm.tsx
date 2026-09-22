@@ -1,6 +1,7 @@
 "use client"
 
 import { api } from "@/lib/api"
+import { trackEvent } from "@/lib/analytics"
 import { useMutation } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
@@ -15,6 +16,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
 
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: () => api.contact.submit({ ...form, subject }),
+    onSuccess: () => trackEvent("Inquiry Submitted", { subject }),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

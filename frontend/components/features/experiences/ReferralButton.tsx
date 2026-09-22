@@ -1,6 +1,7 @@
 "use client"
 
 import { api } from "@/lib/api"
+import { trackEvent } from "@/lib/analytics"
 import { ExternalLink } from "lucide-react"
 
 interface Props {
@@ -14,6 +15,7 @@ export function ReferralButton({ slug, referralUrl }: Props) {
   const handleClick = () => {
     // fire-and-forget. never block the navigation
     api.referrals.click(slug).catch(() => undefined)
+    trackEvent("Referral Click", { slug })
     window.open(referralUrl, "_blank", "noopener,noreferrer")
   }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
 import Script from "next/script"
+import { Analytics } from "@/components/shared/Analytics"
 import "./globals.css"
 
 const clashGrotesk = localFont({
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
+        <Analytics />
         {children}
       </body>
     </html>

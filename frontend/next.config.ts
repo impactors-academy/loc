@@ -49,9 +49,17 @@ const r2PublicUrl = (() => {
 })();
 const r2PublicOrigin = r2PublicUrl?.origin ?? "";
 
+// Plausible analytics: script loads from plausible.io and the pageview beacon
+// is also sent there. Only added when NEXT_PUBLIC_PLAUSIBLE_DOMAIN is set —
+// in dev without the env var the CSP directives are empty strings, which are
+// harmless but also never exercised (CSP is prod-only anyway).
+const plausibleOrigin = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+  ? "https://plausible.io"
+  : "";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${plausibleOrigin}`.trim(),
   "style-src 'self' 'unsafe-inline'",
   // next/font/google self-hosts the font files at build time, so no external
   // font origin is needed at runtime.
@@ -61,7 +69,7 @@ const csp = [
   // Derived from NEXT_PUBLIC_API_URL rather than hard-coded: in development
   // that is http://localhost:8000, and a hard-coded production host would block
   // every API call locally with a CSP error rather than an obvious failure.
-  `connect-src 'self' ${apiOrigin} ${r2UploadOrigin}`,
+  `connect-src 'self' ${apiOrigin} ${r2UploadOrigin} ${plausibleOrigin}`.trim(),
   "media-src 'self'",
   // Property/product video links embed as youtube-nocookie.com iframes.
   "frame-src https://www.youtube-nocookie.com",

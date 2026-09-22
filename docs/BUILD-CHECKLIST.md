@@ -449,18 +449,23 @@ have all since been deleted (2026-08-08).**
       "Docker Compose" resource, prod builds for frontend/backend, no pgadmin,
       no published ports on db/redis
 - [ ] VPS capacity check run (`free -h`, `df -h`, `docker stats --no-stream`) —
-      confirm headroom before adding 4 more containers (`/senior-devops`)
-- [ ] Cloudflare DNS: `loctravels.com`, `www.loctravels.com`, `api.loctravels.com`
-      → A records pointing at the VPS IP
-- [ ] Coolify: new "Docker Compose" resource added, pointed at this repo/branch `main`,
-      compose file path set to `docker-compose.coolify.yml`
-- [ ] Coolify: domains assigned per service — frontend → `loctravels.com` +
-      `www.loctravels.com` (port 3000), backend → `api.loctravels.com` (port 8000)
-- [ ] Coolify: environment variables set (`POSTGRES_PASSWORD`, `EMAIL_TO`,
-      `SMTP_*`, `OPENAI_API_KEY` optional) — no secrets committed to the compose file
-- [ ] First deploy triggered — `alembic upgrade head` runs clean, all 4 containers healthy
-- [ ] Production Docker build confirmed (`output: standalone` wired correctly)
-- [ ] Health check endpoint (`/health`) returning 200 in production
+      site is live and stable but headroom for loc containers alongside all other
+      org projects has never been formally checked (`/senior-devops`)
+- [x] Cloudflare DNS — `loctravels.com`, `www.loctravels.com`, `api.loctravels.com`
+      all Proxied through Cloudflare (not DNS-only); confirmed live 2026-08-13
+      after fixing the DNS-only misconfiguration that was silently bypassing
+      Cloudflare Access at the edge.
+- [x] Coolify: "Docker Compose" resource live, pointed at `main`,
+      compose file `docker-compose.coolify.yml` — confirmed live 2026-08-14
+- [x] Coolify: domains assigned — frontend `loctravels.com`/`www`,
+      backend `api.loctravels.com` — confirmed live 2026-08-14
+- [x] Coolify: environment variables set — confirmed present in Coolify UI
+      2026-09-06 (see Phase 3 env vars entry for detail). No secrets in compose.
+- [x] First deploy triggered — all containers healthy in production; confirmed live
+- [x] Production Docker build confirmed — `output: standalone` wired correctly;
+      verified live 2026-08-14
+- [x] Health check endpoint — `GET /health` returns 200 in production;
+      `api.loctravels.com/health` confirmed live 2026-08-14
 - [x] Old deploy path retired: `railway.toml` and `.github/workflows/deploy.yml` are
       gone; the Vercel project and its GitHub integration were deleted 2026-08-08;
       `nginx/loc.conf` deleted 2026-08-08. Coolify is the only deploy path.
@@ -494,9 +499,21 @@ have all since been deleted (2026-08-08).**
       `Experience`/`Property`/`Product`/`BlogPost` don't expose an
       `updated_at` field on the frontend today, so real `lastmod` needs that
       added on the FastAPI side first.
-- [ ] Analytics before launch — GA4 or Plausible; track referral CTA clicks,
-      inquiry form submissions, product page views, search queries
+- [x] Analytics — Plausible wired (2026-09-22). `components/shared/Analytics.tsx`
+      injects the Plausible script (`afterInteractive`, `defer`) when
+      `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` is set; no-op otherwise so local dev is
+      unaffected. CSP updated: `script-src` and `connect-src` both include
+      `https://plausible.io` when the env var is present. Custom events tracked
+      via `lib/analytics.ts` `trackEvent()` wrapper (graceful no-op if Plausible
+      script hasn't loaded): "Referral Click" (with `slug` prop) on
+      `ReferralButton`, "Inquiry Submitted" (with `subject` prop) on
+      `InquiryForm` success. Cookieless, GDPR-compliant — no consent banner
+      needed. **To activate in production:** (1) create a Plausible account and
+      add `loctravels.com` as a site, (2) set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=loctravels.com`
+      in Coolify and redeploy.
 - [ ] Social share preview verified (OG image renders correctly on WhatsApp/LinkedIn)
+      — paste `loctravels.com/experiences/[any-slug]` into a WhatsApp message
+        and confirm the card renders with title, description, and image.
 
 ## Phase 9 — Post-launch
 
@@ -551,5 +568,8 @@ have all since been deleted (2026-08-08).**
    returns `text/csv` StreamingResponse.
 6. ~~**Editor CRUD gap**~~ — CLOSED: POST/PUT/DELETE exist for experiences, properties,
    products, and blog posts — all behind `require_editor_key`.
-7. **Working branch note** — `docs/BUILD-CHECKLIST.md` should be committed to git so it
-   tracks with the code; currently untracked.
+7. ~~**Working branch note**~~ — CLOSED 2026-09-22: `develope` re-synced with `main`
+   (was 78 commits behind). Both branches are now at the same commit.
+8. **SMTP not configured** — `SMTP_HOST` and `EMAIL_TO` are blank in Coolify production.
+   Every inquiry submitted on the live site is only logged, never emailed. Set these
+   in Coolify to activate partner email notifications.
