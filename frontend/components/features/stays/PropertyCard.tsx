@@ -1,30 +1,25 @@
-import { formatPriceRange } from "@/lib/types"
+"use client"
+
 import type { Property } from "@/lib/types"
+import type { VisitorPriceContext } from "@/lib/price-display"
+import { PriceDisplay } from "@/components/shared/PriceDisplay"
 import { getPoolImage } from "@/lib/images"
 import { Globe, MapPin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
-const TYPE_LABELS: Record<string, string> = {
-  villa: "Villa",
-  apartment: "Apartment",
-  riad: "Riad",
-  ryokan: "Ryokan",
-  gite: "Gîte",
-  hotel: "Hotel",
-  bivouac: "Bivouac",
+interface Props {
+  property: Property
+  priceContext?: VisitorPriceContext | null
 }
 
-const TIER_BADGE: Record<string, string> = {
-  featured: "Featured",
-  premium: "Premium",
-}
-
-export function PropertyCard({ property }: { property: Property }) {
-  const typeLabel = TYPE_LABELS[property.type] ?? property.type
+export function PropertyCard({ property, priceContext }: Props) {
+  const t = useTranslations("common")
+  const tp = useTranslations("propertyTypes")
+  const typeLabel = tp.has(property.type) ? tp(property.type) : property.type
   const image = property.images?.[0] ?? getPoolImage(property.type, property.slug)
-  const priceDisplay = formatPriceRange(property.priceMin, property.priceMax, "/ night")
-  const tierLabel = TIER_BADGE[property.listingTier]
+  const tierLabel = property.listingTier === "featured" ? t("featured") : property.listingTier === "premium" ? t("premium") : null
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
@@ -40,7 +35,7 @@ export function PropertyCard({ property }: { property: Property }) {
           {typeLabel}
         </span>
         {tierLabel && (
-          <span className="absolute top-3 right-3 bg-loc-amber text-white text-xs font-medium px-2 py-1 rounded-full">
+          <span className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full">
             {tierLabel}
           </span>
         )}
@@ -59,20 +54,28 @@ export function PropertyCard({ property }: { property: Property }) {
             </span>
           )}
         </div>
-        <h3 className="font-heading font-bold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
+        <h3 className="font-heading font-semibold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
           {property.title}
         </h3>
         <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
           {property.description}
         </p>
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="text-loc-terracotta font-semibold text-sm">{priceDisplay}</span>
+          <span className="text-loc-terracotta font-semibold text-sm">
+            <PriceDisplay
+              min={property.priceMin}
+              max={property.priceMax}
+              currency={property.currency}
+              suffix={t("perNight")}
+              priceContext={priceContext}
+            />
+          </span>
           <Link
             href={`/stays/${property.slug}`}
             className="text-xs font-semibold text-loc-night bg-loc-sand hover:bg-loc-sand/70 px-4 py-2 rounded-full transition-colors"
-            aria-label={`View details for ${property.title}`}
+            aria-label={`${t("viewDetails")} - ${property.title}`}
           >
-            View details
+            {t("viewDetails")}
           </Link>
         </div>
       </div>

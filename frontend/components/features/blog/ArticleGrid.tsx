@@ -3,6 +3,7 @@
 import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useBlogPosts } from "@/hooks/useBlogPosts"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 import { ArticleCard } from "./ArticleCard"
 
 interface ArticleGridProps {
@@ -13,6 +14,7 @@ const SKELETON = Array.from({ length: 6 })
 
 export function ArticleGrid({ tag }: ArticleGridProps) {
   const { data, isPending, isError } = useBlogPosts(tag)
+  const t = useTranslations("blogPage")
 
   if (isPending) {
     return (
@@ -27,7 +29,7 @@ export function ArticleGrid({ tag }: ArticleGridProps) {
   if (isError) {
     return (
       <p className="text-loc-stone text-sm py-16 text-center">
-        Could not load articles right now. Please try again later.
+        {t("loadError")}
       </p>
     )
   }
@@ -35,8 +37,12 @@ export function ArticleGrid({ tag }: ArticleGridProps) {
   if (!data?.length) {
     return (
       <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">No articles yet</p>
-        <p className="text-loc-stone text-sm">Stories from around the world are coming soon.</p>
+        <p className="font-heading text-xl text-loc-night mb-2">
+          {tag ? t("noArticlesTagged", { tag }) : t("noArticles")}
+        </p>
+        <p className="text-loc-stone text-sm">
+          {tag ? t("tryDifferentTag") : t("comingSoon")}
+        </p>
       </div>
     )
   }

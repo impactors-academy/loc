@@ -20,7 +20,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    # Run migrations before starting uvicorn — same pattern as Railway
+    # Run migrations before starting uvicorn — same pattern as the Coolify stack
     command: >
       sh -c "uv run alembic upgrade head &&
              uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"

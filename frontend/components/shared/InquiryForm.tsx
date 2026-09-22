@@ -2,6 +2,7 @@
 
 import { api } from "@/lib/api"
 import { useMutation } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 interface InquiryFormProps {
@@ -9,6 +10,7 @@ interface InquiryFormProps {
 }
 
 export function InquiryForm({ subject }: InquiryFormProps) {
+  const t = useTranslations("inquiry")
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" })
 
   const { mutate, isPending, isSuccess, isError } = useMutation({
@@ -22,9 +24,8 @@ export function InquiryForm({ subject }: InquiryFormProps) {
 
   if (isSuccess) {
     return (
-      <div className="rounded-2xl bg-loc-sand/60 border border-loc-sand p-8 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">Message sent!</p>
-        <p className="text-loc-stone text-sm">We&apos;ll be in touch with you shortly.</p>
+      <div className="rounded-2xl bg-loc-sand/60 border border-loc-sand p-8 text-center" role="status">
+        <p className="text-loc-stone text-sm">{t("success")}</p>
       </div>
     )
   }
@@ -33,25 +34,27 @@ export function InquiryForm({ subject }: InquiryFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
-            Name
+          <label htmlFor="inquiry-name" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+            {t("name")}
           </label>
           <input
+            id="inquiry-name"
             required
-            placeholder="Your full name"
+            placeholder={t("name")}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
-            Email
+          <label htmlFor="inquiry-email" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+            {t("email")}
           </label>
           <input
+            id="inquiry-email"
             required
             type="email"
-            placeholder="your@email.com"
+            placeholder={t("email")}
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
@@ -59,10 +62,11 @@ export function InquiryForm({ subject }: InquiryFormProps) {
         </div>
       </div>
       <div>
-        <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
-          Phone <span className="text-loc-stone/50 normal-case">(optional)</span>
+        <label htmlFor="inquiry-phone" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+          {t("phone")}
         </label>
         <input
+          id="inquiry-phone"
           placeholder="+212 6xx xxx xxx"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -70,27 +74,28 @@ export function InquiryForm({ subject }: InquiryFormProps) {
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
-          Message
+        <label htmlFor="inquiry-message" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+          {t("message")}
         </label>
         <textarea
+          id="inquiry-message"
           required
           rows={4}
-          placeholder="Tell us about your dates, group size, or any questions…"
+          placeholder={t("message")}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
           className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors resize-none"
         />
       </div>
       {isError && (
-        <p className="text-red-500 text-sm">Something went wrong. Please try again.</p>
+        <p className="text-destructive text-sm" role="alert">{t("error")}</p>
       )}
       <button
         type="submit"
         disabled={isPending}
         className="w-full bg-loc-terracotta text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-loc-terracotta/90 disabled:opacity-50 transition-all hover:scale-[1.01]"
       >
-        {isPending ? "Sending…" : "Send Inquiry"}
+        {isPending ? t("sending") : t("send")}
       </button>
     </form>
   )

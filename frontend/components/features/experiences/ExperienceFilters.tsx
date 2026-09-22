@@ -3,10 +3,14 @@
 import { COUNTRIES, EXPERIENCE_CATEGORIES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { Search, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useRef, useTransition } from "react"
 
 export function ExperienceFilters() {
+  const t = useTranslations("experienceCategories")
+  const tc = useTranslations("countries")
+  const tCommon = useTranslations("common")
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeCategory = searchParams.get("category") ?? ""
@@ -42,12 +46,13 @@ export function ExperienceFilters() {
   return (
     <div className="space-y-4 mb-8">
       {/* Search bar */}
-      <form onSubmit={handleSearch} className="relative max-w-md">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-loc-stone pointer-events-none" />
+      <form onSubmit={handleSearch} role="search" aria-label={tCommon("search")} className="relative max-w-md">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-loc-stone pointer-events-none" aria-hidden="true" />
         <input
           ref={inputRef}
           defaultValue={activeQ}
-          placeholder="Search experiences…"
+          placeholder={t("searchPlaceholder")}
+          aria-label={tCommon("search")}
           className="w-full pl-9 pr-9 py-2.5 rounded-full border border-border text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
         />
         {activeQ && (
@@ -63,11 +68,12 @@ export function ExperienceFilters() {
       </form>
 
       {/* Category pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label={t("filterLabel")}>
         {EXPERIENCE_CATEGORIES.map((cat) => (
           <button
             key={cat.value}
             onClick={() => pillPush({ category: cat.value })}
+            aria-pressed={activeCategory === cat.value}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCategory === cat.value
@@ -75,36 +81,38 @@ export function ExperienceFilters() {
                 : "border-border text-loc-stone hover:border-loc-terracotta hover:text-loc-terracotta"
             )}
           >
-            {cat.label}
+            {t(cat.value || "all")}
           </button>
         ))}
       </div>
 
       {/* Country pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label={tc("filterLabel")}>
         <button
           onClick={() => pillPush({ country: "" })}
+          aria-pressed={activeCountry === ""}
           className={cn(
             "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
             activeCountry === ""
-              ? "bg-loc-teal text-white border-loc-teal"
-              : "border-border text-loc-stone hover:border-loc-teal hover:text-loc-teal"
+              ? "bg-loc-slate text-white border-loc-slate"
+              : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
           )}
         >
-          All countries
+          {tc("all")}
         </button>
         {COUNTRIES.map((c) => (
           <button
             key={c.value}
             onClick={() => pillPush({ country: c.value })}
+            aria-pressed={activeCountry === c.value}
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
               activeCountry === c.value
-                ? "bg-loc-teal text-white border-loc-teal"
-                : "border-border text-loc-stone hover:border-loc-teal hover:text-loc-teal"
+                ? "bg-loc-slate text-white border-loc-slate"
+                : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
             )}
           >
-            {c.label}
+            {tc(c.value)}
           </button>
         ))}
       </div>

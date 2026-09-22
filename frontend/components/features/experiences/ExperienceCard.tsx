@@ -1,13 +1,17 @@
+"use client"
+
 import { formatPriceRange } from "@/lib/types"
 import type { Experience } from "@/lib/types"
 import { getPoolImage } from "@/lib/images"
 import { Clock, Globe, MapPin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 export function ExperienceCard({ experience }: { experience: Experience }) {
+  const t = useTranslations("common")
   const image = experience.images?.[0] ?? getPoolImage(experience.category, experience.slug)
-  const priceDisplay = formatPriceRange(experience.priceMin, experience.priceMax, "/ person")
+  const priceDisplay = formatPriceRange(experience.priceMin, experience.priceMax, experience.currency, t("perPerson"))
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
@@ -23,8 +27,8 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
           {experience.category}
         </span>
         {experience.isFeatured && (
-          <span className="absolute top-3 right-3 bg-loc-amber text-white text-xs font-medium px-2 py-1 rounded-full">
-            Featured
+          <span className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full">
+            {t("featured")}
           </span>
         )}
       </div>
@@ -48,7 +52,7 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
             </span>
           )}
         </div>
-        <h3 className="font-heading font-bold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
+        <h3 className="font-heading font-semibold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
           {experience.title}
         </h3>
         <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
@@ -59,9 +63,9 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
           <Link
             href={`/experiences/${experience.slug}`}
             className="text-xs font-semibold text-loc-night bg-loc-sand hover:bg-loc-sand/70 px-4 py-2 rounded-full transition-colors"
-            aria-label={`View details for ${experience.title}`}
+            aria-label={`${t("viewDetails")} - ${experience.title}`}
           >
-            View details
+            {t("viewDetails")}
           </Link>
         </div>
       </div>

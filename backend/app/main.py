@@ -11,6 +11,7 @@ from slowapi.errors import RateLimitExceeded
 from app.api.v1.router import router as v1_router
 from app.config import settings
 from app.core.rate_limit import limiter
+from app.core.security_headers import SecurityHeadersMiddleware
 
 
 @asynccontextmanager
@@ -25,6 +26,8 @@ app = FastAPI(title="LOC API", version="1.0.0", lifespan=lifespan)
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,6 +1,10 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // Kept as the strategy a dark theme *would* use, not as a live feature: LOC
+  // has no theme toggle and no `dark:` utilities anywhere, and app/manifest.ts
+  // states the site is light on purpose. The unreachable `.dark` token block in
+  // globals.css was deleted rather than left to drift.
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -34,6 +38,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -50,20 +62,22 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // LOC brand palette
+        // LOC brand palette — wired to --loc-* CSS custom properties in globals.css.
+        // Every hex lives in one place (:root); Tailwind references the variable.
         loc: {
-          terracotta: "#C4714A",
-          sand: "#F7EDD8",
-          amber: "#D4A44C",
-          teal: "#2D6A6A",
-          night: "#1A1A2E",
-          stone: "#8B7355",
-          cream: "#FAF5EC",
+          copper:     "var(--loc-copper)",
+          terracotta: "var(--loc-terracotta)",
+          sand:       "var(--loc-sand)",
+          amber:      "var(--loc-amber)",
+          slate:      "var(--loc-slate)",
+          night:      "var(--loc-night)",
+          stone:      "var(--loc-stone)",
+          cream:      "var(--loc-cream)",
         },
       },
       fontFamily: {
-        heading: ["var(--font-playfair)", "Georgia", "serif"],
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        heading: ["var(--font-clash)", "system-ui", "sans-serif"],
+        sans: ["var(--font-general)", "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -88,6 +102,12 @@ const config: Config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.7s ease-out forwards",
+      },
+      transitionTimingFunction: {
+        loc: "var(--loc-ease)",
+      },
+      transitionDuration: {
+        loc: "var(--loc-duration)",
       },
     },
   },

@@ -7,7 +7,9 @@ class ProductBase(BaseModel):
     description: str | None = None
     type: str
     price: float
+    currency: str = "EUR"
     image_url: str | None = None
+    video_url: str | None = None
     purchase_url: str
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)

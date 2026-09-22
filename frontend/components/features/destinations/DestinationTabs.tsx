@@ -13,10 +13,14 @@ export function DestinationTabs({ country }: { country: string }) {
 
   return (
     <div>
-      <div className="flex border-b border-border mb-8">
+      <div className="flex border-b border-border mb-8" role="tablist" aria-label="Destination content">
         {TABS.map((tab) => (
           <button
             key={tab}
+            role="tab"
+            id={`tab-${tab.toLowerCase()}`}
+            aria-selected={active === tab}
+            aria-controls={`tabpanel-${tab.toLowerCase()}`}
             onClick={() => setActive(tab)}
             className={cn(
               "px-6 py-3 text-sm font-medium border-b-2 -mb-px transition-colors",
@@ -30,11 +34,17 @@ export function DestinationTabs({ country }: { country: string }) {
         ))}
       </div>
 
-      {active === "Experiences" ? (
-        <ExperienceGrid country={country} />
-      ) : (
-        <PropertyGrid country={country} />
-      )}
+      <div
+        role="tabpanel"
+        id={`tabpanel-${active.toLowerCase()}`}
+        aria-labelledby={`tab-${active.toLowerCase()}`}
+      >
+        {active === "Experiences" ? (
+          <ExperienceGrid country={country} />
+        ) : (
+          <PropertyGrid country={country} />
+        )}
+      </div>
     </div>
   )
 }

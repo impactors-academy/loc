@@ -20,7 +20,7 @@ const BACKEND_URL =
   process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
 // Explicit allowlist rather than blind pass-through — keep it minimal.
-const ALLOWED_COLLECTIONS = new Set(["experiences", "properties", "blog", "products", "leads"])
+const ALLOWED_COLLECTIONS = new Set(["experiences", "properties", "blog", "products", "leads", "uploads"])
 
 async function forward(req: NextRequest, path: string[]) {
   const editorKey = process.env.EDITOR_API_KEY

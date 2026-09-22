@@ -1,82 +1,40 @@
 import type { Metadata } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
+import localFont from "next/font/local"
 import Script from "next/script"
 import "./globals.css"
-import { Providers } from "./providers"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+const clashGrotesk = localFont({
+  src: [
+    { path: "./fonts/ClashGrotesk-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ClashGrotesk-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/ClashGrotesk-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/ClashGrotesk-700.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-clash",
   display: "swap",
 })
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
+const generalSans = localFont({
+  src: [
+    { path: "./fonts/GeneralSans-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/GeneralSans-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/GeneralSans-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/GeneralSans-700.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-general",
   display: "swap",
 })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://loctravels.com"),
   title: {
-    default: "LOC — Discover the World | Experiences, Stays & Hidden Gems",
+    default: "LOC | Discover the World | Experiences, Stays & Hidden Gems",
     template: "%s | LOC",
   },
   description:
-    "Discover the best tourism experiences, stays, and hidden gems around the world — from Japan to Morocco, Bali to Bordeaux. Curated by people who love to travel.",
-  keywords: [
-    "travel experiences",
-    "boutique stays",
-    "hidden gems travel",
-    "global tourism",
-    "curated travel",
-    "Japan travel",
-    "France travel",
-    "Bali travel",
-    "Morocco travel",
-    "LOC travel",
-  ],
+    "Discover the best tourism experiences, stays, and hidden gems around the world, from Japan to Morocco, Bali to Bordeaux. Curated by people who love to travel.",
   authors: [{ name: "LOC", url: "https://loctravels.com" }],
   creator: "LOC",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://loctravels.com",
-    siteName: "LOC",
-    title: "LOC — Discover the World | Experiences, Stays & Hidden Gems",
-    description:
-      "Discover the best tourism experiences, stays, and hidden gems around the world.",
-    images: [
-      {
-        url: "/images/og-default.jpg",
-        width: 1200,
-        height: 630,
-        alt: "LOC — Discover the World",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "LOC — Discover the World",
-    description:
-      "Discover the best tourism experiences, stays, and hidden gems around the world.",
-    images: ["/images/og-default.jpg"],
-    creator: "@loctravels",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  alternates: {
-    canonical: "https://loctravels.com",
-  },
 }
 
 const organizationSchema = {
@@ -85,23 +43,24 @@ const organizationSchema = {
   name: "LOC",
   url: "https://loctravels.com",
   description:
-    "Your global tourism connector — curated experiences, handpicked stays, and digital travel products from around the world.",
+    "Your global tourism connector. Curated experiences, handpicked stays, and digital travel products from around the world.",
   sameAs: [
-    "https://instagram.com/loctravels",
-    "https://tiktok.com/@loctravels",
+    "https://www.instagram.com/loc_ia24",
+    "https://www.tiktok.com/@loc_ia",
+    "https://www.facebook.com/share/19UDeeGCHH/",
   ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html className={`${clashGrotesk.variable} ${generalSans.variable}`}>
       <body className="font-sans">
         <Script
           id="org-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   )

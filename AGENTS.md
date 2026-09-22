@@ -18,7 +18,7 @@ loc/
 ```
 
 **Branches:** `develope` = active work · `main` = production-stable
-**Deployment:** Vercel (frontend) · Railway (backend + PostgreSQL + Redis)
+**Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 
 ## Session start — do this first, every time
 

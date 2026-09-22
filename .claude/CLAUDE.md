@@ -2,7 +2,8 @@
 
 Platform type: **API Backend (FastAPI) + Marketing Website (Next.js frontend)**
 Stack: FastAPI · SQLAlchemy · Alembic · Postgres · Redis · Next.js · Docker
-Live at: Frontend on Vercel · Backend + DB + Redis on Railway → migrating to Coolify
+Live at: `loctravels.com` (frontend) · `api.loctravels.com` (backend) — Hostinger VPS
+via Coolify, DNS on Cloudflare. Postgres and Redis are containers in the same stack.
 Active branch: `develope` (rename to `develop` — Phase 0B item)
 
 ---
@@ -15,7 +16,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 | `docs/WORKFLOW.md` | Content workflow · editorial process · partner onboarding |
 | `docs/ARCHITECTURE.md` | DB schema · API structure · service boundaries |
 | `docs/ORG-STATUS.md` | Cross-project dependencies · Coolify migration status |
-| `[workspace]/docs/PLATFORM-STANDARDS.md` → API Backend section | New endpoint types · auth · search · payments · Railway→Coolify migration |
+| `[workspace]/docs/PLATFORM-STANDARDS.md` → API Backend section | New endpoint types · auth · search · payments · deploy topology |
 | `[workspace]/docs/DEVOPS-GUIDE.md` | CI for Python · branch strategy · migration runbook |
 | `[workspace]/MASTER-CHECKLIST.md` | Security (Phase 0C) · R4 discovery features · scaling (Phase 7) |
 
@@ -23,6 +24,11 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 
 ## On every session start
 
+0. A `SessionStart` hook (`.claude/hooks/git-sync-check.sh`) runs `git fetch`
+   and reports branch/ahead-behind/dirty-tree status — informational only,
+   never auto-stashes/pulls/commits. If it flags uncommitted changes before
+   you switch branches or pull, `git stash` first (`git stash pop` after).
+   Multiple people push here now — don't skip this.
 1. Read `docs/BUILD-CHECKLIST.md` in full — active branch is `develope`.
 2. Audit every unchecked item against actual code.
 3. Note ambiguous items as **Open Flags** — ask before acting.
@@ -36,6 +42,42 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 3. Push to `origin` (github.com/impactors-academy/loc) from this directory.
 
 ---
+
+---
+
+## Before opening a PR — hand it over running
+
+Markie tests the work before it is pushed. A PR body full of status codes is not
+a substitute for the thing being on a URL he can click.
+
+1. **Launch it.** `bash scripts/dev-local.sh` — it prints the URLs and any
+   credentials needed.
+2. **Seed enough data to see something.** An empty list view proves nothing.
+   Put a couple of realistic rows in through the real code path.
+3. **Walk every page the change touches**, and the ones next to it. Report the
+   status codes.
+4. **Say what to look at**, specifically: which URL, what should happen, and
+   what would mean it is broken.
+5. **Then push**, once he has looked.
+
+Report what could not be verified as plainly as what was. A CSP that has never
+been loaded in a browser is unverified, however clean the audit looked.
+
+### Never run a production build against a directory a dev server is serving
+
+`npm run build` rewrites `.next` underneath the running dev server. The symptom
+is not an obvious failure — it is `__webpack_modules__[moduleId] is not a
+function` and "Could not find the module ... in the React Client Manifest" on
+pages that were fine a minute ago, which reads exactly like a code bug.
+
+The fix is `rm -rf .next` and restart. Check every listening port before
+building — not the two you expect:
+
+```bash
+lsof -nP -iTCP -sTCP:LISTEN
+```
+
+This has cost real time here twice.
 
 ## Skills — invoke by task (never default to generic)
 
@@ -64,6 +106,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 | Next.js pages, components, Tailwind | `/senior-frontend` |
 | Experience/stay card UI, grid, filters | `/senior-frontend` · `/ui-ux-pro-max` |
 | Search bar (DISC-1), destination tiles (DISC-2) | `/senior-frontend` · `/gsap-scrolltrigger` for animations |
+| **Any color decision** — brand, accent, CTA, states, chart/category colors | `/color-combinations` |
 | Design decisions, palette, typography | `/ui-ux-pro-max` |
 
 ### Search & Discovery (R4)
@@ -94,11 +137,11 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 ### DevOps & Deploy
 | Task | Skill |
 |---|---|
-| Railway → Coolify migration | `/coolify-deployment` · `/senior-devops` |
+| Coolify deploy, containers, env vars | `/coolify-deployment` · `/senior-devops` |
 | Docker Compose, multi-service setup | `/docker-development` · `/senior-devops` |
 | GitHub Actions CI (pytest + docker build) | `/ci-cd-pipeline-builder` |
 | Postgres backup, pg_dump → R2 | `/cloudflare-r2` · `/senior-devops` |
-| Nginx config, reverse proxy | `/senior-devops` |
+| Reverse proxy / routing (Coolify handles this — see `docs/DEPLOYMENT.md`) | `/coolify-deployment` · `/senior-devops` |
 | Inquiry notification email | `/resend-email` |
 | Authentik SSO for editor access (Phase 1) | `/authentik-sso` |
 | Admin route protection (Cloudflare) | `/cloudflare-access` |
@@ -118,8 +161,8 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
 Active branch: develope (→ rename to develop — Phase 0B item)
 Branches:   feature/* → develope → main
 CI:         GitHub Actions — pytest + docker build before merge (Phase 0B item)
-Staging:    develope → Railway staging → Coolify staging (after migration)
-Production: main → Railway → Coolify (after migration)
+Staging:    develope → Coolify staging (not yet provisioned)
+Production: main → Coolify on the Hostinger VPS → loctravels.com
 Release:    git tag vX.Y.Z + CHANGELOG.md after merge to main
 ```
 
@@ -127,6 +170,9 @@ Release:    git tag vX.Y.Z + CHANGELOG.md after merge to main
 
 ```
 Editor auth:  require_editor_key on ALL POST/PUT/DELETE endpoints ✓
+Admin access: Cloudflare Access at the edge ✓ + Access JWT verified at the origin
+              in frontend/middleware.ts ✓ — /api/admin/* attaches the editor key,
+              so it must never be reachable without both. Fail-closed in prod.
 CORS:         CORSMiddleware — verify no wildcard * in production
 Headers:      FastAPI after_request security headers — pending (Phase 0C-5)
 Rate limit:   slowapi on write endpoints — pending (Phase 0C-6)

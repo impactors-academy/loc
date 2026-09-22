@@ -5,8 +5,14 @@ Single source of truth for where this build actually stands. Lives at
 Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 **Stack:** Next.js 15.3 · FastAPI · PostgreSQL 16 + pgvector · Redis · Docker
-**Branches:** `develope` = active development · `main` = production-stable
-**Deployment:** Vercel (frontend) · Railway (backend + PostgreSQL + Redis)
+**Branches:** `develope` = documented as active development, but **as of 2026-08-14 is
+stale and 40 commits behind `main`** — `origin/develope` has zero commits `main`
+doesn't already contain, and a large amount of undocumented work (the WCAG contrast
+rebuild, dead dark-theme removal, reduced-motion pass, the CF Access fix, this
+session's a11y fixes) landed directly on `main`. Treat `main` as the real working
+branch until `develope` is either deleted or re-synced; don't assume `develope` is
+current without checking `git log origin/main..origin/develope` first.
+**Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 **Revenue model:** referrals, leads, featured placement, digital product sales — not bookings
 
 ---
@@ -22,28 +28,142 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 ## Phase 2 — Design & Content
 
-- [x] Brand palette defined — terracotta `#C4714A`, sand `#F7EDD8`, amber `#D4A44C`,
-      teal `#2D6A6A`, night `#1A1A2E`, stone `#8B7355`
-- [ ] Design tokens established as CSS custom properties — no hardcoded hex values
-      in components; palette, type scale, spacing, and easing all tokenised
-- [ ] Restraint/hierarchy pass on all key pages — `/ui-ux-pro-max`
-- [ ] Accessibility pass — focus states, ARIA on filters/modals, image alt text
-      on all listing cards
+- [x] Brand palette defined — **rebuilt 2026-08-05 from the logo.** `Loc.png` samples to
+      `#C9885C`, byte-identical to the Impactors Academy mark, so Loc is in the parent
+      family. `loc-copper #C9885C` is the logo value (mark + dark grounds, 7.03:1 on
+      black); `loc-terracotta` retuned `#C4714A` → `#A16036` — same hue as the logo (24°,
+      was 18°) at a lightness that clears AA (4.95:1 white, 4.75:1 `--background`).
+      The old value failed AA at 3.62:1 everywhere it was used as text, as did
+      `--primary` at 3.67:1. Remaining: sand `#F7EDD8`, amber `#D4A44C`, teal `#2D6A6A`,
+      night `#1A1A2E`. Derivation: `/color-combinations` skill.
+- [x] **Contrast pass on the two tokens the palette rebuild did not reach (2026-08-05).**
+      `loc-stone` `#8B7355` → `#7F694D`: it measured 4.31:1 on the page background
+      (`--background` 37 50% 98%, `#FCFAF7`) and 4.49:1 on white — under AA both ways,
+      while carrying card descriptions and every meta row across ~40 files. Same hue
+      (33°) and saturation, lowered in lightness only: now 5.02:1 / 5.23:1, so the one
+      token change fixed every usage. `loc-amber` is now documented decorative-only —
+      white on it is 2.28:1, so the three badges using it (experience "Featured",
+      property tier, promote "Most popular") moved to `loc-night` at 7.48:1, matching
+      the palette's own dark-ink-on-copper logic. The admin featured chip was worse at
+      1.96:1; terracotta would not have cleared it either (4.26:1), so that is
+      `loc-night` too.
+- [x] **Dead dark theme deleted (2026-08-07).** `.dark` in `frontend/app/globals.css`
+      defined 25 lines of tokens nothing could ever apply: no theme toggle,
+      `next-themes` not in `package.json` at all, no `ThemeProvider`, nothing adding
+      the class, and zero `dark:` utilities in any `.tsx` under `app/`, `components/`
+      or `lib/` — `app/manifest.ts` already said "LOC is a light site." It had also
+      drifted off-brand: a `230°` blue-grey ground, the exact cool neutral the light
+      palette was deliberately warmed away from. Wiring it up would have meant
+      shipping a second palette nobody designed or reviewed, so it was deleted.
+      `darkMode: ["class"]` stays in `tailwind.config.ts` with a comment saying it is
+      the strategy a future dark theme would use, not a live feature.
+- [x] **`prefers-reduced-motion` respected (2026-08-05)** — previously honoured nowhere,
+      while the hero autoplayed a looping video and five grids animated. Three layers,
+      because no single one reaches everything: a media block in `globals.css` for
+      keyframes/transitions; `MotionConfig reducedMotion="user"` in `app/providers.tsx`
+      for framer-motion (it drives inline styles from JS and never sees CSS); and a
+      shared `usePrefersReducedMotion` hook for what neither reaches — the hero's
+      `autoPlay` attribute (now falling back to its poster via `HeroVideo`) and the
+      typewriter (settles on "the World", no caret). The hook listens for changes, so
+      toggling the OS setting applies without a reload.
+- [x] Logo shipped — mark cropped square from `Loc.png`, wired into the navbar lockup
+      (`public/icons/loc-mark.png`), favicon (`app/icon.png`) and touch icon.
+      `public/icons/` previously held only a `.gitkeep`.
+- [x] Dead demo images fixed — `photo-1568393691622` returned 404 in 4 places incl. the
+      Kyoto tea ceremony card; audit found a second (`photo-1613490493576`) with a stale
+      hash. Every Unsplash URL in `_data.ts`, `images.ts` and `seed.py` now returns 200.
+- [x] Design tokens — **not converted to CSS custom properties by design (2026-08-14
+      review).** `loc-*` in `tailwind.config.ts` are raw hex, but every value already
+      carries an inline WCAG-derivation comment (contrast ratio, what it replaced, why)
+      and is the single source of truth — confirmed via grep that zero components use
+      an inline hex literal or an arbitrary `bg-[#...]` value anywhere in `app/` or
+      `components/`; all 54 files reference the `loc-*` / semantic (`--primary` etc.)
+      utilities. Converting the hex to `var(--loc-*)` would be a cosmetic wrapper with
+      no behavioural difference (no theme switching consumes it) and would separate
+      the derivation comments from the values they justify, so left as-is.
+- [x] Restraint/hierarchy — spot-checked homepage, `/experiences`, an experience
+      detail page, `/stays`, and `/destinations/[country]` in a real browser
+      2026-08-14; hierarchy, spacing, and the copper/cream palette read clean with
+      no obvious issues. Not a full page-by-page `/ui-ux-pro-max` pass — re-open if a
+      specific page needs one.
+- [x] Accessibility — **2026-08-14, scoped to the customer-facing "product" pages**
+      (home, experiences, stays, store, destinations; admin CMS not touched).
+      Image alt text on listing cards was already solid (title + location). Fixed:
+      filter pill groups (`ExperienceFilters`, `PropertyFilters`) had no `aria-pressed`
+      or group label — a screen reader user had no way to tell which filter was
+      active; added `role="group"` + `aria-label` + `aria-pressed` on every pill.
+      `DestinationTabs` was a plain button pair with no tab semantics — rebuilt as a
+      real ARIA tabs pattern (`role="tablist"/"tab"/"tabpanel"`, `aria-selected`,
+      `aria-controls`). `InquiryForm` (used on every experience/stay/product detail
+      page) had visual `<label>` text with no `htmlFor`/`id` — screen readers were
+      falling back to the placeholder as the accessible name, which disappears once
+      typing starts; added the id/htmlFor pairs, plus `role="status"` on the success
+      message and `role="alert"` on the error message. All verified live in a real
+      browser (accessible names, `aria-pressed`/`aria-selected` toggling correctly).
+      Focus states already present site-wide (`focus:ring-2` on every interactive
+      element). No modals exist on the product side to audit.
 - [x] Global copy: all hero/section copy globalised (not Morocco-only language)
 - [x] Typewriter hero wired with 10-destination rotation
 
 ## Phase 3 — Architecture & Data
 
 - [x] Repo structure: `frontend/` (Next.js) + `backend/` (FastAPI) + `docker-compose.yml`
-- [x] Docker stack: `docker compose up` → all 4 services running locally
+- [x] Docker stack: `docker compose up` → all 4 services running locally.
+      **Two blockers found and fixed 2026-08-05 — the documented path could not
+      have worked for a fresh clone.** (1) `backend/Dockerfile` pulled `uv` via
+      `COPY --from=ghcr.io/astral-sh/uv:latest`, so the build needs a second
+      registry and dies outright wherever ghcr.io is unreachable (stale creds,
+      registry policy, air-gapped runner) — now `pip install uv==0.12.1` from
+      PyPI, which the build already depends on. (2) `CORS_ORIGINS` crashed the API
+      on boot: pydantic-settings JSON-decodes complex types *before* validators
+      run, so the comma-separated value in `docker-compose.yml` and `.env.example`
+      raised `SettingsError` and `parse_cors_origins` was dead code. Fixed with
+      `Annotated[list[str], NoDecode]`; plain, comma-separated, JSON-array and
+      unset forms all parse. `EDITOR_API_KEY` also added to `.env.example` — it is
+      required and fails closed, but was undocumented.
 - [x] FastAPI skeleton — versioned `/api/v1/`, CORS to Next.js origin, Pydantic v2
 - [x] PostgreSQL 16 + pgvector + Redis configured and running in Docker
-- [x] Alembic migrations — `make migrate` runs clean; migration history intact
+- [x] Alembic migrations — `make migrate` runs clean; migration history intact.
+      **Corrected 2026-08-05: this was not true on an empty database.** `001infra4`
+      was the base revision (`down_revision = None`) but only ALTERs `experiences`
+      and `properties` — nothing in the chain ever created them, or `blog_posts`
+      and `products`. Those came from `Base.metadata.create_all()`
+      (`app/db/init_db.py`) and Alembic was adopted afterwards without a baseline,
+      so `alembic upgrade head` on a fresh clone died on the first migration with
+      `UndefinedTable: relation "experiences" does not exist`. Added
+      `000_baseline_schema.py` reconstructing the pre-001 shape (current models
+      minus everything 001-006 add, with the three columns 001 drops restored).
+      Verified: all seven revisions replay on an empty DB, the resulting schema
+      diffs clean against the SQLAlchemy models for all six tables (`search_vector`
+      is db-only by design — the generated tsvector from 002), and `scripts.seed`
+      runs on top. Existing deployments are unaffected: they are stamped at a later
+      revision and Alembic only walks forward.
 - [x] Data models: `Experience`, `Property`, `Product`, `Article`, `Inquiry`,
       `listing_tier`, `country`, `images` (JSONB), `is_featured`
 - [x] CI: ruff, pytest, eslint, tsc --noEmit, next build — all green
-- [ ] Production environment vars documented — all `DATABASE_URL`, `REDIS_URL`,
-      `NEXTAUTH_SECRET` etc. confirmed set in Vercel + Railway dashboards
+- [x] Production environment vars confirmed in the Coolify UI (2026-09-06)
+      — checked names only, never values. `NEXTAUTH_SECRET` doesn't apply
+      here (that's an impactors-academy/NextAuth var — LOC auths admin
+      write access via `EDITOR_API_KEY` instead); `DATABASE_URL` and
+      `REDIS_URL` aren't standalone Coolify secrets either — both are
+      built inline in `docker-compose.coolify.yml` from `POSTGRES_USER`/
+      `POSTGRES_PASSWORD`/`POSTGRES_DB` and the internal `redis` service
+      name, respectively. Confirmed present: `EDITOR_API_KEY`,
+      `POSTGRES_USER`, `POSTGRES_DB`, `POSTGRES_PASSWORD`, `CORS_ORIGINS`,
+      `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, `EMAIL_FROM`, service
+      FQDN/URL vars. `POSTGRES_PASSWORD` shows as a placeholder string in
+      Coolify's bulk "Developer view" — that's a display quirk of that
+      view, not a missing secret: the compose file gates it with Docker's
+      `${VAR:?fail}` syntax, which refuses to start the stack if the var
+      is genuinely empty, and the app is confirmed `Running (healthy)`.
+      **Found, not fixed:** `SMTP_HOST` and `EMAIL_TO` are both blank in
+      production, so `email_enabled` is `False` — every inquiry
+      submitted on the live site today is only logged
+      (`logger.info("New inquiry from ...")`), never emailed to anyone.
+      Documented as acceptable ("leave blank to log inquiries only") but
+      worth a deliberate decision: if the site is taking real leads, they
+      are currently sitting unnoticed in container logs until SMTP is
+      configured.
 
 ## Phase 4 — Build
 
@@ -80,14 +200,58 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 - [ ] Editor endpoints for Experience and Property create/update (so content doesn't
       require a DB migration to add new listings)
 - [ ] Basic CMS or admin UI for the LOC editor persona
+- [x] **Mother/daughter network — no code changes needed (2026-08-10)** — the
+      impactors-academy mother dashboard's new "Publish to" option on its blog
+      editor (tick which platforms a post goes to) reads loc's blog via
+      the existing public `GET /api/v1/blog/` and writes drafts via the existing
+      `POST /api/v1/blog/` (already gated by `require_editor_key`) — both
+      endpoints already covered this, nothing here needed to change. loc's
+      `content` field is plain text, not the Tiptap JSON ia-pro/impactors-academy
+      use — the mother dashboard sends plain text here and adapts to Tiptap doc
+      shape for the other two. Verified end-to-end against a local instance of
+      this backend (created via the mother's actual sync code path, then
+      re-saved → updated in place rather than duplicated, then cleaned up).
+      Mother holds drafts back from loc, since loc has no draft state and
+      anything sent here is immediately live. `EDITOR_API_KEY` matches the mother
+      dashboard's `LOC_EDITOR_API_KEY` — confirmed in production 2026-08-13:
+      published a real post from the mother dashboard with all three targets
+      ticked, verified it landed at `loctravels.com/blog/<slug>` (200), then
+      deleted the test row via `DELETE /api/v1/blog/<slug>`. See
+      impactors-academy `BUILD-CHECKLIST.md` and workspace `MASTER-CHECKLIST.md`
+      Phase 3 for the full feature.
 
 ## Phase 5 — Testing & QA
 
 - [x] CI skeleton — ruff, pytest, eslint, tsc, next build all green on every push
-- [ ] Integration tests for inquiry flow end-to-end (form → FastAPI → DB → notify stub)
+- [x] Integration tests for inquiry flow end-to-end (2026-09-06,
+      `tests/api/v1/test_contact.py`) — form → FastAPI → DB → notify stub:
+      happy path persists the row correctly, default `source_type`, 422 on
+      missing field / invalid email with no row written, and the log-only
+      notify path (email disabled in test env) fires without raising.
+      Resets the rate limiter between tests since `/contact/` is capped at
+      5/minute per IP and TestClient requests share one address.
 - [ ] Load test on hybrid search endpoint — pgvector + RRF under concurrent requests
 - [ ] Cross-browser/mobile check — mobile-first layout verified on real device or BrowserStack
-- [ ] Empty-state handling verified on all filter combinations (no results shown correctly)
+- [x] Empty-state handling verified on all filter combinations (2026-09-06)
+      — ran the actual stack locally (FastAPI + Postgres + Redis + the
+      Next.js frontend, seeded dev data: 10 experiences, 6 properties, 3
+      products, 3 blog posts) and drove it through Chrome rather than just
+      reading the code. Confirmed correct empty states for: experiences by
+      category+country with no matches, experiences by a nonsense search
+      query, stays by type+country with no matches, blog by a nonexistent
+      tag, and confirmed the non-empty path still renders correctly
+      (store grid, blog filtered to a real tag).
+      **Found and fixed**: `ArticleGrid`'s empty state always said "No
+      articles yet — Stories from around the world are coming soon.",
+      even when the actual cause was a `tag` filter matching zero posts
+      out of an otherwise non-empty blog — misleadingly implying the
+      whole blog was empty. Now says `No articles tagged "{tag}"` /
+      `Try a different tag.` when a tag filter is active, matching the
+      pattern `ExperienceGrid` already used for its search query.
+      **Noted, not fixed**: the stays filter chips are missing a
+      "Bivouac" option even though `bivouac` is a valid `PropertyType`
+      with its own gradient/label on the stay detail page — minor,
+      unrelated to empty-state correctness itself.
 
 ## Phase 6 — Security
 
@@ -95,32 +259,183 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
       reads `EDITOR_API_KEY` env var, fail-closed if unset) applied to all write routes:
       POST/PUT/DELETE on experiences, stays, products, blog posts; all of /leads/.
       Verified in code 2026-08-03.
-- [x] Rate limiting on inquiry form — `slowapi`, `@limiter.limit("5/minute")` on
-      `POST /api/v1/contact/` (`backend/app/api/v1/endpoints/contact.py`); confirmed
-      live on `main` 2026-08-14.
-- [x] CORS locked to production origin only — `CORSMiddleware` with an explicit,
-      config-driven `allow_origins` list (`Settings.cors_origins`), no wildcard;
-      confirmed on `main` 2026-08-14.
-- [x] No secrets committed — `git log --all -p -- .env` returns zero diffs on this
-      repo's full history; confirmed 2026-08-14.
-- [x] **HTTP security headers** — Next.js frontend ships `X-Content-Type-Options`,
-      `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Strict-Transport-Security`
-      in production (`next.config.ts`); verified live 2026-08-08, re-verified in a real
-      browser locally 2026-08-14.
-- [x] **Cloudflare Access on editor/admin routes** — `/admin*` protected by Cloudflare
-      Zero Trust at the edge; `CF_ACCESS_TEAM_DOMAIN`/`CF_ACCESS_AUD` fixed and all three
-      DNS records switched to Proxied 2026-08-13; verified live (`/admin` 302s to Access
-      login). Origin also fails closed (503) if the env vars are ever unset — confirmed
-      2026-08-14.
-- [x] **CSP header** — Content Security Policy on the Next.js frontend, derived from
-      `NEXT_PUBLIC_API_URL` (not hardcoded) so it never blocks its own API host.
-      PR #19 (2026-08-08) fixed it where it broke Swagger UI and `next dev`.
-      **2026-08-14: verified live in a real browser** via `dev-local.sh prod` (:3001) —
-      all headers present, zero CSP console violations across homepage, `/experiences`,
-      an experience detail page, and `/admin`. One local-only false alarm understood and
-      documented (see MASTER-CHECKLIST loc entry): `upgrade-insecure-requests` upgrading
-      a plain-`http` local API call, which cannot happen in production since the whole
-      site + `NEXT_PUBLIC_API_URL` are already `https` there.
+- [x] Rate limiting on inquiry form — slowapi `@limiter.limit("5/minute")` on
+      `POST /api/v1/contact/`. Was already implemented and unmarked; **verified
+      live 2026-08-08**: requests 1–5 return 200, 6 and 7 return 429.
+- [x] CORS locked to production origin — no wildcard anywhere; `cors_origins`
+      defaults to `http://localhost:3000` for dev and is set to
+      `["https://loctravels.com"]` in Coolify (see `docs/DEPLOYMENT.md`).
+- [ ] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
+      `git log --all -- .env` returns empty
+- [x] **HTTP security headers** — `app/core/security_headers.py`, applied to
+      every API response including errors. HSTS only when the request arrived
+      over https (`x-forwarded-proto`), because sending it over plain http is
+      ignored by browsers and would pin localhost to https for two years in dev.
+      4 tests; verified live 2026-08-08.
+- [x] **Cloudflare Access on editor/admin routes** — verified live 2026-08-08:
+      `/admin` and `/api/admin/*` both 302 to the Access login on
+      `delicate-king-3ab8.cloudflareaccess.com`; marketing routes stay public.
+- [x] **Access JWT verified at the origin** — `frontend/middleware.ts` (2026-08-08).
+      The edge policy only covers traffic that arrives through Cloudflare; a request
+      hitting the container directly bypassed it entirely, and `/api/admin/[...path]`
+      attaches `EDITOR_API_KEY` to everything it forwards, so that was an unauthenticated
+      write path and a read of every lead. Fail-closed: unset Access config in production
+      returns 503.
+- [x] **`/admin` was unreachable even after a valid Access JWT — found and fixed
+      2026-08-24.** The prior verifications above (08-08, 08-13) only proved the
+      *pre-auth* redirect to the Access login worked; nobody had exercised the
+      page past that point. `middleware.ts` matched `/admin*` and returned
+      `NextResponse.next()` straight after the JWT check, without ever calling
+      `intlMiddleware`. The real filesystem route is `[locale]/(admin)/admin`, so
+      a bare `/admin` URL (default-locale, unprefixed under `as-needed`) had
+      nothing to match and 404'd — for every authenticated admin, not just in
+      dev. Fixed by running `intlMiddleware(req)` for all page routes including
+      `/admin` first, then layering the Access check on top of its response
+      instead of bypassing it. Verified live locally: `/admin` now renders the
+      real Overview page (10 experiences, 6 properties, 3 blog posts, 3
+      products, live inquiry rows from Postgres). Could not verify against the
+      actual Cloudflare Access flow in production from here — that needs a real
+      Access login, which requires the operator.
+- [x] **`/admin` 500 root-caused and fixed — 2026-08-13.** `CF_ACCESS_TEAM_DOMAIN`
+      and `CF_ACCESS_AUD` in Coolify were literally set to the placeholder
+      instructional text from `.env.example` (`"set CF_ACCESS_TEAM_DOMAIN — e.g.
+      your-team.cloudflareaccess.com"`), not real values — that string reached
+      `new URL()` in the middleware and threw `ERR_INVALID_URL` uncaught, so the
+      intended fail-closed 503 became an unhandled 500 instead. Set the real team
+      domain (`delicate-king-3ab8.cloudflareaccess.com`) and the AUD tag from the
+      "LOC Admin" Access application, and redeployed.
+      **Second, bigger problem found while fixing the first:** all three DNS
+      records (`loctravels.com`, `www`, `api`) were "DNS only" — not proxied
+      through Cloudflare at all. Access policy at the edge was never seeing any
+      traffic for this zone; only the origin's own JWT check (above) was ever
+      providing protection, and since Access never ran, no valid token could ever
+      be issued — `/admin` would have stayed permanently inaccessible once the 500
+      was fixed. `SSL/TLS` mode was already "Full (strict)" (changed 8 days prior,
+      likely the fix for whatever broke proxying the last time it was tried) and
+      the origin already had a valid Let's Encrypt cert, so switched all three
+      records to Proxied. Verified live: homepage and `api.loctravels.com/health`
+      both 200, `/admin` now correctly 302s to
+      `delicate-king-3ab8.cloudflareaccess.com/cdn-cgi/access/login/...` with a
+      real `cf-ray` header confirming edge enforcement is actually active.
+- [x] **CSP header** — plus the same header set, on the Next.js frontend via
+      `next.config.ts` `headers()`. `connect-src` is derived from
+      `NEXT_PUBLIC_API_URL` rather than hard-coded, so it follows the
+      environment instead of blocking every API call locally.
+      **Caveat:** `script-src`/`style-src` keep `'unsafe-inline'` — the app
+      styles with React `style={{}}` props, next/font injects an inline style
+      block, and the JSON-LD blocks are inline scripts. Nonces would require
+      rendering every page dynamically. **Verified live 2026-08-23** — the
+      Chrome extension is available now: `scripts/dev-local.sh prod` (:3001)
+      loaded `/` and `/experiences` with real API data (country filter chips
+      populated from the DB), zero console errors, zero CSP violations.
+- [x] **`Cross-Origin-Opener-Policy` / `Cross-Origin-Resource-Policy`** —
+      shipped 2026-08-23, on both the backend (`security_headers.py`) and
+      the frontend (`next.config.ts`). **The two are not the same value on
+      purpose**: the frontend uses `same-origin` for both, but the backend's
+      CORP is `same-site`, not `same-origin` — the frontend at
+      `loctravels.com` fetches this API from a different subdomain,
+      `api.loctravels.com`, and CORP is a separate browser check from CORS
+      that a permissive `Access-Control-Allow-Origin` does not override.
+      `same-origin` there would have made the browser refuse to let the
+      frontend read any API response body — a self-inflicted outage that
+      only shows up once something tries to actually fetch data. Caught in
+      review before it shipped, not after. 2 new backend tests pin both
+      values; verified live via `curl` and in a real cross-port browser
+      session (`:3001` frontend fetching `:8000` API — same "different
+      origin" shape as the real subdomains) with zero console errors.
+- [x] **CSP fixed where it was silently breaking** (2026-08-08). Three faults the
+      policy only showed once something actually rendered:
+      `/docs` and `/redoc` are the only HTML this API serves, and Swagger UI loads
+      its CSS and JS from jsdelivr, so `default-src 'none'` returned 200 and a
+      blank page — those two paths now get a policy allowing exactly what the UI
+      loads, everything else keeps the strict one (2 new tests pin both).
+      The frontend CSP and HSTS no longer apply to `next dev` — dev needs a
+      localhost websocket and eval for hot reload, so enforcing the production
+      policy locally broke the page under test while proving nothing about
+      production.
+      `scripts/dev-local.sh prod` builds to `.next-prod` (via `NEXT_DIST_DIR`)
+      and serves on :3001 beside the dev server — the only honest way to load
+      the real headers locally. **Loaded in a browser 2026-08-23** — see the
+      COOP/CORP entry above; same session, same verification pass.
+- [x] **Dependency audit — 2026-08-23.** Backend: `uvx pip-audit` — "No known
+      vulnerabilities found" — plus `uv run ruff check` clean. `pip-audit`
+      wasn't installed or wired into CI before this; added as a CI step
+      (`.github/workflows/ci.yml`) so this stays checked automatically
+      instead of needing a manual run each time (MASTER-CHECKLIST 0C-8).
+      Frontend: `npm audit fix`
+      (non-forcing) resolved 5 HIGH Next.js CVEs by bumping within the
+      existing `^15.3.3` range to 15.5.23 — cache confusion, unbounded
+      Server Action payload, SSRF via rewrites, image-optimization DoS,
+      unauthenticated Server Function endpoint disclosure. **Accepted risk,
+      not fixed**: `postcss`/`sharp` HIGH advisories remain — the only fix
+      is `next@16.3.2`, a major-version bump (15→16) this session didn't
+      attempt, unlike impactors-academy's 16.2→16.3 minor bump for the same
+      advisory pair. A 15→16 major on this app needs its own regression
+      pass, not a drive-by force-fix. Verified the 15.5.23 bump itself with
+      a full local production build (`scripts/dev-local.sh prod`) and a
+      real browser load of `/experiences` — zero console errors, CSP/COOP/
+      CORP headers all still correct.
+- [x] **Dependabot enabled (MASTER-CHECKLIST 0C-8)** — `.github/dependabot.yml`,
+      weekly updates across all three ecosystems this repo actually has:
+      `npm` (`/frontend`), `uv` (`/backend` — Dependabot's native ecosystem for
+      `pyproject.toml`/`uv.lock`, not the older `pip` type), and
+      `github-actions`. Minor/patch grouped per ecosystem so a routine week
+      doesn't turn into a pile of separate PRs.
+- [x] **Privacy policy page (MASTER-CHECKLIST 0C-7)** — shipped 2026-08-23,
+      `/privacy` in the `(marketing)` route group. **The footer
+      (`components/shared/Footer.tsx`) already linked to `/about`, `/contact`,
+      and `/privacy` — all three 404'd before this.**
+      English only, deliberately — matches the existing precedent set by
+      `/promote` in the same route group (also plain hardcoded copy, no
+      `useTranslations`), and a legal document is a place where a wrong
+      translation is worse than none; localizing to the other 3 locales can
+      follow once someone reviews the translated text.
+      Content reflects what LOC actually does: only the inquiry form
+      collects personal data (name/email/phone/message, confirmed via the
+      `Inquiry` model before writing this — no analytics, no cookies, no
+      checkout/payment data since bookings happen with partners directly,
+      never on LOC itself). Contact address reuses `pro@impactorsacademy.com`,
+      the same org-wide privacy contact impactors-academy's own policy uses.
+      Verified live via `scripts/dev-local.sh`: the footer link (previously
+      dead) now resolves correctly in French and English, zero console
+      errors.
+- [x] **`/contact` and `/about` — shipped 2026-08-24, the other two dead
+      footer links from the entry above.** `/contact` reuses the existing
+      `InquiryForm` component (`subject: "General contact"`,
+      `source_type: "general"`) — no new form logic, just wiring the
+      component that `/promote` already uses onto a plain page. Verified
+      by actually submitting it end to end: `psql` confirmed the row landed
+      in `inquiries` with the right subject/source_type (then deleted the
+      test row).
+      `/about` is deliberately restrained: only claims already made
+      elsewhere on the live site (the footer tagline, the hero subtitle,
+      the "How LOC Works" line) plus the confirmed architecture fact that
+      LOC never processes bookings or payments itself. No founding story,
+      no team bios, no numbers — those need real input from someone at the
+      company, not an invented narrative, so they're left out rather than
+      fabricated.
+      Both English only, same reasoning as `/privacy`. Verified live: zero
+      console errors on either page.
+- [x] **`poweredByHeader: false` — never set at all, found and fixed
+      2026-08-24.** `testssl.sh` against loctravels.com showed
+      `x-powered-by: Next.js` live. Different root cause than the same
+      finding on impactors-academy/ia-pro (their Dockerfiles didn't copy
+      `next.config.ts` into an `output: 'standalone'`-less build) —
+      `frontend/next.config.ts` here simply never had the setting at all.
+      This frontend does use `output: 'standalone'`, which self-contains
+      the config at build time, so a plain one-line addition was the whole
+      fix (no Dockerfile change needed). Verified with a real
+      `scripts/dev-local.sh prod` build + `curl` — header correctly absent.
+- [x] **`NEXT_LOCALE` cookie missing `Secure` — found and fixed 2026-08-24,
+      same `testssl.sh` pass.** next-intl's default `localeCookie` config
+      omits `secure` entirely, even over an HTTPS-only site. Not
+      `httpOnly` — next-intl's own client-side navigation needs to read/
+      write the cookie, so that's a deliberate library choice, not a gap.
+      `secure: true` added in `i18n/routing.ts`, conditional on
+      `NODE_ENV === 'production'` (a Secure cookie is silently refused over
+      plain http in local dev). Verified both ways via
+      `scripts/dev-local.sh prod` + `curl`. Same fix shipped on
+      impactors-academy and ia-pro the same session.
 
 ## Phase 7 — Deployment & DevOps
 
@@ -128,38 +443,57 @@ Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 not Vercel/Railway — on the `loctravels.com` domain (already on Cloudflare),
 same pattern as impactors-academy. `railway.toml` and the old SSH-based
 `.github/workflows/deploy.yml` + `nginx/loc.conf` are superseded by this and
-should be retired once the Coolify deploy is confirmed live (see Open Flags).**
+have all since been deleted (2026-08-08).**
 
 - [x] `docker-compose.coolify.yml` drafted at repo root — single-file, Coolify
       "Docker Compose" resource, prod builds for frontend/backend, no pgadmin,
       no published ports on db/redis
-- [ ] VPS capacity check (`free -h`, `df -h`, `docker stats --no-stream`) — never
-      formally run; site is live and stable but headroom for the 4 loc containers
-      alongside every other project's containers hasn't been confirmed
-      (`/senior-devops`)
-- [x] Cloudflare DNS: `loctravels.com`, `www.loctravels.com`, `api.loctravels.com`
-      → all three Proxied (fixed 2026-08-13 — were DNS-only, which silently broke
-      Cloudflare Access at the edge); confirmed live 2026-08-14 (`loctravels.com` 200,
-      `api.loctravels.com/health` 200)
-- [x] Coolify: "Docker Compose" resource live, pointed at `main`,
-      compose file `docker-compose.coolify.yml`
-- [x] Coolify: domains assigned per service — frontend `loctravels.com`/`www`,
-      backend `api.loctravels.com` — confirmed live
-- [x] Coolify: environment variables set — no secrets committed to the compose file
-- [x] First deploy triggered — all containers healthy in production
-- [x] Production Docker build confirmed — verified live
-- [x] Health check endpoint (`/health`) returning 200 in production — confirmed 2026-08-14
-- [x] Old deploy path retired: `.github/workflows/deploy.yml`, `nginx/loc.conf`,
-      `railway.toml` — confirmed removed from `main` 2026-08-14 (zero matches in the tree)
+- [ ] VPS capacity check run (`free -h`, `df -h`, `docker stats --no-stream`) —
+      confirm headroom before adding 4 more containers (`/senior-devops`)
+- [ ] Cloudflare DNS: `loctravels.com`, `www.loctravels.com`, `api.loctravels.com`
+      → A records pointing at the VPS IP
+- [ ] Coolify: new "Docker Compose" resource added, pointed at this repo/branch `main`,
+      compose file path set to `docker-compose.coolify.yml`
+- [ ] Coolify: domains assigned per service — frontend → `loctravels.com` +
+      `www.loctravels.com` (port 3000), backend → `api.loctravels.com` (port 8000)
+- [ ] Coolify: environment variables set (`POSTGRES_PASSWORD`, `EMAIL_TO`,
+      `SMTP_*`, `OPENAI_API_KEY` optional) — no secrets committed to the compose file
+- [ ] First deploy triggered — `alembic upgrade head` runs clean, all 4 containers healthy
+- [ ] Production Docker build confirmed (`output: standalone` wired correctly)
+- [ ] Health check endpoint (`/health`) returning 200 in production
+- [x] Old deploy path retired: `railway.toml` and `.github/workflows/deploy.yml` are
+      gone; the Vercel project and its GitHub integration were deleted 2026-08-08;
+      `nginx/loc.conf` deleted 2026-08-08. Coolify is the only deploy path.
 
 ## Phase 8 — Launch
 
-- [ ] SEO pass — OG/Twitter meta on experience/stay/product detail pages;
-      JSON-LD (`TouristAttraction`, `LodgingBusiness`, `Product` schemas)
-- [x] `robots.txt` present — confirmed live 2026-08-14 (200); verify it disallows
-      `/admin*` specifically
-- [x] `sitemap.xml` present — confirmed live 2026-08-14 (200); verify slug coverage
-      and `lastmod` still match the DB as content grows
+- [x] SEO pass, part 1 (2026-09-06) — OG/Twitter meta added on experience,
+      stay, and product detail pages (`generateMetadata` per page, uses the
+      item's own title/description/image; falls back to the site default
+      when the API call fails). Also fixed a pre-existing bug along the way:
+      the site-wide OG/Twitter fallback image referenced
+      `/images/og-default.jpg`, which doesn't exist on disk — every page
+      without its own override was serving a broken image to link previews.
+      Repointed to the existing `/images/hero.jpg` (1280×720).
+      - [x] JSON-LD, part 2 (2026-09-06) — `TouristAttraction` on experience
+            pages, `LodgingBusiness` on stay pages, `Product` on product
+            pages. Inline `<Script type="application/ld+json">` per page,
+            null-guarded when the API call fails (same fallback pattern as
+            the metadata). Uses EUR throughout, matching `formatPriceRange`
+            and every price display already in the app. Already covered by
+            the existing CSP `'unsafe-inline'` on `script-src`, kept
+            specifically for these blocks (see CSP note, Phase 0C).
+- [x] `robots.txt` present (2026-09-06, `app/robots.ts`) — disallows `/admin`,
+      `/*/admin`, `/api/admin`; points to `/sitemap.xml`
+- [x] `sitemap.xml` (2026-09-06, `app/sitemap.ts`) — covers all static
+      marketing pages plus `/experiences/[slug]`, `/stays/[slug]`,
+      `/products/[slug]`, `/blog/[slug]`, with per-locale `hreflang`
+      alternates; degrades gracefully to static-only entries if the API is
+      unreachable (verified against local dev with no backend running).
+      **Not done**: `lastmod` uses request time, not a real per-item value —
+      `Experience`/`Property`/`Product`/`BlogPost` don't expose an
+      `updated_at` field on the frontend today, so real `lastmod` needs that
+      added on the FastAPI side first.
 - [ ] Analytics before launch — GA4 or Plausible; track referral CTA clicks,
       inquiry form submissions, product page views, search queries
 - [ ] Social share preview verified (OG image renders correctly on WhatsApp/LinkedIn)
@@ -172,6 +506,18 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 - [ ] Advertiser onboarding: `/promote` inquiries flowing into a tracked pipeline
 - [ ] R5 scoped — user accounts, saved experiences, booking history (if LOC moves
       toward a logged-in experience)
+- [x] **`GET /api/v1/admin/metrics`** — feeds the mother dashboard's Phase 6B
+      business-metrics card (`[workspace]/MASTER-CHECKLIST.md`). New
+      `app/api/v1/endpoints/admin_metrics.py`, gated behind
+      `require_editor_key` same as `/leads` — no new secret. Returns inquiry
+      total/7d, experience/property counts, top 5 destinations by experience
+      count, and blog post total/last-published-at. 3 pytest tests added
+      (fail-closed 503, wrong-key 403, valid-key 200 shape); full suite (20
+      tests) green. Verified live against real seeded dev data (6 inquiries,
+      10 experiences, 12 properties, Japan/France/Italy top destinations).
+      Whether `EDITOR_API_KEY` here actually matches the mother dashboard's
+      `LOC_EDITOR_API_KEY` byte-for-byte can't be verified without logging
+      into production `/admin` — Coolify masks both values.
 
 ---
 
@@ -191,9 +537,13 @@ should be retired once the Coolify deploy is confirmed live (see Open Flags).**
 ## Open Flags
 
 1. ~~**Editor auth**~~ — CLOSED 2026-08-03: all write endpoints use `require_editor_key`.
-2. ~~**Production deploy not confirmed**~~ — CLOSED 2026-08-14: Coolify deploy on
-   `loctravels.com`/`api.loctravels.com` confirmed live (homepage, API health,
-   sitemap, robots.txt all 200; old Vercel/Railway paths confirmed removed from `main`).
+2. ~~**Production deploy not confirmed**~~ — CLOSED 2026-08-08. `loctravels.com`
+   served 200 on 2026-08-07 from Coolify on the org's Hostinger VPS. The leftover
+   Vercel project and its GitHub integration — which had been building every PR and
+   reporting "Deployment has completed" on PR #14 — were deleted 2026-08-08, along
+   with the Vercel app config in this repo. Coolify is now the only deploy path.
+   Remaining verification: confirm the `GET /health` check and `api.loctravels.com`
+   independently of the frontend.
 3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02).
 4. **Custom domain** — confirm final domain for LOC (`loctravels.com` per Phase 7 plan
    vs. subdomain under `impactorsacademy.com`).

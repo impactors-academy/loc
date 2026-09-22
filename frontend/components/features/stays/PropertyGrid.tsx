@@ -3,17 +3,21 @@
 import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useProperties } from "@/hooks/useProperties"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 import { PropertyCard } from "./PropertyCard"
+import type { VisitorPriceContext } from "@/lib/price-display"
 
 interface PropertyGridProps {
   type?: string
   country?: string
+  priceContext?: VisitorPriceContext | null
 }
 
 const SKELETON = Array.from({ length: 6 })
 
-export function PropertyGrid({ type, country }: PropertyGridProps) {
+export function PropertyGrid({ type, country, priceContext }: PropertyGridProps) {
   const { data, isPending, isError } = useProperties(type, country)
+  const t = useTranslations("staysPage")
 
   if (isPending) {
     return (
@@ -28,7 +32,7 @@ export function PropertyGrid({ type, country }: PropertyGridProps) {
   if (isError) {
     return (
       <p className="text-loc-stone text-sm py-16 text-center">
-        Could not load properties right now. Please try again later.
+        {t("loadError")}
       </p>
     )
   }
@@ -36,8 +40,8 @@ export function PropertyGrid({ type, country }: PropertyGridProps) {
   if (!data?.length) {
     return (
       <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">No properties found</p>
-        <p className="text-loc-stone text-sm">Try a different type or check back soon.</p>
+        <p className="font-heading text-xl text-loc-night mb-2">{t("noResults")}</p>
+        <p className="text-loc-stone text-sm">{t("tryDifferent")}</p>
       </div>
     )
   }
@@ -51,7 +55,7 @@ export function PropertyGrid({ type, country }: PropertyGridProps) {
     >
       {data.map((prop) => (
         <motion.div key={prop.id} variants={fadeInUp}>
-          <PropertyCard property={prop} />
+          <PropertyCard property={prop} priceContext={priceContext} />
         </motion.div>
       ))}
     </motion.div>

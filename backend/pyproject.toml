@@ -3,29 +3,40 @@ name = "loc-backend"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.115.0",
-    "uvicorn[standard]>=0.32.0",
-    "sqlalchemy>=2.0.0",
-    "alembic>=1.13.0",
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.4",
+    "sqlalchemy>=2.0.52",
+    "alembic>=1.19.2",
     "psycopg2-binary>=2.9.10",
-    "pydantic[email]>=2.0.0",
-    "pydantic-settings>=2.0.0",
-    "python-dotenv>=1.0.0",
-    "fastapi-cache2[redis]>=0.2.0",
+    "pydantic[email]>=2.13.4",
+    "pydantic-settings>=2.15.0",
+    "python-dotenv>=1.2.3",
+    "fastapi-cache2[redis]>=0.2.2",
     "jinja2>=3.1.0",
     "redis>=4.2.0,<5.0.0",
-    "pgvector>=0.3.0",
-    "openai>=1.0.0",
+    "pgvector>=0.5.0",
+    "openai>=3.8.0",
     "slowapi>=0.1.9",
+    "boto3>=1.35.0",
+    "httpx>=0.27.0",
 ]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.9.0",
-    "pytest>=8.0.0",
+    "ruff>=0.16.6",
+    "pytest>=9.1.1",
     "pytest-asyncio>=0.23.0",
     "httpx>=0.27.0",
 ]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.ruff.lint]
+# Pin the rule set explicitly. Ruff's own default selection has changed
+# between releases (we run "ruff>=0.9.0", unpinned) and a newer default
+# started flagging FastAPI's required `Depends()`-as-default pattern (B008)
+# and every `dict(...)` call site (C408) across the whole codebase. Neither
+# is a real bug here; without this, any ruff release bump can silently break
+# CI on unrelated PRs.
+select = ["E4", "E7", "E9", "F"]

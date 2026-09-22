@@ -1,9 +1,14 @@
+"use client"
+
 import type { BlogPost } from "@/lib/types"
 import Image from "next/image"
 import Link from "next/link"
+import { useLocale, useTranslations } from "next-intl"
 
 export function ArticleCard({ post }: { post: BlogPost }) {
-  const date = new Date(post.publishedAt).toLocaleDateString("en-GB", {
+  const t = useTranslations("common")
+  const locale = useLocale()
+  const date = new Date(post.publishedAt).toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -42,7 +47,7 @@ export function ArticleCard({ post }: { post: BlogPost }) {
             ))}
           </div>
         )}
-        <h3 className="font-heading font-bold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
+        <h3 className="font-heading font-semibold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
           {post.title}
         </h3>
         <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
@@ -54,7 +59,7 @@ export function ArticleCard({ post }: { post: BlogPost }) {
             href={`/blog/${post.slug}`}
             className="text-xs font-semibold text-loc-night bg-loc-sand hover:bg-loc-sand/70 px-4 py-2 rounded-full transition-colors"
           >
-            Read more
+            {t("readMore")}
           </Link>
         </div>
       </div>

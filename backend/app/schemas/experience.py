@@ -11,6 +11,7 @@ class ExperienceBase(BaseModel):
     duration: str | None = None
     price_min: float | None = None
     price_max: float | None = None
+    currency: str = "EUR"
     images: list[str] = []
     is_featured: bool = False
     provider_name: str | None = None

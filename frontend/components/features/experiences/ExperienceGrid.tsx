@@ -3,6 +3,7 @@
 import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useExperiences } from "@/hooks/useExperiences"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 import { ExperienceCard } from "./ExperienceCard"
 
 interface ExperienceGridProps {
@@ -15,6 +16,7 @@ const SKELETON = Array.from({ length: 6 })
 
 export function ExperienceGrid({ category, country, q }: ExperienceGridProps) {
   const { data, isPending, isError } = useExperiences(category, country, q)
+  const t = useTranslations("experiencesPage")
 
   if (isPending) {
     return (
@@ -29,7 +31,7 @@ export function ExperienceGrid({ category, country, q }: ExperienceGridProps) {
   if (isError) {
     return (
       <p className="text-loc-stone text-sm py-16 text-center">
-        Could not load experiences right now. Please try again later.
+        {t("loadError")}
       </p>
     )
   }
@@ -38,9 +40,9 @@ export function ExperienceGrid({ category, country, q }: ExperienceGridProps) {
     return (
       <div className="py-16 text-center">
         <p className="font-heading text-xl text-loc-night mb-2">
-          {q ? `No results for "${q}"` : "No experiences found"}
+          {q ? t("noResultsFor", { q }) : t("noResults")}
         </p>
-        <p className="text-loc-stone text-sm">Try a different search, category, or destination.</p>
+        <p className="text-loc-stone text-sm">{t("tryDifferent")}</p>
       </div>
     )
   }

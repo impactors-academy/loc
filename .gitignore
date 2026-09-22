@@ -12,6 +12,9 @@
 !.claude/
 !.claude/CLAUDE.md
 
+# Local native dev (scripts/dev-local.sh)
+.dev-local/
+
 # OS files
 .DS_Store
 Thumbs.db
@@ -24,6 +27,7 @@ frontend/.env.local
 # Frontend
 frontend/node_modules/
 frontend/.next/
+frontend/.next-prod/
 
 # Backend
 backend/__pycache__/
@@ -31,6 +35,7 @@ backend/**/__pycache__/
 backend/*.egg-info/
 backend/.venv/
 backend/test.db
+backend/dump.rdb
 
 # Alembic
 backend/alembic/versions/*.pyc

@@ -12,7 +12,9 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision: str = "001infra4"
-down_revision: Union[str, None] = None
+# Was None. 000baseline now creates the tables this revision assumes already
+# exist; without it `upgrade head` failed here on any empty database.
+down_revision: Union[str, None] = "000baseline"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

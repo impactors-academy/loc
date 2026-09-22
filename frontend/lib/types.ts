@@ -13,6 +13,7 @@ export interface Experience {
   duration?: string
   priceMin: number | null
   priceMax: number | null
+  currency: string
   images: string[]
   isFeatured: boolean
   providerName: string
@@ -30,9 +31,12 @@ export interface Property {
   location: string
   priceMin: number | null
   priceMax: number | null
+  currency: string
   images: string[]
   listingTier: string
   ownerContact: string | null
+  amenities: string[]
+  videoUrl: string | null
 }
 
 export interface Product {
@@ -42,7 +46,9 @@ export interface Product {
   description: string
   type: ProductType
   price: number
+  currency: string
   imageUrl: string
+  videoUrl: string | null
   purchaseUrl: string
 }
 
@@ -67,9 +73,26 @@ export interface InquiryPayload {
   sourceId?: string
 }
 
-export function formatPriceRange(min: number | null, max: number | null, suffix = ""): string {
+// Symbol/label for currencies that don't render well via a raw prefix (e.g.
+// MAD is conventionally written as a "dh" suffix, not a "MAD" prefix). Falls
+// back to the currency code itself as a suffix for anything not listed.
+const CURRENCY_DISPLAY: Record<string, { symbol: string; position: "prefix" | "suffix" }> = {
+  EUR: { symbol: "€", position: "prefix" },
+  USD: { symbol: "$", position: "prefix" },
+  GBP: { symbol: "£", position: "prefix" },
+  MAD: { symbol: "dh", position: "suffix" },
+}
+
+export function formatAmount(amount: number, currency: string, decimals?: number): string {
+  const display = CURRENCY_DISPLAY[currency] ?? { symbol: currency, position: "suffix" as const }
+  const value = decimals != null ? amount.toFixed(decimals) : String(amount)
+  return display.position === "prefix" ? `${display.symbol}${value}` : `${value} ${display.symbol}`
+}
+
+export function formatPriceRange(min: number | null, max: number | null, currency = "EUR", suffix = ""): string {
   if (min == null && max == null) return ""
-  if (min != null && max != null) return `€${min}–€${max}${suffix ? ` ${suffix}` : ""}`
-  if (min != null) return `From €${min}${suffix ? ` ${suffix}` : ""}`
-  return `Up to €${max!}${suffix ? ` ${suffix}` : ""}`
+  const tail = suffix ? ` ${suffix}` : ""
+  if (min != null && max != null) return `${formatAmount(min, currency)}–${formatAmount(max, currency)}${tail}`
+  if (min != null) return `From ${formatAmount(min, currency)}${tail}`
+  return `Up to ${formatAmount(max!, currency)}${tail}`
 }

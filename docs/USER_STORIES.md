@@ -74,7 +74,7 @@ Written as Product Owner. Grounded in the LOC brief and skill: a **global** tour
 - **INFRA-2** ✅ — Layered FastAPI skeleton + Alembic (`make migrate` clean, `make test` passes).
 - **INFRA-3** ✅ — Homepage hero + section structure; Navbar links resolve; mobile layout correct.
 - **INFRA-4** ✅ — Data models match spec: `price_min/max`, `images(JSONB)`, `is_featured`, `listing_tier`, contact fields, `inquiries` table.
-- **INFRA-5** ✅ — `output: standalone` conditional; Docker build produces `.next/standalone`; Vercel build works without it.
+- **INFRA-5** ✅ — `output: standalone` conditional; Docker build produces `.next/standalone`; a plain `next build` works without it.
 - **INFRA-6** ✅ — CI (GitHub Actions): `ruff`, `pytest`, `eslint`, `tsc --noEmit`, `next build` — all green.
 
 ## EPIC 8 — Global Expansion  *(brand reach)*  · **DONE**

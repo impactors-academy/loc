@@ -12,7 +12,7 @@ export function ReferralButton({ slug, referralUrl }: Props) {
   if (!referralUrl) return null
 
   const handleClick = () => {
-    // fire-and-forget — never block the navigation
+    // fire-and-forget. never block the navigation
     api.referrals.click(slug).catch(() => undefined)
     window.open(referralUrl, "_blank", "noopener,noreferrer")
   }

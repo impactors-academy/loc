@@ -14,6 +14,24 @@ DATABASE_URL = os.environ.get(
     "postgresql://postgres:postgres@localhost:5432/loc_test",
 )
 
+# setup_db() calls Base.metadata.drop_all() on teardown. Pointed at a development
+# database, that silently deletes every table and all its data — the suite passes,
+# and the damage only shows up the next time the app is started. This has happened.
+#
+# So the database name has to look like a test database. It is a name check rather
+# than anything cleverer because the name is the only thing available before the
+# first connection, and a wrong answer here is destructive.
+_db_name = DATABASE_URL.rsplit("/", 1)[-1].split("?")[0]
+if not (_db_name.endswith("_test") or _db_name.startswith("test_")):
+    raise RuntimeError(
+        f"Refusing to run tests against database {_db_name!r}.\n"
+        "The suite drops every table on teardown, so it only runs against a database "
+        "whose name ends in '_test' or starts with 'test_'.\n"
+        "Create one and point DATABASE_URL at it:\n"
+        "  createdb loc_test\n"
+        "  DATABASE_URL=postgresql+psycopg2://loc:loc@localhost:5432/loc_test uv run pytest"
+    )
+
 engine = create_engine(DATABASE_URL)
 TestingSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

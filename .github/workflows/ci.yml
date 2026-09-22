@@ -35,14 +35,16 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
         with:
           version: "latest"
       - name: Install dependencies
         run: uv sync
       - name: Lint (ruff)
         run: uv run ruff check .
+      - name: Dependency audit (report only)
+        run: uvx pip-audit || true
       - name: Test (pytest)
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/loc_test
@@ -56,8 +58,8 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: "npm"

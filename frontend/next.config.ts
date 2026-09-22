@@ -1,12 +1,136 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+/**
+ * Content Security Policy.
+ *
+ * `'unsafe-inline'` on styles is unavoidable here: the app styles heavily with
+ * React `style={{}}` props, which emit inline style attributes, and next/font
+ * injects an inline <style> block. Removing it would mean rewriting every
+ * styled element, and a policy nobody can ship is worth less than one that is
+ * actually enforced.
+ *
+ * Scripts also need it, because Next.js inlines its bootstrap and flight data
+ * as inline <script> tags. Nonces are the real fix and they require rendering
+ * every page dynamically to generate one per request — a trade this marketing
+ * site should not make for its static pages. So the policy is honest about what
+ * it does buy: no external script origins, no framing, no plugins, and images
+ * and connections limited to hosts we actually use.
+ */
+const apiOrigin = (() => {
+  const raw = process.env.NEXT_PUBLIC_API_URL;
+  if (!raw) return "";
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return "";
+  }
+})();
+
+// The admin image uploader PUTs straight from the browser to R2's S3 endpoint
+// (bypassing this server), and once uploaded, property/experience/product
+// cards load the images from R2's public custom domain — both need naming
+// here or the browser silently blocks them as a CSP violation, which looks
+// identical to a CORS failure ("Failed to fetch") from the app's point of
+// view. Derived from env, like apiOrigin above, so an unset R2 setup just
+// omits the origin instead of pointing at nothing.
+const r2UploadOrigin = process.env.R2_ACCOUNT_ID
+  ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
+  : "";
+
+const r2PublicUrl = (() => {
+  const raw = process.env.R2_PUBLIC_BASE_URL;
+  if (!raw) return null;
+  try {
+    return new URL(raw);
+  } catch {
+    return null;
+  }
+})();
+const r2PublicOrigin = r2PublicUrl?.origin ?? "";
+
+const csp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  // next/font/google self-hosts the font files at build time, so no external
+  // font origin is needed at runtime.
+  "font-src 'self' data:",
+  `img-src 'self' data: blob: https://images.unsplash.com ${r2PublicOrigin}`,
+  // The browser calls the API host directly, so connect-src has to name it.
+  // Derived from NEXT_PUBLIC_API_URL rather than hard-coded: in development
+  // that is http://localhost:8000, and a hard-coded production host would block
+  // every API call locally with a CSP error rather than an obvious failure.
+  `connect-src 'self' ${apiOrigin} ${r2UploadOrigin}`,
+  "media-src 'self'",
+  // Property/product video links embed as youtube-nocookie.com iframes.
+  "frame-src https://www.youtube-nocookie.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+// The CSP is a production policy and is not applied to `next dev`. Dev needs
+// things production must never allow — a websocket to localhost for hot reload,
+// and eval for the refresh runtime — so enforcing the production policy locally
+// blocks HMR and breaks the page you are trying to test, while proving nothing
+// about production. Verify the policy against `next build && next start`.
+const isProd = process.env.NODE_ENV === "production";
+
+const securityHeaders = [
+  ...(isProd ? [{ key: "Content-Security-Policy", value: csp }] : []),
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  // frame-ancestors above supersedes this for modern browsers; kept for old ones.
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+  // MASTER-CHECKLIST 0C-5. same-origin, not same-site like the API's: this is
+  // the site being embedded/opened, not the one doing the fetching, so there's
+  // no equivalent of the API's cross-subdomain-fetch concern here.
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+  // Cloudflare terminates TLS in front of this, but the header has to come from
+  // somewhere and the origin is the honest place for it. Not in development —
+  // it would pin localhost to https in your browser for two years.
+  ...(isProd
+    ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]
+    : []),
+];
 
 const nextConfig: NextConfig = {
+  // Don't advertise the stack. `x-powered-by: Next.js` is free reconnaissance
+  // for anyone scanning for framework-specific CVEs and buys us nothing.
+  // Confirmed live on loctravels.com via testssl.sh before this — this
+  // setting was simply never added here, unlike impactors-academy/ia-pro
+  // (which had it in source but hit an unrelated Dockerfile bug instead).
+  poweredByHeader: false,
+  // A local production build writes to its own directory so it can run beside
+  // `next dev` on another port. Sharing `.next` means whichever process built
+  // last wins, and the other starts throwing
+  // `__webpack_modules__[moduleId] is not a function` on pages that worked a
+  // minute earlier — which reads like a code bug, not a build collision.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   output: process.env.NEXT_BUILD_STANDALONE === "true" ? "standalone" : undefined,
   images: {
+    // next/image enforces its own remote-host allowlist independently of the
+    // CSP img-src above — missing it here doesn't get silently ignored, it
+    // crashes the page render with "Invalid src prop ... hostname is not
+    // configured", which is exactly what happened to every property/experience
+    // page once a real R2-hosted photo was added.
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
+      ...(r2PublicUrl
+        ? [{ protocol: r2PublicUrl.protocol.replace(":", "") as "https" | "http", hostname: r2PublicUrl.hostname }]
+        : []),
     ],
+  },
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+
+export default withNextIntl(nextConfig);

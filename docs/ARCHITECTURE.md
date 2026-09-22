@@ -30,22 +30,25 @@ How a request flows across frontend, backend, and database, and where each rule 
 ```
  GitHub (main branch)
    │
-   ├── Vercel ← auto-deploys frontend on push to main
-   │     Next.js native build (no standalone output on Vercel)
-   │     NEXT_BUILD_STANDALONE=true only in frontend/Dockerfile (for Docker)
-   │
-   └── Railway ← auto-deploys backend on push to main
-         railway.toml: DOCKERFILE builder → backend/Dockerfile
-         start: uv run alembic upgrade head && uv run uvicorn ...
-         services: backend (FastAPI) · PostgreSQL 16 · Redis
+   └── Coolify (Hostinger VPS) ← deploys on push to main, via its own git
+         integration. There is no deploy workflow in .github/ — do not add one.
+         Builds docker-compose.coolify.yml (NOT docker-compose.yml, which is dev).
+         │
+         ├── frontend  Next.js standalone (node server.js)  → loctravels.com
+         ├── backend   FastAPI, alembic upgrade head + uvicorn → api.loctravels.com
+         ├── db        pgvector/pgvector:pg16, volume loc_pgdata   (not public)
+         └── redis     redis:7-alpine, cache only, no persistence (not public)
+
+   Cloudflare fronts both hostnames, proxied, SSL/TLS Full (Strict).
+   NEXT_BUILD_STANDALONE=true is set inside frontend/Dockerfile.
 ```
 
 Key env vars:
 | Var | Used by | Value (dev) | Value (prod) |
 |---|---|---|---|
-| `NEXT_PUBLIC_API_URL` | Browser JS | `http://localhost:8000` | Railway backend URL |
-| `DATABASE_URL` | Backend | `postgresql+psycopg2://...` | Railway Postgres URL |
-| `REDIS_URL` | Backend | `redis://localhost:6379` | Railway Redis URL |
+| `NEXT_PUBLIC_API_URL` | Browser JS | `http://localhost:8000` | `https://api.loctravels.com` |
+| `DATABASE_URL` | Backend | `postgresql+psycopg2://...` | `db` service on the compose network |
+| `REDIS_URL` | Backend | `redis://localhost:6379` | `redis://redis:6379` on the compose network |
 | `OPENAI_API_KEY` | Backend (optional) | unset → embeddings disabled | set → embeddings on write |
 
 `app/api/contact/route.ts` reads a server-only internal URL. TanStack Query hooks read `NEXT_PUBLIC_API_URL`. Never expose the internal URL client-side.
@@ -186,9 +189,10 @@ Key namespacing: `experiences:{slug}`, `properties:list`, `blog:{slug}` — no c
 - No dedicated vector DB (Pinecone/Weaviate) — pgvector inside Postgres is sufficient at this scale.
 - **Deployment: Hostinger VPS via Coolify, DNS on Cloudflare, `loctravels.com`.**
   Postgres and Redis run as containers in the same compose stack, not managed
-  services. Railway and Vercel were both used earlier and are being retired —
-  `railway.toml` and the SSH deploy workflow are already removed. See
-  `docs/DEPLOYMENT.md`.
+  services. Railway and Vercel were both used earlier and are **fully retired** —
+  `railway.toml` and the SSH deploy workflow were removed earlier, and the Vercel
+  project and its GitHub integration were deleted 2026-08-08. Coolify is the only
+  thing that deploys this repo. See `docs/DEPLOYMENT.md`.
 - `next.config.ts` has conditional `output: standalone` — enabled by
   `NEXT_BUILD_STANDALONE=true`, which `frontend/Dockerfile` sets. Required for the
   Docker/Coolify image; harmless elsewhere.

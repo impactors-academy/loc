@@ -1,0 +1,38 @@
+import {
+  Waves,
+  Wifi,
+  Wind,
+  ChefHat,
+  ParkingCircle,
+  WashingMachine,
+  Tv,
+  Flame,
+  Laptop,
+  PawPrint,
+  Coffee,
+  Bath,
+  Utensils,
+  Mountain,
+  Dumbbell,
+  type LucideIcon,
+} from "lucide-react"
+
+// Keyed by lib/constants.ts PROPERTY_AMENITIES value.
+export const AMENITY_ICONS: Record<string, LucideIcon> = {
+  pool: Waves,
+  wifi: Wifi,
+  ac: Wind,
+  kitchen: ChefHat,
+  parking: ParkingCircle,
+  washer: WashingMachine,
+  tv: Tv,
+  heating: Flame,
+  workspace: Laptop,
+  pets: PawPrint,
+  breakfast: Coffee,
+  hot_tub: Bath,
+  bbq: Utensils,
+  sea_view: Waves,
+  mountain_view: Mountain,
+  gym: Dumbbell,
+}

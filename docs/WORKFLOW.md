@@ -18,25 +18,57 @@ Four services start: `db` (Postgres 16 + pgvector), `redis`, `backend` (FastAPI,
 
 No local Python/Node/Postgres install needed — Docker is the only prerequisite.
 
-**Without Docker** (faster for frontend-only work):
+### Without Docker — the whole stack
+
+On a machine with no Docker daemon, run everything natively:
+
 ```bash
-cd frontend && npm install && npm run dev
+bash scripts/dev-local.sh          # start
+bash scripts/dev-local.sh stop     # stop the two app processes
 ```
 
-For backend-only:
+It creates the `loc` and `loc_test` databases with `vector` + `pg_trgm`, runs
+migrations, seeds if the tables are empty, and starts backend and frontend with
+the env vars pointed at `localhost` instead of the compose service names.
+
+Needs Homebrew `postgresql@17+`, `pgvector`, `redis`, `uv` and `node`. It starts
+Redis directly rather than through `brew services` — a global `redis.conf` that
+loads a module you do not have will abort the service, and that is not this
+project's problem to work around.
+
+**Cloudflare Access stands aside in development.** `frontend/middleware.ts` has
+nothing to verify without Access in front of it, so `/admin` is reachable locally
+with no token. That is deliberate: a check that cannot pass locally gets disabled
+locally. It fails closed in production.
+
+Single-service alternatives:
 ```bash
+cd frontend && npm install && npm run dev
 cd backend && uv sync && uv run uvicorn app.main:app --reload
 ```
 
+### Running the tests
+
+```bash
+cd backend
+DATABASE_URL=postgresql+psycopg2://loc:loc@localhost:5432/loc_test uv run pytest
+```
+
+**The suite drops every table on teardown** (`Base.metadata.drop_all` in
+`tests/conftest.py`). Pointed at a development database it deletes all your data,
+passes, and says nothing — the damage surfaces the next time you start the app.
+`conftest.py` now refuses any database whose name does not end in `_test` or
+start with `test_`. Do not remove that guard.
+
 ## 2. Branching model
 
-- **`main`** — production-stable. Vercel and Railway auto-deploy from here.
+- **`main`** — production-stable. Coolify deploys from here.
 - **`develope`** — active integration branch (note the existing spelling).
 - **`feature/<short-name>`** — branch off `develope`, PR back into `develope`.
 - Release: PR `develope → main` once a slice is verified.
 
 ```
-feature/disc-search-hero ──PR──► develope ──PR──► main ──deploy──► prod (Vercel + Railway)
+feature/disc-search-hero ──PR──► develope ──PR──► main ──deploy──► prod (Coolify)
 ```
 
 ## 3. Commits & PRs
@@ -102,23 +134,29 @@ On every push to `develope` and `main`, runs in parallel:
 
 Keep it under a few minutes; this is a small team.
 
-## 8. Deployment (Vercel + Railway)
+## 8. Deployment (Coolify)
+
+Full detail — services, domains, env vars, first-deploy steps — is in
+`docs/DEPLOYMENT.md`. That file is authoritative; this is the summary.
 
 | Service | Platform | Trigger | Config |
 |---|---|---|---|
-| Frontend | Vercel | Push to `main` | Auto-detected Next.js; `NEXT_PUBLIC_API_URL` env var set to Railway backend URL |
-| Backend | Railway | Push to `main` | `railway.toml` at repo root; `backend/Dockerfile` |
-| PostgreSQL | Railway | Managed service | `DATABASE_URL` injected by Railway |
-| Redis | Railway | Managed service | `REDIS_URL` injected by Railway |
+| Frontend | Coolify (Hostinger VPS) | Push to `main` | `frontend/Dockerfile`, Next.js standalone → `loctravels.com` |
+| Backend | Coolify (Hostinger VPS) | Push to `main` | `backend/Dockerfile` → `api.loctravels.com` |
+| PostgreSQL | Coolify container | Same stack | `pgvector/pgvector:pg16`, volume `loc_pgdata`, not publicly bound |
+| Redis | Coolify container | Same stack | `redis:7-alpine`, cache only, not publicly bound |
 
-**Vercel caveat:** Hobby plan blocks deployments from commit authors who aren't the project owner on private repos. Either upgrade to Pro or make the repo public to allow CI/CD from all contributors.
+Coolify builds **`docker-compose.coolify.yml`** — not `docker-compose.yml`, which is
+the dev stack (hot reload, published DB ports, pgAdmin) and must never reach a public
+host. Coolify deploys from its own git integration, so there is no deploy workflow in
+`.github/`; adding one back gives two systems the same containers to fight over.
 
-**Railway start command** (from `railway.toml`):
+Backend start command (from `backend/Dockerfile`):
 ```
 uv run alembic upgrade head && uv run uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
 ```
 
-Health check: `GET /health` — Railway polls this before marking the deploy live.
+Health check: `GET /health` — Coolify polls this before marking the deploy live.
 
 ## 9. Environment variables reference
 
@@ -126,9 +164,9 @@ Health check: `GET /health` — Railway polls this before marking the deploy liv
 |---|---|---|
 | `DATABASE_URL` | ✅ Backend | `postgresql+psycopg2://user:pass@host:5432/db` |
 | `REDIS_URL` | ✅ Backend | `redis://host:6379` |
-| `NEXT_PUBLIC_API_URL` | ✅ Frontend | Railway backend public URL (e.g. `https://loc-backend.up.railway.app`) |
+| `NEXT_PUBLIC_API_URL` | ✅ Frontend | Backend public URL — `https://api.loctravels.com` in prod |
 | `OPENAI_API_KEY` | ⬜ Optional | Enables embedding generation; if unset, embeddings are skipped silently |
-| `NEXT_BUILD_STANDALONE` | ⬜ Docker only | Set to `true` inside `frontend/Dockerfile`; omit on Vercel |
+| `NEXT_BUILD_STANDALONE` | ⬜ Docker only | Set to `true` inside `frontend/Dockerfile`; omit for local `next build` |
 
 Never commit `.env` — only `.env.example` is committed.
 

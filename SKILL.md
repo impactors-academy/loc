@@ -40,7 +40,7 @@ Each stage requires a defined revenue or automation milestone before moving to t
 - **Database:** PostgreSQL 16 · SQLAlchemy 2 · Alembic · psycopg2-binary · **pgvector** (hybrid search)
 - **Search:** Pure Postgres FTS (`tsvector`) + pgvector cosine RRF hybrid
 - **API:** RESTful, versioned `/api/v1/`, CORS to Next.js origin
-- **Deployment:** Vercel (frontend) · Railway (backend + PostgreSQL + Redis)
+- **Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 - **Repo structure:**
   - `frontend/` — Next.js app
   - `backend/` — FastAPI app (`main.py`, `api/`, `models/`, `schemas/`, `repositories/`, `services/`, `db/`)

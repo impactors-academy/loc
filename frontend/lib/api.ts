@@ -126,5 +126,17 @@ export const api = {
     leads: {
       list: () => adminFetcher<Record<string, unknown>[]>("/leads?limit=100"),
     },
+    uploads: {
+      presign: (contentType: string) =>
+        adminFetcher<{ upload_url: string; public_url: string }>("/uploads/presign", {
+          method: "POST",
+          body: JSON.stringify({ content_type: contentType }),
+        }),
+    },
+  },
+  fx: {
+    // Public, cached 12h server-side (see backend/app/api/v1/endpoints/fx.py)
+    // — this is a "≈" display convenience, never used to charge anyone.
+    rates: (base: string) => fetcher<{ base: string; rates: Record<string, number> }>(`/api/v1/fx/${base}`),
   },
 }

@@ -1,24 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
-const DESTINATIONS = [
-  "Morocco",
-  "Paris",
-  "Greece",
-  "Belgium",
-  "London",
-  "Madrid",
-  "Barcelona",
-  "Bali",
-  "Kyoto",
-  "Amsterdam",
-  "Santorini",
-  "Prague",
-  "Shenzhen",
-  "Hangzhou",
-  "the World",
-]
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
+import { useTranslations } from "next-intl"
 
 const TYPE_MS = 75
 const DELETE_MS = 40
@@ -32,10 +16,15 @@ export function TypewriterTitle() {
   const [text, setText] = useState("")
   const [idx, setIdx] = useState(0)
   const [phase, setPhase] = useState<Phase>("typing")
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const t = useTranslations("hero")
+  const destinations = t.raw("destinations") as string[]
 
   useEffect(() => {
-    const dest = DESTINATIONS[idx]
-    const isFinal = idx === DESTINATIONS.length - 1
+    if (prefersReducedMotion) return
+
+    const dest = destinations[idx]
+    const isFinal = idx === destinations.length - 1
 
     let timer: ReturnType<typeof setTimeout>
 
@@ -49,7 +38,7 @@ export function TypewriterTitle() {
       timer = setTimeout(() => setPhase("deleting"), 0)
     } else if (phase === "deleting") {
       if (text.length > 0) {
-        timer = setTimeout(() => setText((t) => t.slice(0, -1)), DELETE_MS)
+        timer = setTimeout(() => setText((prev) => prev.slice(0, -1)), DELETE_MS)
       } else {
         timer = setTimeout(() => {
           setIdx((i) => i + 1)
@@ -57,7 +46,6 @@ export function TypewriterTitle() {
         }, PAUSE_BEFORE_NEXT)
       }
     } else {
-      // "holding" — pause on "the World" then loop
       timer = setTimeout(() => {
         setText("")
         setIdx(0)
@@ -66,17 +54,33 @@ export function TypewriterTitle() {
     }
 
     return () => clearTimeout(timer)
-  }, [text, idx, phase])
+  }, [text, idx, phase, prefersReducedMotion, destinations])
+
+  const longest = destinations.reduce((a, b) => (a.length > b.length ? a : b))
 
   return (
-    <h1 className="font-heading text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.05] mb-6">
-      Discover{" "}
-      <span className="text-loc-amber whitespace-nowrap">
-        {text}
+    <h1
+      className="font-heading font-semibold tracking-tight leading-[0.92] mb-6"
+      style={{ fontSize: "var(--loc-text-hero)", wordSpacing: "-0.15em" }}
+    >
+      {t("discover")}{" "}
+      <span className="inline-grid align-baseline">
         <span
-          className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
+          className="col-start-1 row-start-1 text-loc-amber"
+          style={{ visibility: "hidden" }}
           aria-hidden="true"
-        />
+        >
+          {longest}
+        </span>
+        <span className="col-start-1 row-start-1 text-loc-amber whitespace-nowrap">
+          {prefersReducedMotion ? destinations[destinations.length - 1] : text}
+          {!prefersReducedMotion && (
+            <span
+              className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
+              aria-hidden="true"
+            />
+          )}
+        </span>
       </span>
     </h1>
   )

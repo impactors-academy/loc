@@ -21,6 +21,7 @@ class Experience(Base):
     duration: Mapped[str | None] = mapped_column(String)
     price_min: Mapped[float | None] = mapped_column(Float)
     price_max: Mapped[float | None] = mapped_column(Float)
+    currency: Mapped[str] = mapped_column(String, nullable=False, default="EUR")
     images: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
     is_featured: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     provider_name: Mapped[str | None] = mapped_column(String)

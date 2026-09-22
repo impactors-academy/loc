@@ -1,8 +1,12 @@
+"use client"
+
+import { formatAmount } from "@/lib/types"
 import type { Product } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { ExternalLink } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 const TYPE_GRADIENTS: Record<string, string> = {
   guide: "from-amber-950 via-orange-900 to-amber-800",
@@ -18,17 +22,12 @@ const TYPE_ICONS: Record<string, string> = {
   template: "📋",
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  guide: "Travel Guide",
-  map: "Map",
-  photography: "Photography",
-  template: "Template",
-}
-
 export function ProductCard({ product }: { product: Product }) {
+  const t = useTranslations("common")
+  const tp = useTranslations("productTypes")
   const gradient = TYPE_GRADIENTS[product.type] ?? "from-neutral-900 via-neutral-800 to-neutral-700"
   const icon = TYPE_ICONS[product.type] ?? "📦"
-  const typeLabel = TYPE_LABELS[product.type] ?? product.type
+  const typeLabel = tp.has(product.type) ? tp(product.type) : product.type
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
@@ -59,15 +58,15 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-heading font-bold text-loc-night text-base leading-snug line-clamp-2 mb-2">
+        <h3 className="font-heading font-semibold text-loc-night text-base leading-snug line-clamp-2 mb-2">
           {product.title}
         </h3>
         <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
           {product.description}
         </p>
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="font-heading text-lg font-bold text-loc-terracotta">
-            €{product.price.toFixed(2)}
+          <span className="font-heading text-lg font-semibold text-loc-terracotta">
+            {formatAmount(product.price, product.currency, 2)}
           </span>
           <a
             href={product.purchaseUrl}
@@ -76,7 +75,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="inline-flex items-center gap-1.5 bg-loc-terracotta text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-loc-terracotta/90 transition-all hover:scale-[1.03]"
             aria-label={`Buy ${product.title}`}
           >
-            Buy now <ExternalLink size={11} />
+            {t("buyNow")} <ExternalLink size={11} />
           </a>
         </div>
       </div>
