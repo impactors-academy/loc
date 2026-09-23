@@ -24,7 +24,8 @@
     "staysPill": "Stays",
     "guides": "Guides",
     "destinations": ["Morocco", "Paris", "Belgium", "the World"],
-    "searchSuggestions": ["Marrakech riad", "Guéliz apartment", "Marrakech villa pool", "Tangier apartment"]
+    "searchSuggestions": ["Morocco", "skydiving adventure", "desert camp", "wellness retreat", "Paris apartment", "cultural tour"],
+    "searchHint": "Search destinations, experiences, and stays"
   },
   "howItWorks": {
     "eyebrow": "Simple by design",
@@ -93,6 +94,9 @@
     "perNight": "/ night",
     "featured": "Featured",
     "premium": "Premium",
+    "topPick": "Top Pick",
+    "promoted": "Promoted",
+    "topListing": "Top Listing",
     "viewDetails": "View Details",
     "bookNow": "Book Now",
     "buyNow": "Buy now",

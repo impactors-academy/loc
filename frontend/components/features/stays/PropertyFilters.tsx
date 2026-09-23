@@ -34,7 +34,7 @@ export function PropertyFilters() {
             onClick={() => push({ type: t.value })}
             aria-pressed={activeType === t.value}
             className={cn(
-              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-terracotta/50 focus-visible:ring-offset-1",
               activeType === t.value
                 ? "bg-loc-terracotta text-white border-loc-terracotta"
                 : "border-border text-loc-stone hover:border-loc-terracotta hover:text-loc-terracotta"
@@ -51,7 +51,7 @@ export function PropertyFilters() {
           onClick={() => push({ country: "" })}
           aria-pressed={activeCountry === ""}
           className={cn(
-            "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+            "px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-terracotta/50 focus-visible:ring-offset-1",
             activeCountry === ""
               ? "bg-loc-slate text-white border-loc-slate"
               : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
@@ -65,7 +65,7 @@ export function PropertyFilters() {
             onClick={() => push({ country: c.value })}
             aria-pressed={activeCountry === c.value}
             className={cn(
-              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all",
+              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-terracotta/50 focus-visible:ring-offset-1",
               activeCountry === c.value
                 ? "bg-loc-slate text-white border-loc-slate"
                 : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"

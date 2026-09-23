@@ -27,8 +27,11 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
           {experience.category}
         </span>
         {experience.isFeatured && (
-          <span className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full">
-            {t("featured")}
+          <span
+            className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full"
+            title="Editor's selection"
+          >
+            {t("topPick")}
           </span>
         )}
       </div>

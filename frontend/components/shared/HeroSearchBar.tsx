@@ -89,6 +89,9 @@ export function HeroSearchBar() {
           {t("search")}
         </button>
       </div>
+      <p className="text-center text-white/40 text-xs mt-3 tracking-wide">
+        {th("searchHint")}
+      </p>
     </form>
   )
 }

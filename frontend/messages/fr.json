@@ -24,7 +24,8 @@
     "staysPill": "Séjours",
     "guides": "Guides",
     "destinations": ["Maroc", "Paris", "Belgique", "le Monde"],
-    "searchSuggestions": ["Riad à Marrakech", "Appartement à Guéliz", "Villa avec piscine à Marrakech", "Appartement à Tanger"]
+    "searchSuggestions": ["Maroc", "aventure parachutisme", "camp désert", "retraite bien-être", "appartement Paris", "visite culturelle"],
+    "searchHint": "Rechercher des destinations, expériences et séjours"
   },
   "howItWorks": {
     "eyebrow": "Simple par conception",
@@ -93,6 +94,9 @@
     "perNight": "/ nuit",
     "featured": "En vedette",
     "premium": "Premium",
+    "topPick": "Coup de cœur",
+    "promoted": "Promu",
+    "topListing": "Top annonce",
     "viewDetails": "Voir les détails",
     "bookNow": "Réserver",
     "buyNow": "Acheter",

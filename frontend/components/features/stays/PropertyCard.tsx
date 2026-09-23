@@ -19,7 +19,12 @@ export function PropertyCard({ property, priceContext }: Props) {
   const tp = useTranslations("propertyTypes")
   const typeLabel = tp.has(property.type) ? tp(property.type) : property.type
   const image = property.images?.[0] ?? getPoolImage(property.type, property.slug)
-  const tierLabel = property.listingTier === "featured" ? t("featured") : property.listingTier === "premium" ? t("premium") : null
+  const tierMeta =
+    property.listingTier === "premium"
+      ? { label: t("topListing"), title: "Highest-visibility paid placement" }
+      : property.listingTier === "featured"
+      ? { label: t("promoted"), title: "Paid placement" }
+      : null
 
   return (
     <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
@@ -34,9 +39,12 @@ export function PropertyCard({ property, priceContext }: Props) {
         <span className="absolute top-3 left-3 bg-white/90 text-loc-night text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
           {typeLabel}
         </span>
-        {tierLabel && (
-          <span className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full">
-            {tierLabel}
+        {tierMeta && (
+          <span
+            className="absolute top-3 right-3 bg-loc-amber text-loc-night text-xs font-medium px-2 py-1 rounded-full"
+            title={tierMeta.title}
+          >
+            {tierMeta.label}
           </span>
         )}
       </div>
