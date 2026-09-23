@@ -2,7 +2,7 @@ import { PropertyCard } from "@/components/features/stays/PropertyCard"
 import { CommissionStat } from "@/components/shared/CommissionStat"
 import { HeroSection } from "@/components/shared/HeroSection"
 import { IntentSplit } from "@/components/shared/IntentSplit"
-import { ScrollReveal } from "@/components/shared/ScrollReveal"
+import { ScrollReveal, ScrollRevealItem } from "@/components/shared/ScrollReveal"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { api } from "@/lib/api"
 import { getVisitorPriceContext } from "@/lib/price-display-context"
@@ -55,49 +55,57 @@ export default async function HomePage() {
 
       {/* ── How LOC Works ───────────────────────────────────────────────── */}
       <section className="bg-white py-20">
-        <ScrollReveal className="container mx-auto px-4">
-          <SectionHeader
-            eyebrow={t("howItWorks.eyebrow")}
-            title={t("howItWorks.title")}
-            subtitle={t("howItWorks.subtitle")}
-            center
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-14">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <SectionHeader
+              eyebrow={t("howItWorks.eyebrow")}
+              title={t("howItWorks.title")}
+              subtitle={t("howItWorks.subtitle")}
+              center
+            />
+          </ScrollReveal>
+          <ScrollReveal variant="stagger" className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-14">
             {howItWorksSteps.map((step, i) => (
-              <div key={step.title} className="text-center">
-                <span className="font-heading text-6xl font-semibold text-loc-sand select-none block mb-2">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="font-heading text-xl font-semibold text-loc-night mb-3">{step.title}</h3>
-                <p className="font-sans text-loc-stone text-sm leading-relaxed">{step.desc}</p>
-              </div>
+              <ScrollRevealItem key={step.title}>
+                <div className="text-center">
+                  <span className="font-heading text-6xl font-semibold text-loc-sand select-none block mb-2">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="font-heading text-xl font-semibold text-loc-night mb-3">{step.title}</h3>
+                  <p className="font-sans text-loc-stone text-sm leading-relaxed">{step.desc}</p>
+                </div>
+              </ScrollRevealItem>
             ))}
-          </div>
-        </ScrollReveal>
+          </ScrollReveal>
+        </div>
       </section>
 
       {/* ── Handpicked Stays ────────────────────────────────────────────── */}
       {featuredProperties.length > 0 && (
       <section className="bg-loc-sand/30 py-20">
-        <ScrollReveal className="container mx-auto px-4">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <SectionHeader
-              eyebrow={t("handpickedStays.eyebrow")}
-              title={t("handpickedStays.title")}
-              subtitle={t("handpickedStays.subtitle")}
-            />
-            <Link
-              href="/stays"
-              className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-loc-terracotta hover:text-loc-terracotta/80 transition-colors mb-10 shrink-0"
-            >
-              {t("handpickedStays.seeAll")} <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+              <SectionHeader
+                eyebrow={t("handpickedStays.eyebrow")}
+                title={t("handpickedStays.title")}
+                subtitle={t("handpickedStays.subtitle")}
+              />
+              <Link
+                href="/stays"
+                className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-loc-terracotta hover:text-loc-terracotta/80 transition-colors mb-10 shrink-0"
+              >
+                {t("handpickedStays.seeAll")} <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal variant="stagger" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProperties.map((prop) => (
-              <PropertyCard key={prop.id} property={prop} priceContext={priceContext} />
+              <ScrollRevealItem key={prop.id}>
+                <PropertyCard property={prop} priceContext={priceContext} />
+              </ScrollRevealItem>
             ))}
-          </div>
+          </ScrollReveal>
           <div className="mt-8 text-center md:hidden">
             <Link
               href="/stays"
@@ -106,7 +114,7 @@ export default async function HomePage() {
               {t("handpickedStays.seeAll")} →
             </Link>
           </div>
-        </ScrollReveal>
+        </div>
       </section>
       )}
 

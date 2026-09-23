@@ -1,7 +1,7 @@
 "use client"
 
 import { Search } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
