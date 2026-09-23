@@ -121,7 +121,7 @@ export function Navbar() {
         <>
           {/* Full-screen backdrop: click anywhere outside the drawer to close */}
           <div
-            className="fixed inset-0 -z-10"
+            className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
