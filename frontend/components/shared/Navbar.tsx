@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Link, usePathname } from "@/i18n/navigation"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { LanguageSwitcher } from "./LanguageSwitcher"
 
@@ -24,6 +24,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const t = useTranslations("nav")
   const pathname = usePathname()
+  const headerRef = useRef<HTMLElement>(null)
 
   // Transparent hero state only applies on the homepage before scroll
   const isHome = pathname === "/"
@@ -40,8 +41,21 @@ export function Navbar() {
     setOpen(false)
   }, [pathname])
 
+  // Close mobile menu when clicking anywhere outside the header
+  useEffect(() => {
+    if (!open) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [open])
+
   return (
     <header
+      ref={headerRef}
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
         transparent
@@ -118,37 +132,29 @@ export function Navbar() {
 
       {/* Mobile drawer */}
       {open && (
-        <>
-          {/* Full-screen backdrop: click anywhere outside the drawer to close */}
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="md:hidden bg-white border-t border-loc-sand px-4 py-5 flex flex-col gap-3 shadow-lg">
-            {NAV_KEYS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-base font-medium text-loc-night hover:text-loc-terracotta transition-colors py-1"
-                onClick={() => setOpen(false)}
-              >
-                {t(link.key)}
-              </Link>
-            ))}
+        <div className="md:hidden bg-white border-t border-loc-sand px-4 py-5 flex flex-col gap-3 shadow-lg">
+          {NAV_KEYS.map((link) => (
             <Link
-              href="/promote"
-              className="mt-3 text-center text-sm font-semibold px-5 py-3 rounded-full bg-loc-terracotta text-white hover:bg-loc-terracotta/90 transition-colors"
+              key={link.href}
+              href={link.href}
+              className="text-base font-medium text-loc-night hover:text-loc-terracotta transition-colors py-1"
               onClick={() => setOpen(false)}
             >
-              {t("listWithUs")}
+              {t(link.key)}
             </Link>
-            {/* Language switcher visible in mobile drawer */}
-            <div className="mt-2 pt-3 border-t border-loc-sand/60">
-              <LanguageSwitcher scrolled={true} />
-            </div>
+          ))}
+          <Link
+            href="/promote"
+            className="mt-3 text-center text-sm font-semibold px-5 py-3 rounded-full bg-loc-terracotta text-white hover:bg-loc-terracotta/90 transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            {t("listWithUs")}
+          </Link>
+          {/* Language switcher visible in mobile drawer */}
+          <div className="mt-2 pt-3 border-t border-loc-sand/60">
+            <LanguageSwitcher scrolled={true} />
           </div>
-        </>
+        </div>
       )}
     </header>
   )
