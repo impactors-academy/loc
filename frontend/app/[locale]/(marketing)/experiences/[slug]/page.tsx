@@ -1,5 +1,6 @@
 import { AffiliateLinks } from "@/components/features/affiliates/AffiliateLinks"
 import { InquiryForm } from "@/components/shared/InquiryForm"
+import { TrustStrip } from "@/components/shared/TrustStrip"
 import { ReferralButton } from "@/components/features/experiences/ReferralButton"
 import { api } from "@/lib/api"
 import { formatPriceRange } from "@/lib/types"
@@ -195,6 +196,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
               <p className="text-loc-stone text-sm mb-4">
                 {t("interestedBody")}
               </p>
+              <TrustStrip />
               {experience?.referralUrl && (
                 <div className="mb-5">
                   <ReferralButton slug={slug} referralUrl={experience.referralUrl} />

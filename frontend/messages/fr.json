@@ -15,7 +15,7 @@
   "hero": {
     "eyebrow": "Au service des touristes",
     "discover": "Découvrez",
-    "subtitle": "Expériences, séjours et trésors cachés. Sélectionnés par ceux qui y vivent.",
+    "subtitle": "Sélectionnés par des locaux. Contactez directement chaque hôte ou prestataire.",
     "cta": "Explorer les expériences",
     "ctaSecondary": "Trouver un séjour",
     "adventures": "Aventures",
@@ -52,8 +52,15 @@
     "seeAll": "Voir tous les séjours"
   },
   "homepage": {
-    "commissionLabel": "Commission de réservation",
-    "statsLabel": "Statistiques de la plateforme"
+    "commissionLabel": "Commission de réservation prélevée",
+    "commissionSublabel": "Hôtes et prestataires gardent chaque centime — nous gagnons via des frais fixes, pas sur vos réservations.",
+    "statsLabel": "Statistiques de la plateforme",
+    "intentTraveller": "Je voyage",
+    "intentTravellerDesc": "Découvrez des séjours, expériences et guides de voyage sélectionnés par des locaux.",
+    "intentTravellerCta": "Commencer à explorer",
+    "intentProvider": "Je suis un prestataire local",
+    "intentProviderDesc": "Listez votre propriété, expérience ou service touristique et atteignez des voyageurs directement.",
+    "intentProviderCta": "Nous rejoindre"
   },
   "footer": {
     "tagline": "Votre connecteur voyage au Maroc, en France et en Belgique. Expériences sélectionnées, séjours triés sur le volet et guides de voyage numériques.",
@@ -77,7 +84,7 @@
     "message": "Votre message",
     "send": "Envoyer le message",
     "sending": "Envoi en cours...",
-    "success": "Message envoyé ! Nous vous répondrons rapidement.",
+    "success": "Message envoyé. L'hôte vous contactera directement — généralement sous 24 heures.",
     "error": "Une erreur est survenue. Veuillez réessayer."
   },
   "common": {
@@ -232,7 +239,12 @@
     "loadError": "Impossible de charger les expériences pour le moment. Veuillez réessayer plus tard.",
     "noResults": "Aucune expérience trouvée",
     "noResultsFor": "Aucun résultat pour « {q} »",
-    "tryDifferent": "Essayez une autre recherche, catégorie ou destination."
+    "tryDifferent": "Essayez une autre recherche, catégorie ou destination.",
+    "emptyTitle": "Les expériences sont en cours de sélection",
+    "emptyBody": "Nous sélectionnons les meilleures expériences locales pour chaque destination. Explorez nos séjours ou parcourez nos récits de voyage pendant que nous construisons le catalogue.",
+    "emptyBrowse": "Explorer les séjours",
+    "emptyStories": "Récits de voyage",
+    "clearSearch": "Effacer la recherche"
   },
   "experienceDetailPage": {
     "breadcrumbHome": "Accueil",
@@ -251,6 +263,11 @@
     "loadError": "Impossible de charger les propriétés pour le moment. Veuillez réessayer plus tard.",
     "noResults": "Aucune propriété trouvée",
     "tryDifferent": "Essayez un autre type ou revenez bientôt."
+  },
+  "trustStrip": {
+    "directContact": "Contact direct avec l'hôte",
+    "responseTime": "Répond généralement sous 24 heures",
+    "noFee": "Aucun frais de plateforme sur les demandes"
   },
   "stayDetailPage": {
     "breadcrumbHome": "Accueil",

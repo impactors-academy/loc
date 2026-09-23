@@ -15,7 +15,7 @@
   "hero": {
     "eyebrow": "Ao serviço dos turistas",
     "discover": "Descubra",
-    "subtitle": "Experiências, estadias e tesouros escondidos. Selecionados por quem vive lá.",
+    "subtitle": "Selecionados por locais. Contacte qualquer anfitrião ou prestador diretamente.",
     "cta": "Explorar experiências",
     "ctaSecondary": "Encontrar estadia",
     "adventures": "Aventuras",
@@ -52,8 +52,15 @@
     "seeAll": "Ver todas as estadias"
   },
   "homepage": {
-    "commissionLabel": "Comissão de reserva",
-    "statsLabel": "Estatísticas da plataforma"
+    "commissionLabel": "Comissão de reserva cobrada",
+    "commissionSublabel": "Anfitriões e prestadores ficam com cada cêntimo — ganhamos com taxas fixas, não com as suas reservas.",
+    "statsLabel": "Estatísticas da plataforma",
+    "intentTraveller": "Estou a viajar",
+    "intentTravellerDesc": "Descubra estadias, experiências e guias de viagem selecionados por locais.",
+    "intentTravellerCta": "Começar a explorar",
+    "intentProvider": "Sou um prestador local",
+    "intentProviderDesc": "Liste a sua propriedade, experiência ou serviço turístico e alcance viajantes diretamente.",
+    "intentProviderCta": "Junte-se a nós"
   },
   "footer": {
     "tagline": "O seu conector de viagens em Marrocos, França e Bélgica. Experiências selecionadas, estadias escolhidas a dedo e guias de viagem digitais.",
@@ -77,7 +84,7 @@
     "message": "A sua mensagem",
     "send": "Enviar mensagem",
     "sending": "A enviar...",
-    "success": "Mensagem enviada! Responderemos em breve.",
+    "success": "Mensagem enviada. O anfitrião entrará em contacto diretamente — geralmente em 24 horas.",
     "error": "Algo correu mal. Por favor, tente novamente."
   },
   "common": {
@@ -232,7 +239,12 @@
     "loadError": "Não foi possível carregar as experiências neste momento. Tente novamente mais tarde.",
     "noResults": "Nenhuma experiência encontrada",
     "noResultsFor": "Sem resultados para \"{q}\"",
-    "tryDifferent": "Tente outra pesquisa, categoria ou destino."
+    "tryDifferent": "Tente outra pesquisa, categoria ou destino.",
+    "emptyTitle": "As experiências estão a ser curadas",
+    "emptyBody": "Estamos a selecionar as melhores experiências locais para cada destino. Explore as nossas estadias ou navegue pelas nossas histórias de viagem enquanto construímos o catálogo.",
+    "emptyBrowse": "Explorar estadias",
+    "emptyStories": "Histórias de viagem",
+    "clearSearch": "Limpar pesquisa"
   },
   "experienceDetailPage": {
     "breadcrumbHome": "Início",
@@ -251,6 +263,11 @@
     "loadError": "Não foi possível carregar as propriedades neste momento. Tente novamente mais tarde.",
     "noResults": "Nenhuma propriedade encontrada",
     "tryDifferent": "Tente outro tipo ou volte em breve."
+  },
+  "trustStrip": {
+    "directContact": "Contacto direto com o anfitrião",
+    "responseTime": "Responde normalmente em 24 horas",
+    "noFee": "Sem taxa de plataforma nos pedidos de contacto"
   },
   "stayDetailPage": {
     "breadcrumbHome": "Início",

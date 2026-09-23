@@ -1,4 +1,5 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
+import { TrustStrip } from "@/components/shared/TrustStrip"
 import { PriceDisplay } from "@/components/shared/PriceDisplay"
 import { PropertyGallery } from "@/components/features/stays/PropertyGallery"
 import { YouTubeEmbed } from "@/components/shared/YouTubeEmbed"
@@ -214,9 +215,10 @@ export default async function PropertyDetailPage({ params }: Props) {
               <p className="font-heading text-lg font-semibold text-loc-night mb-1">
                 {t("enquireTitle")}
               </p>
-              <p className="text-loc-stone text-sm mb-6">
+              <p className="text-loc-stone text-sm mb-4">
                 {t("enquireBody")}
               </p>
+              <TrustStrip />
               <InquiryForm subject={`Inquiry about stay: ${property?.title ?? slug}`} />
             </div>
           </aside>

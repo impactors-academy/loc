@@ -15,7 +15,7 @@
   "hero": {
     "eyebrow": "Serving Tourists",
     "discover": "Discover",
-    "subtitle": "Experiences, stays, and hidden gems. Curated by people who live there.",
+    "subtitle": "Curated by locals. Reach any host or provider directly.",
     "cta": "Explore Experiences",
     "ctaSecondary": "Find a Stay",
     "adventures": "Adventures",
@@ -52,8 +52,15 @@
     "seeAll": "See all stays"
   },
   "homepage": {
-    "commissionLabel": "Booking Commission",
-    "statsLabel": "Platform statistics"
+    "commissionLabel": "Booking commission charged",
+    "commissionSublabel": "Hosts and providers keep every cent — we earn through flat placement fees, not your bookings.",
+    "statsLabel": "Platform statistics",
+    "intentTraveller": "I'm travelling",
+    "intentTravellerDesc": "Discover stays, experiences, and travel guides curated by people who live there.",
+    "intentTravellerCta": "Start exploring",
+    "intentProvider": "I'm a local provider",
+    "intentProviderDesc": "List your property, experience, or tourism service and reach travellers directly.",
+    "intentProviderCta": "List with us"
   },
   "footer": {
     "tagline": "Your travel connector in Morocco, France, and Belgium. Curated experiences, handpicked stays, and digital travel guides.",
@@ -77,7 +84,7 @@
     "message": "Your message",
     "send": "Send Message",
     "sending": "Sending...",
-    "success": "Message sent! We'll get back to you shortly.",
+    "success": "Message sent. The host will contact you directly — usually within 24 hours.",
     "error": "Something went wrong. Please try again."
   },
   "common": {
@@ -232,7 +239,12 @@
     "loadError": "Could not load experiences right now. Please try again later.",
     "noResults": "No experiences found",
     "noResultsFor": "No results for \"{q}\"",
-    "tryDifferent": "Try a different search, category, or destination."
+    "tryDifferent": "Try a different search, category, or destination.",
+    "emptyTitle": "Experiences are being curated",
+    "emptyBody": "We're handpicking the best local experiences for each destination. Explore our stays or browse travel stories while we build the catalogue.",
+    "emptyBrowse": "Explore stays",
+    "emptyStories": "Travel stories",
+    "clearSearch": "Clear search"
   },
   "experienceDetailPage": {
     "breadcrumbHome": "Home",
@@ -251,6 +263,11 @@
     "loadError": "Could not load properties right now. Please try again later.",
     "noResults": "No properties found",
     "tryDifferent": "Try a different type or check back soon."
+  },
+  "trustStrip": {
+    "directContact": "Direct contact with the host",
+    "responseTime": "Typically responds within 24 hours",
+    "noFee": "No platform fee on enquiries"
   },
   "stayDetailPage": {
     "breadcrumbHome": "Home",

@@ -1,11 +1,13 @@
 import { PropertyCard } from "@/components/features/stays/PropertyCard"
+import { CommissionStat } from "@/components/shared/CommissionStat"
 import { HeroSection } from "@/components/shared/HeroSection"
+import { IntentSplit } from "@/components/shared/IntentSplit"
+import { ScrollReveal } from "@/components/shared/ScrollReveal"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { api } from "@/lib/api"
 import { getVisitorPriceContext } from "@/lib/price-display-context"
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
-import { COMMISSION_STAT } from "./_data"
 
 const TIER_RANK: Record<string, number> = { premium: 0, featured: 1, standard: 2 }
 
@@ -42,18 +44,18 @@ export default async function HomePage() {
       {/* Real, verifiable numbers only: one static product fact (no booking
           commission, ever). No stay/property count, no "Countries" or
           "Experiences" stat here — nothing else to honestly count yet. */}
-      <section className="bg-loc-sand py-10" aria-label={t("homepage.statsLabel")}>
+      <section className="bg-loc-sand py-12" aria-label={t("homepage.statsLabel")}>
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-md mx-auto">
-            <p className="font-heading text-3xl font-semibold text-loc-terracotta">{COMMISSION_STAT.value}</p>
-            <p className="font-sans text-sm text-loc-stone mt-1">{t("homepage.commissionLabel")}</p>
-          </div>
+          <CommissionStat />
         </div>
       </section>
 
+      {/* ── Intent split ────────────────────────────────────────────────── */}
+      <IntentSplit />
+
       {/* ── How LOC Works ───────────────────────────────────────────────── */}
       <section className="bg-white py-20">
-        <div className="container mx-auto px-4">
+        <ScrollReveal className="container mx-auto px-4">
           <SectionHeader
             eyebrow={t("howItWorks.eyebrow")}
             title={t("howItWorks.title")}
@@ -71,13 +73,13 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* ── Handpicked Stays ────────────────────────────────────────────── */}
       {featuredProperties.length > 0 && (
       <section className="bg-loc-sand/30 py-20">
-        <div className="container mx-auto px-4">
+        <ScrollReveal className="container mx-auto px-4">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
             <SectionHeader
               eyebrow={t("handpickedStays.eyebrow")}
@@ -104,13 +106,13 @@ export default async function HomePage() {
               {t("handpickedStays.seeAll")} →
             </Link>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
       )}
 
       {/* ── Partner CTA ─────────────────────────────────────────────────── */}
       <section className="bg-loc-night py-24">
-        <div className="container mx-auto px-4 text-center max-w-2xl">
+        <ScrollReveal className="container mx-auto px-4 text-center max-w-2xl">
           <p className="font-sans text-loc-amber uppercase tracking-widest text-xs font-medium mb-4">
             {t("partnerCta.eyebrow")}
           </p>
@@ -126,7 +128,7 @@ export default async function HomePage() {
           >
             {t("partnerCta.cta")}
           </Link>
-        </div>
+        </ScrollReveal>
       </section>
     </>
   )
