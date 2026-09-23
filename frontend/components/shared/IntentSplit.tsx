@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
+import { PlaneTakeoff, Building2 } from "lucide-react"
 
 export async function IntentSplit() {
   const t = await getTranslations("homepage")
@@ -14,7 +15,14 @@ export async function IntentSplit() {
             href="/experiences"
             className="group flex items-start gap-5 px-4 py-8 sm:px-8 hover:bg-loc-sand/30 transition-colors"
           >
-            <span className="text-3xl mt-0.5 shrink-0" aria-hidden="true">✈️</span>
+            <div className="shrink-0 w-14 h-14 rounded-2xl bg-loc-sand/60 flex items-center justify-center group-hover:bg-loc-sand transition-colors mt-0.5">
+              <PlaneTakeoff
+                size={26}
+                strokeWidth={1.5}
+                className="text-loc-terracotta group-hover:-translate-y-0.5 group-hover:scale-105 transition-transform"
+                aria-hidden="true"
+              />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="font-heading text-lg font-semibold text-loc-night group-hover:text-loc-terracotta transition-colors mb-1">
                 {t("intentTraveller")}
@@ -33,7 +41,14 @@ export async function IntentSplit() {
             href="/promote"
             className="group flex items-start gap-5 px-4 py-8 sm:px-8 hover:bg-loc-sand/30 transition-colors"
           >
-            <span className="text-3xl mt-0.5 shrink-0" aria-hidden="true">🏠</span>
+            <div className="shrink-0 w-14 h-14 rounded-2xl bg-loc-sand/60 flex items-center justify-center group-hover:bg-loc-sand transition-colors mt-0.5">
+              <Building2
+                size={26}
+                strokeWidth={1.5}
+                className="text-loc-terracotta group-hover:scale-110 transition-transform"
+                aria-hidden="true"
+              />
+            </div>
             <div className="flex-1 min-w-0">
               <p className="font-heading text-lg font-semibold text-loc-night group-hover:text-loc-terracotta transition-colors mb-1">
                 {t("intentProvider")}

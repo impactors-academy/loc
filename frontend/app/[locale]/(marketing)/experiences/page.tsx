@@ -4,6 +4,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader"
 import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import { Suspense } from "react"
+import { Compass } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("experiencesPage")
@@ -25,7 +26,10 @@ export default async function ExperiencesPage({ searchParams }: Props) {
   return (
     <main className="pt-24 pb-20">
       <div className="container mx-auto px-4">
-        <div className="mb-10">
+        <div className="mb-10 flex items-start gap-5">
+          <div className="hidden sm:flex shrink-0 w-14 h-14 rounded-2xl bg-loc-sand/60 items-center justify-center mt-1">
+            <Compass size={26} strokeWidth={1.5} className="text-loc-terracotta" aria-hidden="true" />
+          </div>
           <SectionHeader
             eyebrow={t("eyebrow")}
             title={t("title")}

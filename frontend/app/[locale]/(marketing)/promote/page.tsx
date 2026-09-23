@@ -1,8 +1,9 @@
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { SectionHeader } from "@/components/shared/SectionHeader"
-import { Check } from "lucide-react"
+import { Check, Target, Coins, MapPinned } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
+import type { LucideIcon } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("promotePage")
@@ -22,7 +23,7 @@ const PACKAGE_META = [
   { price: "€599", period: "/ month", highlight: false },
 ] as const
 
-const WHY_LOC_ICONS = ["🎯", "🤝", "📍"] as const
+const WHY_LOC_ICONS: LucideIcon[] = [Target, Coins, MapPinned]
 
 interface PackageCopy {
   name: string
@@ -41,7 +42,7 @@ export default async function PromotePage() {
   const packagesCopy = t.raw("packages") as PackageCopy[]
   const whyLocCopy = t.raw("whyLoc") as WhyLocCopy[]
   const packages = PACKAGE_META.map((meta, i) => ({ ...meta, ...packagesCopy[i] }))
-  const whyLoc = WHY_LOC_ICONS.map((icon, i) => ({ icon, ...whyLocCopy[i] }))
+  const whyLoc = WHY_LOC_ICONS.map((Icon, i) => ({ Icon, ...whyLocCopy[i] }))
 
   return (
     <main className="pt-24 pb-20">
@@ -61,7 +62,9 @@ export default async function PromotePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {whyLoc.map((item) => (
               <div key={item.title} className="text-center px-4">
-                <span className="text-4xl mb-4 block">{item.icon}</span>
+                <div className="w-14 h-14 rounded-2xl bg-loc-sand/70 flex items-center justify-center mx-auto mb-5">
+                  <item.Icon size={26} strokeWidth={1.5} className="text-loc-terracotta" aria-hidden="true" />
+                </div>
                 <h3 className="font-heading text-lg font-semibold text-loc-night mb-2">{item.title}</h3>
                 <p className="text-loc-stone text-sm leading-relaxed">{item.desc}</p>
               </div>
