@@ -1,38 +1,29 @@
 "use client"
 
-import { motion, useReducedMotion } from "framer-motion"
+import { motion, useReducedMotion, type Variants } from "framer-motion"
 import type { ReactNode } from "react"
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 interface ScrollRevealProps {
   children: ReactNode
   className?: string
   delay?: number
-  /** Use "section" for a whole block fade-up, "stagger" to animate direct children in sequence */
+  /** "section" fades the whole block up. "stagger" animates direct ScrollRevealItem children in sequence. */
   variant?: "section" | "stagger"
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 44 },
-  visible: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay },
-  }),
-}
-
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12 },
-  },
+  visible: { transition: { staggerChildren: 0.12 } },
 }
 
-const staggerChildVariants = {
+const staggerChildVariants: Variants = {
   hidden: { opacity: 0, y: 44 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.6, ease: EASE },
   },
 }
 
@@ -44,9 +35,7 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const reduced = useReducedMotion()
 
-  if (reduced) {
-    return <div className={className}>{children}</div>
-  }
+  if (reduced) return <div className={className}>{children}</div>
 
   if (variant === "stagger") {
     return (
@@ -65,11 +54,10 @@ export function ScrollReveal({
   return (
     <motion.div
       className={className}
-      custom={delay}
-      variants={itemVariants}
-      initial="hidden"
-      whileInView="visible"
+      initial={{ opacity: 0, y: 44 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px" }}
+      transition={{ duration: 0.6, ease: EASE, delay }}
     >
       {children}
     </motion.div>
