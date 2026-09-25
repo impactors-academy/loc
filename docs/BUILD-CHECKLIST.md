@@ -5,13 +5,9 @@ Single source of truth for where this build actually stands. Lives at
 Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 **Stack:** Next.js 15.3 · FastAPI · PostgreSQL 16 + pgvector · Redis · Docker
-**Branches:** `develope` = documented as active development, but **as of 2026-08-14 is
-stale and 40 commits behind `main`** — `origin/develope` has zero commits `main`
-doesn't already contain, and a large amount of undocumented work (the WCAG contrast
-rebuild, dead dark-theme removal, reduced-motion pass, the CF Access fix, this
-session's a11y fixes) landed directly on `main`. Treat `main` as the real working
-branch until `develope` is either deleted or re-synced; don't assume `develope` is
-current without checking `git log origin/main..origin/develope` first.
+**Branches:** `develope` was re-synced with `main` on 2026-09-22 (was 78 commits
+behind) — both at the same commit as of 2026-09-25. Before trusting that, check
+`git rev-list --left-right --count origin/develope...origin/main`.
 **Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 **Revenue model:** referrals, leads, featured placement, digital product sales — not bookings
 
@@ -197,9 +193,18 @@ current without checking `git log origin/main..origin/develope` first.
 
 ### Editor Tooling
 - [x] `POST /api/v1/products` — editor can create a product via API (409 on duplicate slug)
-- [ ] Editor endpoints for Experience and Property create/update (so content doesn't
-      require a DB migration to add new listings)
-- [ ] Basic CMS or admin UI for the LOC editor persona
+- [x] Editor endpoints for Experience and Property create/update — POST/PUT/DELETE
+      on experiences, properties, products and blog, all behind `require_editor_key`
+      (see Open Flag 6; this line was never ticked)
+- [x] Basic CMS or admin UI for the LOC editor persona — `/admin` has create/edit
+      pages for experiences, properties, products and blog, plus `/admin/inquiries`
+      (confirmed in code 2026-09-25)
+- [ ] **`PUT` only applies the fields actually sent (found 2026-09-25)** — the
+      update services overwrote every field, so anything missing from the request
+      reset to its default. The mother dashboard's stay form never sent
+      `amenities`, wiping them on every save. `model_dump(exclude_unset=True)` +
+      regression test on `fix/partial-update-preserves-fields`, not merged yet;
+      pytest not run locally (no local DB login), CI will run it on the PR.
 - [x] **Mother/daughter network — no code changes needed (2026-08-10)** — the
       impactors-academy mother dashboard's new "Publish to" option on its blog
       editor (tick which platforms a post goes to) reads loc's blog via
@@ -265,8 +270,9 @@ current without checking `git log origin/main..origin/develope` first.
 - [x] CORS locked to production origin — no wildcard anywhere; `cors_origins`
       defaults to `http://localhost:3000` for dev and is set to
       `["https://loctravels.com"]` in Coolify (see `docs/DEPLOYMENT.md`).
-- [ ] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
-      `git log --all -- .env` returns empty
+- [x] No secrets committed — `DATABASE_URL`, `REDIS_URL`, API keys in `.env` only;
+      `git log --all --full-history` over `.env`, `.env.local`, `.env.production`
+      (root and subfolders) returns empty — checked 2026-09-25
 - [x] **HTTP security headers** — `app/core/security_headers.py`, applied to
       every API response including errors. HSTS only when the request arrived
       over https (`x-forwarded-proto`), because sending it over plain http is
@@ -544,8 +550,9 @@ have all since been deleted (2026-08-08).**
 
 - LOC earns via referrals and leads — never implement a checkout or payment flow
   inside the platform; always link out to the provider's own booking system
-- `develope` branch is always the working branch; `main` = production-stable —
-  never push directly to `main`
+- Feature branches → PR into `develope`; `main` = production-stable —
+  never push directly to `main`. Keep `develope` level with `main` after each
+  release (it drifted 78 commits behind before the 2026-09-22 re-sync)
 - Every new listing type or filter must have a matching seed entry before the
   feature is considered testable
 - pgvector hybrid search (RRF) is the canonical search path — do not regress to
@@ -564,8 +571,8 @@ have all since been deleted (2026-08-08).**
    Remaining verification: confirm the `GET /health` check and `api.loctravels.com`
    independently of the frontend.
 3. ~~**R4 hero search**~~ — verified complete on `develope` (2026-08-02).
-4. **Custom domain** — confirm final domain for LOC (`loctravels.com` per Phase 7 plan
-   vs. subdomain under `impactorsacademy.com`).
+4. ~~**Custom domain**~~ — CLOSED: `loctravels.com` is live on Coolify (own
+   domain, not an `impactorsacademy.com` subdomain), confirmed 2026-08-14.
 5. ~~**CSV export (LEAD-3)**~~ — CLOSED 2026-08-03: `GET /api/v1/leads/export.csv`
    returns `text/csv` StreamingResponse.
 6. ~~**Editor CRUD gap**~~ — CLOSED: POST/PUT/DELETE exist for experiences, properties,
