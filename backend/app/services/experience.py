@@ -44,7 +44,7 @@ class ExperienceService:
         obj = experience_repo.get_by_slug(db, slug)
         if not obj:
             raise HTTPException(status_code=404, detail="Experience not found")
-        for field, value in data.model_dump().items():
+        for field, value in data.model_dump(exclude_unset=True).items():
             setattr(obj, field, value)
         db.commit()
         db.refresh(obj)
