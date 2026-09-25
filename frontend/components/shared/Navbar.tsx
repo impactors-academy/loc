@@ -25,6 +25,7 @@ export function Navbar() {
   const t = useTranslations("nav")
   const pathname = usePathname()
   const headerRef = useRef<HTMLElement>(null)
+  const [menuPath, setMenuPath] = useState(pathname)
 
   // Transparent hero state only applies on the homepage before scroll
   const isHome = pathname === "/"
@@ -36,10 +37,12 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  // Close mobile menu on route change
-  useEffect(() => {
+  // Close mobile menu on route change — adjusted during render, not in an
+  // effect, so React doesn't render the stale open menu first.
+  if (menuPath !== pathname) {
+    setMenuPath(pathname)
     setOpen(false)
-  }, [pathname])
+  }
 
   // Close mobile menu when clicking anywhere outside the header
   useEffect(() => {
