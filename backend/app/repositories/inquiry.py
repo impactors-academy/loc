@@ -5,6 +5,16 @@ from app.repositories.base import BaseRepository
 
 
 class InquiryRepository(BaseRepository[Inquiry]):
+    def get_multi(self, db: Session, skip: int = 0, limit: int = 20) -> list[Inquiry]:
+        # Without an ORDER BY, /leads/ returned an arbitrary page, not the newest.
+        return (
+            db.query(self.model)
+            .order_by(self.model.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
     def get_by_source(self, db: Session, source_type: str, source_id: str | None = None) -> list[Inquiry]:
         q = db.query(self.model).filter(self.model.source_type == source_type)
         if source_id:
