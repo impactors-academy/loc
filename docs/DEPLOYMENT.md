@@ -71,7 +71,8 @@ EDITOR_API_KEY    <same value as above>
 ENV               production
 EMAIL_FROM        noreply@loctravels.com
 OPENAI_API_KEY    (blank = keyword search only; set to enable pgvector hybrid search)
-SMTP_*            (blank = inquiries logged, no email sent — STAY-4)
+RESEND_API_KEY    Resend API key (blank = inquiries logged, no email sent — STAY-4)
+EMAIL_TO          LOC team inbox; always copied on every inquiry email
 ```
 
 ### frontend
@@ -174,7 +175,8 @@ EMAIL_FROM=noreply@loctravels.com
 ```
 
 Optional, blank is fine: `OPENAI_API_KEY` (keyword-only search without it),
-`SMTP_*` and `EMAIL_TO` (inquiries logged but no email sent).
+`RESEND_API_KEY` and `EMAIL_TO` (inquiries stored but no email sent). `EMAIL_FROM`'s
+domain must be verified in Resend before emails will send.
 
 **4 — Map the domains** to services in Coolify
 
