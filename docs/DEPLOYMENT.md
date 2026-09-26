@@ -139,6 +139,55 @@ phone numbers — on the public internet.
 
 ---
 
+## Inquiry email (Resend)
+
+Every inquiry is stored in Postgres and listed in `/admin/inquiries` whether or not email
+is set up. Email only adds the notification: the listing's owner/provider (when their
+contact is a real email address) plus the LOC team inbox, which is always copied. Reply
+goes straight to the traveller. With `RESEND_API_KEY` or `EMAIL_TO` blank, nothing is sent
+and the inquiry is logged by id only (no traveller name or email in logs).
+
+As of 2026-09-26 `loctravels.com` has **no email DNS records at all** — no MX, SPF, DKIM or
+DMARC. It cannot receive mail, so `EMAIL_TO` must be an inbox that already exists
+elsewhere, and the address in `EMAIL_FROM` is send-only.
+
+**1 — Verify the domain in Resend.** Resend → Domains → Add domain → `loctravels.com`.
+Resend lists a DKIM TXT record (`resend._domainkey`) and an MX + SPF TXT pair on the
+`send` subdomain. Add each in Cloudflare → `loctravels.com` → DNS exactly as shown. They are
+TXT/MX, so Cloudflare shows no proxy toggle, and they live on subdomains, so they don't
+affect the site or any future inbox on the root domain. Click Verify; it usually passes in
+minutes (up to a few hours while DNS propagates).
+
+**2 — Add DMARC** (recommended; Gmail and Yahoo increasingly filter mail without it).
+Cloudflare → DNS → Add record: type `TXT`, name `_dmarc`, content
+`v=DMARC1; p=none;`. `p=none` only reports; tighten to `quarantine` once mail is flowing.
+
+**3 — Create an API key.** Resend → API Keys → Create: permission **Sending access**,
+domain **loctravels.com**. It is shown once — store it in the password manager
+(Vaultwarden once deployed), never in chat or git.
+
+**4 — Set the backend env in Coolify** (loc → Environment Variables):
+
+```
+RESEND_API_KEY    re_…                        (from step 3)
+EMAIL_TO          <existing team inbox>        (must already receive mail)
+EMAIL_FROM        noreply@loctravels.com       (default; any address on the verified domain)
+```
+
+`docker-compose.coolify.yml` passes each variable explicitly — a variable that isn't
+listed there never reaches the container. `RESEND_API_KEY`, `EMAIL_FROM` and `EMAIL_TO`
+already are.
+
+**5 — Redeploy loc.** Env changes don't trigger a deploy on their own.
+
+**6 — Test.** Submit an inquiry on any experience or stay page. Within a minute the team
+inbox should receive `[LOC Lead] …`, and Reply should address the email typed in the form.
+Nothing arriving? Check Resend → Emails / Logs first, then the backend logs:
+`Resend rejected inquiry notification: <status> <message>` — the message says what's wrong
+(e.g. the domain isn't verified yet, or the API key is invalid or restricted to another domain).
+
+---
+
 ## First deploy — step by step
 
 DNS already exists: `loctravels.com`, `www.loctravels.com` and `api.loctravels.com` all
