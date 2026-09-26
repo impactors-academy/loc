@@ -315,5 +315,11 @@
     "breadcrumbHome": "Home",
     "backToStories": "Back to all stories",
     "relatedArticles": "You Might Also Like"
+  },
+  "notFound": {
+    "title": "We couldn't find that page",
+    "body": "The page you're looking for doesn't exist or may have moved. Let's get you back on track.",
+    "cta": "Back to home",
+    "ctaSecondary": "Browse experiences"
   }
 }

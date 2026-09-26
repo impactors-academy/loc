@@ -315,5 +315,11 @@
     "breadcrumbHome": "Início",
     "backToStories": "Voltar a todas as histórias",
     "relatedArticles": "Também pode gostar"
+  },
+  "notFound": {
+    "title": "Não encontrámos essa página",
+    "body": "A página que procura não existe ou pode ter sido movida. Vamos colocá-lo de volta no caminho certo.",
+    "cta": "Voltar ao início",
+    "ctaSecondary": "Explorar experiências"
   }
 }

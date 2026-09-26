@@ -315,5 +315,11 @@
     "breadcrumbHome": "Accueil",
     "backToStories": "Retour à tous les récits",
     "relatedArticles": "Vous pourriez aussi aimer"
+  },
+  "notFound": {
+    "title": "Cette page est introuvable",
+    "body": "La page que vous recherchez n'existe pas ou a peut-être été déplacée. Retournons sur la bonne voie.",
+    "cta": "Retour à l'accueil",
+    "ctaSecondary": "Explorer les expériences"
   }
 }
