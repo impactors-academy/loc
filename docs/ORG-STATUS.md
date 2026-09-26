@@ -832,8 +832,8 @@ hotfix/*    → urgent production fixes only, branch off main
 - [ ] **impactors-academy** — branch protection on `main` and `develop` enabled
       in GitHub (require PR, require CI to pass, no direct push)
 - [ ] **ia-pro** — same branch protection rules
-- [ ] **loc** — already has `develope` branch; rename to `develop` for consistency;
-      add branch protection on both `main` and `develop`
+- [x] **loc** — `develope` renamed to `develop` (2026-09-26)
+- [ ] **loc** — add branch protection on both `main` and `develop`
 - [ ] **prospectbuddy** — create `develop` branch; add branch protection
 - [ ] **grindbuddy** — create `develop` branch; add branch protection (even while paused)
 - [ ] All team members briefed on this workflow (Docmost onboarding doc)
@@ -1380,9 +1380,10 @@ live. `ia-pro-db` Postgres 18 service running in Coolify since 2026-08-04.
 ### loc (~90% · R4 + LEAD-3 complete on `develope`)
 See `loc/docs/BUILD-CHECKLIST.md` (exists on `develope`), plus `ARCHITECTURE.md`,
 `WORKFLOW.md`, `SEARCH_STRATEGY.md`, `USER_STORIES.md`.
-Active branch: still `develope` (typo) — rename to `develop` per 0B-1 is still outstanding;
-`ci.yml`/`deploy.yml` both still trigger on `develope` too, so the rename needs a
-coordinated CI update.
+Active branch: `develope` was renamed to `develop` on 2026-09-26 (GitHub branch
+rename, ref auto-redirected); `ci.yml` updated to trigger on `develop`. The rest
+of this section is a dated log from before that rename — read `develope` below
+as historical.
 
 > 🚨 **`develope` is 13 commits ahead of `main` and the gap is security-relevant.**
 > Stranded on `develope`: editor API-key auth (`a39af2a`), slowapi rate limiting,

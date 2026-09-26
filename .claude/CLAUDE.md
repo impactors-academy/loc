@@ -4,7 +4,7 @@ Platform type: **API Backend (FastAPI) + Marketing Website (Next.js frontend)**
 Stack: FastAPI · SQLAlchemy · Alembic · Postgres · Redis · Next.js · Docker
 Live at: `loctravels.com` (frontend) · `api.loctravels.com` (backend) — Hostinger VPS
 via Coolify, DNS on Cloudflare. Postgres and Redis are containers in the same stack.
-Active branch: `develope` (rename to `develop` — Phase 0B item)
+Active branch: `develop`
 
 ---
 
@@ -29,7 +29,7 @@ Active branch: `develope` (rename to `develop` — Phase 0B item)
    never auto-stashes/pulls/commits. If it flags uncommitted changes before
    you switch branches or pull, `git stash` first (`git stash pop` after).
    Multiple people push here now — don't skip this.
-1. Read `docs/BUILD-CHECKLIST.md` in full — active branch is `develope`.
+1. Read `docs/BUILD-CHECKLIST.md` in full — active branch is `develop`.
 2. Audit every unchecked item against actual code.
 3. Note ambiguous items as **Open Flags** — ask before acting.
 4. Check `docs/ORG-STATUS.md` for stale cross-project info.
@@ -158,10 +158,10 @@ This has cost real time here twice.
 ## DevOps rules
 
 ```
-Active branch: develope (→ rename to develop — Phase 0B item)
-Branches:   feature/* → develope → main
+Active branch: develop
+Branches:   feature/* → develop → main
 CI:         GitHub Actions — pytest + docker build before merge (Phase 0B item)
-Staging:    develope → Coolify staging (not yet provisioned)
+Staging:    develop → Coolify staging (not yet provisioned)
 Production: main → Coolify on the Hostinger VPS → loctravels.com
 Release:    git tag vX.Y.Z + CHANGELOG.md after merge to main
 ```

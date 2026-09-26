@@ -5,9 +5,10 @@ Single source of truth for where this build actually stands. Lives at
 Cross-reference with `docs/USER_STORIES.md` (story IDs) and `docs/WORKFLOW.md`.
 
 **Stack:** Next.js 15.3 · FastAPI · PostgreSQL 16 + pgvector · Redis · Docker
-**Branches:** `develope` was re-synced with `main` on 2026-09-22 (was 78 commits
-behind) — both at the same commit as of 2026-09-25. Before trusting that, check
-`git rev-list --left-right --count origin/develope...origin/main`.
+**Branches:** `develope` renamed to `develop` on 2026-09-26 (GitHub branch
+rename; PRs/refs auto-redirected). It was re-synced with `main` on 2026-09-22
+(was 78 commits behind) — check current drift with
+`git rev-list --left-right --count origin/develop...origin/main`.
 **Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 **Revenue model:** referrals, leads, featured placement, digital product sales — not bookings
 
