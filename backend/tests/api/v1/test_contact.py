@@ -73,13 +73,34 @@ def test_submit_inquiry_invalid_email(client, db):
 
 
 def test_submit_inquiry_logs_when_email_disabled(client, db, caplog):
-    # settings.email_enabled is False in the test environment (no SMTP host
-    # configured), so the notify step should hit the logging stub rather
-    # than attempt a real SMTP send — and must not raise either way.
+    # settings.email_enabled is False in the test environment (no Resend key),
+    # so the notify step logs instead of sending — without the traveller's
+    # name or email, which must never reach the logs.
     import logging
 
     with caplog.at_level(logging.INFO):
         response = client.post("/api/v1/contact/", json=VALID_PAYLOAD)
 
     assert response.status_code == 200
-    assert any("New inquiry from" in record.message for record in caplog.records)
+    logged = " ".join(record.getMessage() for record in caplog.records)
+    assert "New inquiry" in logged
+    assert VALID_PAYLOAD["email"] not in logged
+    assert VALID_PAYLOAD["name"] not in logged
+
+
+def test_submit_inquiry_sends_email_after_response_when_enabled(client, db, monkeypatch):
+    from app.config import settings
+    from app.services import contact as contact_module
+
+    monkeypatch.setattr(settings, "resend_api_key", "re_test")
+    monkeypatch.setattr(settings, "email_to", "team@loctravels.com")
+    sent = []
+    monkeypatch.setattr(contact_module, "send_via_resend", lambda message: sent.append(message))
+
+    payload = {**VALID_PAYLOAD, "source_type": "general", "source_id": None}
+    response = client.post("/api/v1/contact/", json=payload)
+
+    assert response.status_code == 200
+    assert len(sent) == 1
+    assert sent[0]["to"] == ["team@loctravels.com"]
+    assert sent[0]["reply_to"] == VALID_PAYLOAD["email"]

@@ -36,11 +36,9 @@ class Settings(BaseSettings):
     # AI / embeddings — set to enable pgvector hybrid search (EXP-6)
     openai_api_key: str = ""
 
-    # Email — set to enable notify_partner() (STAY-4)
-    smtp_host: str = ""
-    smtp_port: int = 587
-    smtp_user: str = ""
-    smtp_password: str = ""
+    # Inquiry notification email via Resend (STAY-4). Both RESEND_API_KEY and
+    # EMAIL_TO must be set; EMAIL_FROM's domain must be verified in Resend.
+    resend_api_key: str = ""
     email_from: str = "noreply@loctravels.com"
     email_to: str = ""
 
@@ -64,7 +62,7 @@ class Settings(BaseSettings):
 
     @property
     def email_enabled(self) -> bool:
-        return bool(self.smtp_host and self.email_to)
+        return bool(self.resend_api_key and self.email_to)
 
     @property
     def r2_enabled(self) -> bool:

@@ -160,6 +160,10 @@ behind) — both at the same commit as of 2026-09-25. Before trusting that, chec
       worth a deliberate decision: if the site is taking real leads, they
       are currently sitting unnoticed in container logs until SMTP is
       configured.
+      **2026-09-26: replaced SMTP with Resend** (org standard) on
+      `feature/resend-inquiry-emails` — see Open Flag 8. (Inquiries were
+      never lost: every one is stored in Postgres and listed in
+      `/admin/inquiries`; only the notification was missing.)
 
 ## Phase 4 — Build
 
@@ -579,6 +583,10 @@ have all since been deleted (2026-08-08).**
    products, and blog posts — all behind `require_editor_key`.
 7. ~~**Working branch note**~~ — CLOSED 2026-09-22: `develope` re-synced with `main`
    (was 78 commits behind). Both branches are now at the same commit.
-8. **SMTP not configured** — `SMTP_HOST` and `EMAIL_TO` are blank in Coolify production.
-   Every inquiry submitted on the live site is only logged, never emailed. Set these
-   in Coolify to activate partner email notifications.
+8. **Inquiry emails off in production** — SMTP was never configured, so no inquiry was
+   emailed. 2026-09-26: SMTP code replaced with Resend (`RESEND_API_KEY`), sent as a
+   background task after the response; traveller text HTML-escaped; `reply_to` is the
+   traveller; partner emailed only when the listing's contact is a real email address,
+   LOC inbox always copied; no traveller name/email in logs. **To activate:** verify
+   `loctravels.com` in Resend (DNS records in Cloudflare), then set `RESEND_API_KEY`
+   and `EMAIL_TO` in Coolify and redeploy.

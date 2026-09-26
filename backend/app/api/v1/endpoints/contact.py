@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Request
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_db
@@ -11,5 +11,10 @@ router = APIRouter(prefix="/contact", tags=["contact"])
 
 @router.post("/", response_model=InquiryResponse)
 @limiter.limit("5/minute")
-async def submit_inquiry(request: Request, payload: InquiryCreate, db: Session = Depends(get_db)):
-    return contact_service.handle_inquiry(db, payload)
+async def submit_inquiry(
+    request: Request,
+    payload: InquiryCreate,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
+    return contact_service.handle_inquiry(db, payload, background_tasks)
