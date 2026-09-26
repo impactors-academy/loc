@@ -55,10 +55,7 @@ services:
       # means 503, not open access. Must be set in every environment.
       EDITOR_API_KEY: ${EDITOR_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      SMTP_HOST: ${SMTP_HOST:-}
-      SMTP_PORT: ${SMTP_PORT:-587}
-      SMTP_USER: ${SMTP_USER:-}
-      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
       EMAIL_FROM: ${EMAIL_FROM:-noreply@loctravels.com}
       EMAIL_TO: ${EMAIL_TO:-}
       ENV: development
