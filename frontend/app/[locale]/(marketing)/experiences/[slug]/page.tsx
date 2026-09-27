@@ -2,13 +2,15 @@ import { AffiliateLinks } from "@/components/features/affiliates/AffiliateLinks"
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { TrustStrip } from "@/components/shared/TrustStrip"
 import { ReferralButton } from "@/components/features/experiences/ReferralButton"
+import { PropertyGallery } from "@/components/features/stays/PropertyGallery"
+import { Breadcrumbs, Fact, MobileEnquireBar } from "@/components/shared/DetailParts"
+import { getPoolImage } from "@/lib/images"
 import { api } from "@/lib/api"
-import { formatPriceRange } from "@/lib/types"
-import { MapPin, Tag, User } from "lucide-react"
+import { formatAmount } from "@/lib/types"
+import { Clock, Globe, MapPin, Tag, User } from "lucide-react"
+import { splitTitle, tidyDashes } from "@/lib/text"
 import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
-import Image from "next/image"
-import Link from "next/link"
 import Script from "next/script"
 
 interface Props {
@@ -19,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   try {
     const exp = await api.experiences.get(slug)
-    const title = `${exp.title} | LOC Experiences`
+    const title = `${tidyDashes(exp.title.replace(/\s+\|\s+/g, " — "))} | LOC Experiences`
     const image = exp.images?.[0]
     return {
       title,
@@ -44,14 +46,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  adventure: "from-amber-950 via-orange-900 to-amber-800",
-  wellness: "from-emerald-950 via-teal-900 to-emerald-800",
-  cultural: "from-purple-950 via-indigo-900 to-purple-800",
-  aerial: "from-sky-950 via-blue-900 to-sky-800",
-  water: "from-cyan-950 via-blue-900 to-cyan-800",
-}
-
 export default async function ExperienceDetailPage({ params }: Props) {
   const { slug } = await params
   const t = await getTranslations("experienceDetailPage")
@@ -64,9 +58,6 @@ export default async function ExperienceDetailPage({ params }: Props) {
   } catch {
     // render skeleton / not-found fallback below
   }
-
-  const gradient =
-    experience ? (CATEGORY_GRADIENTS[experience.category] ?? "from-loc-night via-loc-night/80 to-loc-stone") : "from-loc-night via-loc-night/80 to-loc-stone"
 
   const jsonLd = experience
     ? {
@@ -98,8 +89,18 @@ export default async function ExperienceDetailPage({ params }: Props) {
       }
     : null
 
+  const tCat = await getTranslations("experienceCategories")
+  const categoryLabel = experience ? (tCat.has(experience.category) ? tCat(experience.category) : experience.category) : ""
+  const images = experience
+    ? experience.images?.length
+      ? experience.images
+      : [getPoolImage(experience.category, experience.slug, 1800)]
+    : []
+  const price =
+    experience?.priceMin != null ? `${formatAmount(experience.priceMin, experience.currency)} ${tCommon("perPerson")}` : null
+
   return (
-    <main className="pt-24 pb-20">
+    <div className="pt-28 md:pt-32 pb-28 lg:pb-32">
       {jsonLd && (
         <Script
           id="experience-jsonld"
@@ -107,112 +108,123 @@ export default async function ExperienceDetailPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      {/* Hero banner */}
-      <div
-        className={`relative h-72 md:h-96 bg-gradient-to-br ${gradient} overflow-hidden`}
-      >
-        {experience?.images?.[0] && (
-          <Image
-            src={experience.images[0]}
-            alt={experience.title}
-            fill
-            className="object-cover"
-            sizes="100vw"
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        <div className="relative z-10 h-full flex flex-col justify-end container mx-auto px-4 pb-8">
-          {experience && (
-            <>
-              <span className="inline-block mb-3 px-3 py-1 bg-loc-terracotta text-white text-xs font-medium rounded-full uppercase tracking-wide w-fit capitalize">
-                {experience.category}
-              </span>
-              <h1 className="font-heading text-3xl md:text-4xl font-semibold text-white text-balance">
-                {experience.title}
-              </h1>
-              <p className="mt-2 text-white/70 text-sm flex items-center gap-1.5">
-                <MapPin className="w-4 h-4" />
+
+      <div className="container mx-auto px-4">
+        <Breadcrumbs
+          items={[
+            { label: t("breadcrumbHome"), href: "/" },
+            { label: tNav("experiences"), href: "/experiences" },
+            { label: experience ? splitTitle(experience.title).name : slug },
+          ]}
+        />
+
+        {experience ? (
+          <>
+            <div className="mt-6 mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+              <div className="max-w-4xl">
+                <p className="inline-flex items-center gap-3 uppercase tracking-[0.22em] text-[11px] font-semibold text-loc-terracotta mb-4">
+                  <span className="h-px w-8 bg-loc-terracotta" aria-hidden="true" />
+                  {categoryLabel}
+                </p>
+                <h1 className="font-heading text-4xl md:text-6xl font-semibold text-loc-night tracking-[-0.03em] leading-[0.95] text-balance">
+                  {splitTitle(experience.title).name}
+                </h1>
+                {splitTitle(experience.title).detail && (
+                  <p className="mt-3 font-heading text-xl md:text-2xl text-loc-stone tracking-tight">{splitTitle(experience.title).detail}</p>
+                )}
+              </div>
+              <p className="flex items-center gap-2 text-loc-stone shrink-0">
+                <MapPin size={16} className="text-loc-terracotta" aria-hidden="true" />
                 {experience.location}
               </p>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 mt-10">
-        <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
-          <Link href="/" className="hover:text-loc-terracotta transition-colors">{t("breadcrumbHome")}</Link>
-          <span>/</span>
-          <Link href="/experiences" className="hover:text-loc-terracotta transition-colors">{tNav("experiences")}</Link>
-          <span>/</span>
-          <span className="text-loc-night">{experience?.title ?? slug}</span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Main content. 2/3 */}
-          <div className="lg:col-span-2">
-            {experience ? (
-              <>
-                <p className="text-loc-stone leading-relaxed text-base mb-8">
-                  {experience.description}
-                </p>
-                <div className="flex flex-wrap gap-6 mb-10 border-t border-border pt-6">
-                  <div className="flex items-center gap-2 text-sm text-loc-stone">
-                    <Tag className="w-4 h-4 text-loc-terracotta" />
-                    <span className="font-medium text-loc-night capitalize">{experience.category}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-loc-stone">
-                    <MapPin className="w-4 h-4 text-loc-terracotta" />
-                    <span>{experience.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-loc-stone">
-                    <User className="w-4 h-4 text-loc-terracotta" />
-                    <span>{experience.providerName}</span>
-                  </div>
-                </div>
-                <div className="rounded-2xl bg-loc-sand/40 border border-loc-sand p-6">
-                  <p className="text-xs text-loc-stone uppercase tracking-widest mb-1">{t("startingFrom")}</p>
-                  <p className="font-heading text-2xl font-semibold text-loc-terracotta">
-                    {formatPriceRange(experience.priceMin, experience.priceMax, experience.currency, tCommon("perPerson"))}
-                  </p>
-                </div>
-              </>
-            ) : (
-              <div className="space-y-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-5 bg-muted rounded animate-pulse" style={{ width: `${75 + i * 5}%` }} />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar. 1/3 */}
-          <aside className="lg:col-span-1">
-            <div className="sticky top-28 rounded-2xl border border-border bg-white p-6 shadow-sm">
-              <p className="font-heading text-lg font-semibold text-loc-night mb-1">
-                {t("interestedTitle")}
-              </p>
-              <p className="text-loc-stone text-sm mb-4">
-                {t("interestedBody")}
-              </p>
-              <TrustStrip />
-              {experience?.referralUrl && (
-                <div className="mb-5">
-                  <ReferralButton slug={slug} referralUrl={experience.referralUrl} />
-                  <p className="text-center text-xs text-loc-stone mt-2">{t("opensProviderPage")}</p>
-                </div>
-              )}
-              <InquiryForm subject={`Inquiry about experience: ${experience?.title ?? slug}`} />
-              {experience?.country && (
-                <div className="mt-5">
-                  <AffiliateLinks country={experience.country} heading={t("planYourTrip")} />
-                </div>
-              )}
             </div>
-          </aside>
-        </div>
+
+            <PropertyGallery
+              images={images}
+              title={experience.title}
+              showAllLabel={tCommon("showAllPhotos", { count: images.length })}
+            />
+
+            <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+              <div className="lg:col-span-7 xl:col-span-8">
+                <section className="pb-10 border-b border-loc-night/10">
+                  <h2 className="font-heading text-2xl md:text-3xl font-semibold tracking-tight text-loc-night mb-5">{t("aboutTitle")}</h2>
+                  <p className="text-loc-night/80 text-lg leading-relaxed whitespace-pre-line text-pretty">{tidyDashes(experience.description)}</p>
+                </section>
+
+                <section className="py-10 border-b border-loc-night/10 grid sm:grid-cols-2 gap-6">
+                  <Fact icon={<Tag size={18} />} label={tCommon("categoryLabel")} value={categoryLabel} />
+                  {experience.duration && <Fact icon={<Clock size={18} />} label={t("durationLabel")} value={experience.duration} />}
+                  <Fact icon={<MapPin size={18} />} label={tCommon("locationLabel")} value={experience.location} />
+                  {experience.country && <Fact icon={<Globe size={18} />} label={tCommon("countryLabel")} value={experience.country} />}
+                </section>
+
+                {experience.providerName && (
+                  <section className="py-10">
+                    <div className="flex items-center gap-4 rounded-[20px] bg-loc-sand/60 p-6">
+                      <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shrink-0">
+                        <User className="w-6 h-6 text-loc-terracotta" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <p className="font-heading font-semibold text-loc-night text-lg">{t("runBy", { name: experience.providerName })}</p>
+                        <p className="text-loc-stone text-sm mt-1">{t("interestedBody")}</p>
+                      </div>
+                    </div>
+                  </section>
+                )}
+              </div>
+
+              <aside className="lg:col-span-5 xl:col-span-4" id="enquire">
+                <div className="lg:sticky lg:top-28 rounded-[24px] border border-loc-night/10 bg-white p-6 md:p-8 shadow-[0_24px_60px_-30px_rgba(35,27,21,0.35)]">
+                  {price && (
+                    <>
+                      <p className="text-[11px] uppercase tracking-[0.14em] font-semibold text-loc-stone">{t("startingFrom")}</p>
+                      <p className="mt-1 font-heading text-3xl font-semibold tracking-tight text-loc-night">{price}</p>
+                      <div className="my-6 h-px bg-loc-night/10" />
+                    </>
+                  )}
+                  {experience.referralUrl && (
+                    <div className="mb-6">
+                      <ReferralButton slug={slug} referralUrl={experience.referralUrl} />
+                      <p className="text-center text-xs text-loc-stone mt-2">{t("opensProviderPage")}</p>
+                    </div>
+                  )}
+                  <p className="font-heading text-xl font-semibold text-loc-night mb-1">{t("interestedTitle")}</p>
+                  <p className="text-loc-stone text-sm mb-5">{t("interestedBody")}</p>
+                  <div className="mb-6">
+                    <TrustStrip />
+                  </div>
+                  <InquiryForm subject={`Inquiry about experience: ${experience.title}`} />
+                  {experience.country && (
+                    <div className="mt-6">
+                      <AffiliateLinks country={experience.country} heading={t("planYourTrip")} />
+                    </div>
+                  )}
+                </div>
+              </aside>
+            </div>
+
+            <MobileEnquireBar
+              price={
+                price ? (
+                  <>
+                    <span className="block text-[11px] uppercase tracking-[0.14em] text-loc-stone">{t("startingFrom")}</span>
+                    <span className="font-semibold">{price}</span>
+                  </>
+                ) : (
+                  <span className="font-semibold">{experience.title}</span>
+                )
+              }
+              cta={tCommon("inquire")}
+            />
+          </>
+        ) : (
+          <div className="mt-10 space-y-4">
+            <div className="h-12 w-2/3 bg-loc-night/[0.06] rounded animate-pulse" />
+            <div className="h-[420px] bg-loc-night/[0.06] rounded-[24px] animate-pulse" />
+          </div>
+        )}
       </div>
-    </main>
+    </div>
   )
 }

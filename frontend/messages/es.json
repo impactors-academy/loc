@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "LOC | Descubre Marruecos | Experiencias, Alojamientos y Joyas Ocultas",
-    "description": "Descubre las mejores experiencias turísticas, alojamientos y joyas ocultas en Marruecos, seleccionados por quienes viven allí — próximamente en Francia y Bélgica."
+    "description": "Descubre las mejores experiencias turísticas, alojamientos y joyas ocultas en Marruecos, seleccionados por quienes viven allí. Próximamente en Francia y Bélgica."
   },
   "nav": {
     "experiences": "Experiencias",
@@ -23,8 +23,17 @@
     "cultural": "Cultural",
     "staysPill": "Alojamientos",
     "guides": "Guías",
-    "destinations": ["Marruecos", "París", "Bélgica", "el Mundo"],
-    "searchSuggestions": ["Marruecos", "aventura paracaidismo", "campamento desierto", "retiro bienestar", "apartamento París", "tour cultural"],
+    "destinations": [
+      "Marrakech",
+      "Marruecos"
+    ],
+    "searchSuggestions": [
+      "Marrakech",
+      "clase de cocina",
+      "excursión al desierto",
+      "hammam",
+      "montañas del Atlas"
+    ],
     "searchHint": "Buscar destinos, experiencias y alojamientos"
   },
   "howItWorks": {
@@ -54,7 +63,7 @@
   },
   "homepage": {
     "commissionLabel": "Comisión de reserva cobrada",
-    "commissionSublabel": "Anfitriones y proveedores se quedan con cada céntimo — ganamos con tarifas fijas, no con tus reservas.",
+    "commissionSublabel": "Anfitriones y proveedores se quedan con cada céntimo. Ganamos con tarifas fijas, no con tus reservas.",
     "statsLabel": "Estadísticas de la plataforma",
     "intentTraveller": "Estoy viajando",
     "intentTravellerDesc": "Descubre alojamientos, experiencias y guías de viaje seleccionados por locales.",
@@ -64,7 +73,7 @@
     "intentProviderCta": "Únete a nosotros"
   },
   "footer": {
-    "tagline": "Tu conector de viajes en Marruecos, Francia y Bélgica. Experiencias seleccionadas, alojamientos escogidos y guías de viaje digitales.",
+    "tagline": "Tu conector de viajes en Marruecos, con Francia y Bélgica después. Alojamientos seleccionados hoy; las experiencias locales y las guías de viaje están en camino.",
     "explore": "Explorar",
     "forBusinesses": "Para empresas",
     "company": "Empresa",
@@ -74,7 +83,8 @@
     "aboutLoc": "Sobre LOC",
     "contactUs": "Contacto",
     "privacyPolicy": "Política de privacidad",
-    "rights": "Todos los derechos reservados. Hecho para viajeros curiosos de todo el mundo."
+    "rights": "Todos los derechos reservados. Hecho para viajeros curiosos de todo el mundo.",
+    "statement": "Viaja como si conocieras a alguien allí."
   },
   "inquiry": {
     "title": "Contacta con nosotros",
@@ -85,7 +95,7 @@
     "message": "Tu mensaje",
     "send": "Enviar mensaje",
     "sending": "Enviando...",
-    "success": "Mensaje enviado. El anfitrión te contactará directamente — normalmente en 24 horas.",
+    "success": "Mensaje enviado. El anfitrión te contactará directamente, normalmente en 24 horas.",
     "error": "Algo salió mal. Por favor, inténtalo de nuevo."
   },
   "common": {
@@ -104,7 +114,14 @@
     "inquire": "Consultar",
     "search": "Buscar",
     "noResults": "No se encontraron resultados.",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "typeLabel": "Tipo",
+    "locationLabel": "Ubicación",
+    "countryLabel": "País",
+    "categoryLabel": "Categoría",
+    "showAllPhotos": "{count, plural, one {# foto} other {Ver las # fotos}}",
+    "comingSoon": "Próximamente",
+    "soon": "Pronto"
   },
   "propertyTypes": {
     "filterLabel": "Filtrar por tipo de propiedad",
@@ -151,11 +168,11 @@
   },
   "aboutPage": {
     "title": "Un conector de viajes para Marruecos, Francia y Bélgica",
-    "metaDescription": "LOC es un conector de viajes en Marruecos, Francia y Bélgica — experiencias seleccionadas, alojamientos escogidos y guías de viaje digitales.",
+    "metaDescription": "LOC es un conector de viajes en Marruecos, Francia y Bélgica: experiencias seleccionadas, alojamientos escogidos y guías de viaje digitales.",
     "eyebrow": "Sobre nosotros",
     "subtitle": "Experiencias seleccionadas, alojamientos escogidos y guías de viaje digitales.",
     "howItWorksTitle": "Cómo funciona LOC",
-    "howItWorksBody": "Conectamos viajeros curiosos con proveedores locales auténticos, directamente. Explora experiencias, alojamientos y productos locales seleccionados por personas que realmente viven en los lugares que cubren — cuando algo te interesa, contactas y el proveedor se encarga del resto.",
+    "howItWorksBody": "Conectamos viajeros curiosos con proveedores locales auténticos, directamente. Explora experiencias, alojamientos y productos locales seleccionados por personas que realmente viven en los lugares que cubren. Cuando algo te interesa, contactas y el proveedor se encarga del resto.",
     "discoveryTitle": "Descubrimiento, no reserva",
     "discoveryBody": "LOC nunca procesa reservas ni pagos por sí mismo. Cada consulta va directamente al proveedor de la experiencia, alojamiento o producto, quien gestiona el resto directamente contigo.",
     "partOfTitle": "Parte de Impactors Academy",
@@ -164,9 +181,9 @@
   },
   "contactPage": {
     "title": "Contacto",
-    "metaDescription": "Ponte en contacto con el equipo de LOC — preguntas, comentarios o cualquier otra cosa.",
+    "metaDescription": "Ponte en contacto con el equipo de LOC: preguntas, comentarios o cualquier otra cosa.",
     "eyebrow": "Ponte en contacto",
-    "subtitle": "Preguntas sobre una experiencia, un alojamiento o cualquier otra cosa — envíanos un mensaje y te responderemos."
+    "subtitle": "Preguntas sobre una experiencia, un alojamiento o cualquier otra cosa. Envíanos un mensaje y te responderemos."
   },
   "promotePage": {
     "metaTitle": "Promociona tu negocio turístico",
@@ -232,11 +249,14 @@
     ],
     "inquiryEyebrow": "Ponte en contacto",
     "inquiryTitle": "¿Listo para hacer crecer tu negocio?",
-    "inquirySubtitle": "Cuéntanos sobre tu negocio y el pack que te interesa. Te responderemos en un plazo de 24 horas."
+    "inquirySubtitle": "Cuéntanos sobre tu negocio y el pack que te interesa. Te responderemos en un plazo de 24 horas.",
+    "packagesSoonTitle": "Los paquetes para socios llegan pronto",
+    "packagesSoonBody": "Estamos rediseñando nuestros paquetes para que cada uno encaje con la forma en que crecen los anfitriones y proveedores locales. Cuéntanos sobre tu negocio y te contactaremos en cuanto estén listos.",
+    "packagesSoonCta": "Cuéntanos sobre tu negocio"
   },
   "experiencesPage": {
     "metaTitle": "Experiencias en Marruecos",
-    "metaDescription": "Descubre aventuras, retiros de bienestar, tours culinarios y experiencias culturales en Marruecos, seleccionados por locales — Francia y Bélgica llegan pronto.",
+    "metaDescription": "Descubre aventuras, retiros de bienestar, tours culinarios y experiencias culturales en Marruecos, seleccionados por locales. Francia y Bélgica llegan pronto.",
     "eyebrow": "Explora Marruecos",
     "title": "Experiencias",
     "subtitle": "Aventuras, retiros de bienestar, tours culinarios y más, seleccionados por quienes conocen mejor Marruecos.",
@@ -244,11 +264,12 @@
     "noResults": "No se encontraron experiencias",
     "noResultsFor": "Sin resultados para \"{q}\"",
     "tryDifferent": "Prueba con otra búsqueda, categoría o destino.",
-    "emptyTitle": "Las experiencias están siendo curadas",
-    "emptyBody": "Estamos seleccionando las mejores experiencias locales para cada destino. Explora nuestros alojamientos o navega por nuestras historias de viaje mientras construimos el catálogo.",
+    "emptyTitle": "Las experiencias llegan pronto",
+    "emptyBody": "Estamos seleccionando experiencias locales dirigidas por quienes mejor conocen cada lugar. Mientras tanto, descubre nuestros alojamientos.",
     "emptyBrowse": "Explorar alojamientos",
     "emptyStories": "Historias de viaje",
-    "clearSearch": "Borrar búsqueda"
+    "clearSearch": "Borrar búsqueda",
+    "resultsCount": "{count, plural, one {# experiencia} other {# experiencias}}"
   },
   "experienceDetailPage": {
     "breadcrumbHome": "Inicio",
@@ -256,17 +277,23 @@
     "interestedTitle": "¿Interesado en esta experiencia?",
     "interestedBody": "Envía un mensaje y el proveedor te responderá directamente.",
     "opensProviderPage": "Abre la página de reserva del proveedor",
-    "planYourTrip": "Planifica tu viaje"
+    "planYourTrip": "Planifica tu viaje",
+    "aboutTitle": "Sobre esta experiencia",
+    "runBy": "Ofrecida por {name}",
+    "durationLabel": "Duración",
+    "whereTitle": "Dónde tiene lugar",
+    "bookWithProvider": "Reservar con el proveedor"
   },
   "staysPage": {
     "metaTitle": "Alojamientos en Marruecos",
-    "metaDescription": "Explora villas y apartamentos escogidos en Marruecos, con contacto directo con el anfitrión y sin cargos ocultos — Francia y Bélgica llegan pronto.",
+    "metaDescription": "Explora villas y apartamentos escogidos en Marruecos, con contacto directo con el anfitrión y sin cargos ocultos. Francia y Bélgica llegan pronto.",
     "eyebrow": "Lugares para alojarse",
     "title": "Alojamientos",
     "subtitle": "Villas y apartamentos en Marruecos, cada uno seleccionado por su carácter, comodidad y ubicación.",
     "loadError": "No se pudieron cargar las propiedades en este momento. Inténtalo de nuevo más tarde.",
     "noResults": "No se encontraron propiedades",
-    "tryDifferent": "Prueba con otro tipo o vuelve pronto."
+    "tryDifferent": "Prueba con otro tipo o vuelve pronto.",
+    "resultsCount": "{count, plural, one {# alojamiento} other {# alojamientos}}"
   },
   "trustStrip": {
     "directContact": "Contacto directo con el anfitrión",
@@ -280,18 +307,21 @@
     "enquireBody": "Escribe directamente al anfitrión, sin intermediarios, sin cargos de plataforma.",
     "amenitiesTitle": "Lo que ofrece este lugar",
     "hostedDirectly": "Alojado directamente por el propietario",
-    "messageThroughForm": "Escríbeles a través del formulario — sin intermediarios, sin cargos de plataforma",
-    "openInMaps": "Abrir en Maps"
+    "messageThroughForm": "Escríbeles a través del formulario. Sin intermediarios, sin cargos de plataforma",
+    "openInMaps": "Abrir en Maps",
+    "aboutTitle": "Sobre este lugar",
+    "whereTitle": "Dónde te alojarás"
   },
   "storePage": {
     "metaTitle": "Guías de viaje y productos digitales",
-    "metaDescription": "Descarga guías de viaje, itinerarios y herramientas de planificación seleccionados para Marruecos, Francia y Bélgica, creados por personas que viven allí — descarga instantánea.",
+    "metaDescription": "Descarga guías de viaje, itinerarios y herramientas de planificación seleccionados para Marruecos, Francia y Bélgica, creados por personas que viven allí, descarga instantánea.",
     "eyebrow": "Productos digitales",
     "title": "Viaja de forma más inteligente con LOC",
     "subtitle": "Guías, itinerarios y herramientas de planificación para Marruecos, Francia y Bélgica, descargables al instante.",
     "loadError": "No se pudieron cargar los productos en este momento. Inténtalo de nuevo más tarde.",
     "noProducts": "Todavía no hay productos",
-    "comingSoon": "Vuelve pronto. Nuevas guías están en camino."
+    "comingSoon": "Guías, itinerarios y herramientas de planificación escritas por quienes viven allí. Las publicaremos aquí primero.",
+    "soonTitle": "Las guías de viaje llegan pronto"
   },
   "productDetailPage": {
     "breadcrumbHome": "Inicio",
@@ -309,17 +339,79 @@
     "noArticles": "Todavía no hay artículos",
     "noArticlesTagged": "No hay artículos etiquetados \"{tag}\"",
     "tryDifferentTag": "Prueba con otra etiqueta.",
-    "comingSoon": "Pronto llegarán relatos de Marruecos, Francia y Bélgica."
+    "comingSoon": "Consejos locales y guías de destino escritas por quienes viven allí. Las primeras se están escribiendo ahora.",
+    "soonTitle": "Las historias llegan pronto"
   },
   "blogDetailPage": {
     "breadcrumbHome": "Inicio",
     "backToStories": "Volver a todos los relatos",
-    "relatedArticles": "También te puede interesar"
+    "relatedArticles": "También te puede interesar",
+    "minRead": "{count} min de lectura",
+    "by": "Por {name}",
+    "editorial": "Redacción LOC",
+    "share": "Compartir",
+    "copyLink": "Copiar enlace",
+    "linkCopied": "Enlace copiado",
+    "keepReading": "Sigue leyendo",
+    "filedUnder": "Archivado en"
   },
   "notFound": {
     "title": "No encontramos esa página",
     "body": "La página que buscas no existe o puede que haya sido movida. Volvamos al camino correcto.",
     "cta": "Volver al inicio",
     "ctaSecondary": "Explorar experiencias"
+  },
+  "home": {
+    "heroEyebrow": "Villas y apartamentos en Marruecos",
+    "quickLinksLabel": "Búsquedas populares",
+    "search": {
+      "tabsLabel": "Qué buscas",
+      "tabExperiences": "Experiencias",
+      "tabStays": "Alojamientos",
+      "whatLabel": "Qué",
+      "whereLabel": "Dónde",
+      "anywhere": "Cualquier lugar",
+      "typeLabel": "Tipo de alojamiento",
+      "anyType": "Cualquier tipo",
+      "submit": "Buscar",
+      "stayOnlyLabel": "Encuentra un alojamiento"
+    },
+    "marquee": [
+      "0 % de comisión por reserva",
+      "Habla directamente con los anfitriones",
+      "Villas y apartamentos en Marruecos",
+      "Seleccionado por locales",
+      "Disponible en 4 idiomas",
+      "Experiencias próximamente",
+      "Francia y Bélgica, después"
+    ],
+    "categoriesEyebrow": "Experiencias",
+    "categoriesTitle": "Encuentra tu forma de viajar",
+    "categoriesSubtitle": "Elige lo que te apetece y descubre los proveedores locales que lo ofrecen.",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "destinationsEyebrow": "Destinos",
+    "destinationsTitle": "Donde viaja LOC",
+    "destinationsSubtitle": "Tres países, conocidos desde dentro. Empieza por el que te llama.",
+    "staysCount": "{count, plural, one {# alojamiento} other {# alojamientos}}",
+    "experiencesCount": "{count, plural, one {# experiencia} other {# experiencias}}",
+    "zeroEyebrow": "Lo que nos diferencia",
+    "zeroTitle": "Sin comisión por reserva. Nunca.",
+    "zeroBody": "La mayoría de las plataformas cobran a ambas partes. LOC no cobra nada. Tú encuentras el lugar, hablas con las personas que lo llevan y les pagas directamente.",
+    "zeroPoints": [
+      "Los anfitriones y proveedores se quedan con el 100 % de lo que les pagas.",
+      "Escribes directamente al anfitrión, sin intermediarios.",
+      "LOC gana con tarifas fijas de visibilidad que pagan los negocios, nunca con tu reserva."
+    ],
+    "zeroCta": "Sobre LOC",
+    "experiencesEyebrow": "Selección",
+    "experiencesTitle": "Experiencias que merecen el viaje",
+    "experiencesSubtitle": "Ofrecidas por quienes mejor conocen cada lugar. Pregúntales lo que quieras antes de ir.",
+    "experiencesSeeAll": "Todas las experiencias",
+    "journalTitle": "Historias de viaje",
+    "journalSeeAll": "Leer el diario",
+    "partnerSecondary": "Hablemos",
+    "categoriesSoonSubtitle": "Las experiencias locales están en camino. Esto es lo que llega primero.",
+    "allStays": "Todos los alojamientos"
   }
 }

@@ -29,28 +29,14 @@ export const GLOBAL_AFFILIATES: AffiliateLink[] = [
   },
 ]
 
-// Country-specific overrides — add entries as you sign up per-market partners
+// Country-specific overrides, only for the markets LOC targets (Morocco,
+// France, Belgium). Add entries as you sign up per-market partners.
 const COUNTRY_OVERRIDES: Record<string, Partial<AffiliateLink>[]> = {
-  Japan: [
-    { label: "Flights to Japan", url: "https://www.skyscanner.com/flights-to/jp/japan-flights.html", category: "flights" },
-  ],
   Morocco: [
     { label: "Flights to Morocco", url: "https://www.skyscanner.com/flights-to/ma/morocco-flights.html", category: "flights" },
   ],
   France: [
     { label: "Flights to France", url: "https://www.skyscanner.com/flights-to/fr/france-flights.html", category: "flights" },
-  ],
-  Bali: [
-    { label: "Flights to Bali", url: "https://www.skyscanner.com/flights-to/dps/bali-flights.html", category: "flights" },
-  ],
-  Greece: [
-    { label: "Flights to Greece", url: "https://www.skyscanner.com/flights-to/gr/greece-flights.html", category: "flights" },
-  ],
-  "United Kingdom": [
-    { label: "Flights to UK", url: "https://www.skyscanner.com/flights-to/uk/united-kingdom-flights.html", category: "flights" },
-  ],
-  Italy: [
-    { label: "Flights to Italy", url: "https://www.skyscanner.com/flights-to/it/italy-flights.html", category: "flights" },
   ],
   Belgium: [
     { label: "Flights to Belgium", url: "https://www.skyscanner.com/flights-to/be/belgium-flights.html", category: "flights" },

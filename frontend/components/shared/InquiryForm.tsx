@@ -26,8 +26,8 @@ export function InquiryForm({ subject }: InquiryFormProps) {
 
   if (isSuccess) {
     return (
-      <div className="rounded-2xl bg-loc-sand/60 border border-loc-sand p-8 text-center" role="status">
-        <p className="text-loc-stone text-sm">{t("success")}</p>
+      <div className="rounded-2xl bg-loc-sand p-8 text-center" role="status">
+        <p className="text-loc-night text-[15px] leading-relaxed">{t("success")}</p>
       </div>
     )
   }
@@ -36,47 +36,51 @@ export function InquiryForm({ subject }: InquiryFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="inquiry-name" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+          <label htmlFor="inquiry-name" className="block text-[11px] font-semibold text-loc-night mb-1.5 uppercase tracking-[0.12em]">
             {t("name")}
           </label>
           <input
             id="inquiry-name"
+            autoComplete="name"
             required
             placeholder={t("name")}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
+            className="w-full h-12 border border-loc-night/15 rounded-xl px-4 text-[15px] bg-white placeholder:text-loc-stone/70 focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
           />
         </div>
         <div>
-          <label htmlFor="inquiry-email" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+          <label htmlFor="inquiry-email" className="block text-[11px] font-semibold text-loc-night mb-1.5 uppercase tracking-[0.12em]">
             {t("email")}
           </label>
           <input
             id="inquiry-email"
+            autoComplete="email"
             required
             type="email"
             placeholder={t("email")}
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
+            className="w-full h-12 border border-loc-night/15 rounded-xl px-4 text-[15px] bg-white placeholder:text-loc-stone/70 focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
           />
         </div>
       </div>
       <div>
-        <label htmlFor="inquiry-phone" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+        <label htmlFor="inquiry-phone" className="block text-[11px] font-semibold text-loc-night mb-1.5 uppercase tracking-[0.12em]">
           {t("phone")}
         </label>
         <input
           id="inquiry-phone"
+          type="tel"
+          autoComplete="tel"
           placeholder="+212 6xx xxx xxx"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
+          className="w-full h-12 border border-loc-night/15 rounded-xl px-4 text-[15px] bg-white placeholder:text-loc-stone/70 focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
         />
       </div>
       <div>
-        <label htmlFor="inquiry-message" className="block text-xs font-medium text-loc-stone mb-1.5 uppercase tracking-wide">
+        <label htmlFor="inquiry-message" className="block text-[11px] font-semibold text-loc-night mb-1.5 uppercase tracking-[0.12em]">
           {t("message")}
         </label>
         <textarea
@@ -86,7 +90,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
           placeholder={t("message")}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors resize-none"
+          className="w-full border border-loc-night/15 rounded-xl px-4 py-3 text-[15px] bg-white placeholder:text-loc-stone/70 focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors resize-none"
         />
       </div>
       {isError && (
@@ -95,7 +99,7 @@ export function InquiryForm({ subject }: InquiryFormProps) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-loc-terracotta text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-loc-terracotta/90 disabled:opacity-50 transition-all hover:scale-[1.01]"
+        className="btn-primary w-full h-14 px-6 rounded-full text-[15px] font-semibold disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-copper focus-visible:ring-offset-2"
       >
         {isPending ? t("sending") : t("send")}
       </button>

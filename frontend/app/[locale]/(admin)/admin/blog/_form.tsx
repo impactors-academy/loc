@@ -68,7 +68,7 @@ export function BlogPostForm({ initial, editSlug }: Props) {
         <div className="col-span-2"><label className={label}>Excerpt</label><textarea className={`${input} min-h-[80px] resize-y`} value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} /></div>
         <div className="col-span-2"><label className={label}>Content (HTML)</label><textarea className={`${input} min-h-[200px] resize-y font-mono text-xs`} value={form.content} onChange={(e) => set("content", e.target.value)} /></div>
         <div className="col-span-2"><label className={label}>Cover Image URL</label><input className={input} type="url" value={form.image_url} onChange={(e) => set("image_url", e.target.value)} /></div>
-        <div className="col-span-2"><label className={label}>Tags (comma-separated)</label><input className={input} placeholder="japan, travel, food" value={form.tags} onChange={(e) => set("tags", e.target.value)} /></div>
+        <div className="col-span-2"><label className={label}>Tags (comma-separated)</label><input className={input} placeholder="morocco, marrakech, food" value={form.tags} onChange={(e) => set("tags", e.target.value)} /></div>
       </div>
 
       <div className="flex gap-3 pt-2">

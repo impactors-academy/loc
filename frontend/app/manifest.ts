@@ -10,7 +10,7 @@ import type { MetadataRoute } from "next";
 // --primary (#A16036), not the org's dark copper-on-black. LOC is a light site.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "LOC — Discover the World | Experiences, Stays & Hidden Gems",
+    name: "LOC | Stays & Local Experiences in Morocco",
     short_name: "LOC",
     description:
       "Discover the best tourism experiences, stays, and hidden gems around the world.",

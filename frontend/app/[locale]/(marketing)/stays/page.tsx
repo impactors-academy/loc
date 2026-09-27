@@ -1,6 +1,6 @@
 import { PropertyFilters } from "@/components/features/stays/PropertyFilters"
 import { PropertyGrid } from "@/components/features/stays/PropertyGrid"
-import { SectionHeader } from "@/components/shared/SectionHeader"
+import { PageHeader } from "@/components/shared/PageHeader"
 import { getVisitorPriceContext } from "@/lib/price-display-context"
 import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
@@ -24,20 +24,16 @@ export default async function StaysPage({ searchParams }: Props) {
   const t = await getTranslations("staysPage")
 
   return (
-    <main className="pt-24 pb-20">
-      <div className="container mx-auto px-4">
-        <div className="mb-10">
-          <SectionHeader
-            eyebrow={t("eyebrow")}
-            title={t("title")}
-            subtitle={t("subtitle")}
-          />
+    <>
+      <PageHeader eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
+      <div className="container mx-auto px-4 pb-24 md:pb-32">
+        <div className="border-t border-loc-night/10 pt-8 mb-10">
+          <Suspense fallback={<div className="h-12" />}>
+            <PropertyFilters />
+          </Suspense>
         </div>
-        <Suspense fallback={<div className="h-10" />}>
-          <PropertyFilters />
-        </Suspense>
         <PropertyGrid type={type} country={country} priceContext={priceContext} />
       </div>
-    </main>
+    </>
   )
 }

@@ -1,5 +1,9 @@
 "use client"
 
+import { ButtonLink } from "@/components/shared/ButtonLink"
+import { ComingSoon } from "@/components/shared/ComingSoon"
+import { BookOpen } from "lucide-react"
+
 import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useProducts } from "@/hooks/useProducts"
 import { motion } from "framer-motion"
@@ -11,12 +15,14 @@ const SKELETON = Array.from({ length: 6 })
 export function ProductGrid() {
   const { data, isPending, isError } = useProducts()
   const t = useTranslations("storePage")
+  const tCommon = useTranslations("common")
+  const tNav = useTranslations("nav")
 
   if (isPending) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12">
         {SKELETON.map((_, i) => (
-          <div key={i} className="rounded-2xl bg-muted aspect-[3/4] animate-pulse" />
+          <div key={i} className="rounded-[20px] bg-loc-night/[0.06] aspect-[3/4] animate-pulse" />
         ))}
       </div>
     )
@@ -32,16 +38,19 @@ export function ProductGrid() {
 
   if (!data?.length) {
     return (
-      <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">{t("noProducts")}</p>
-        <p className="text-loc-stone text-sm">{t("comingSoon")}</p>
-      </div>
+      <ComingSoon
+        badge={tCommon("comingSoon")}
+        icon={BookOpen}
+        title={t("soonTitle")}
+        body={t("comingSoon")}
+        actions={<ButtonLink href="/stays" size="lg" arrow>{tNav("stays")}</ButtonLink>}
+      />
     )
   }
 
   return (
     <motion.div
-      className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12"
       variants={staggerContainer}
       initial="hidden"
       animate="show"

@@ -1,5 +1,5 @@
 """
-Idempotent seed script for local development. Global destinations.
+Idempotent seed script for local development. Mirrors what is live.
 Run via: make seed   OR   uv run python -m scripts.seed
 """
 import sys
@@ -21,196 +21,11 @@ def _upsert(db, model, slug: str, **kwargs) -> bool:
     return True
 
 
-EXPERIENCES = [
-    # ── Japan ──────────────────────────────────────────────────────────────
-    dict(
-        slug="kyoto-tea-ceremony",
-        title="Traditional Tea Ceremony | Kyoto",
-        description=(
-            "Step inside a 200-year-old machiya townhouse in Higashiyama and learn "
-            "the art of chado from a certified tea master. Matcha whisking, wagashi "
-            "sweets, and the meditative silence of a tatami room included."
-        ),
-        category="culture",
-        country="Japan",
-        location="Higashiyama, Kyoto",
-        duration="1.5 hours",
-        price_min=45.0,
-        price_max=65.0,
-        images=["https://images.unsplash.com/photo-1743515483156-6bf698521774?w=1200"],
-        is_featured=True,
-        provider_contact="kyototeahouse@example.com",
-    ),
-    dict(
-        slug="tokyo-street-food-tour",
-        title="Tokyo Street Food Night Tour | Shinjuku",
-        description=(
-            "Navigate the izakayas, yakitori alleys, and ramen counters of Shinjuku "
-            "with a local food journalist. Eight stops, eight tastings. "
-            "Covers tonkotsu, takoyaki, gyoza, and sake pairing."
-        ),
-        category="culinary",
-        country="Japan",
-        location="Shinjuku, Tokyo",
-        duration="3 hours",
-        price_min=70.0,
-        price_max=90.0,
-        images=["https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1200"],
-        is_featured=False,
-        provider_contact="tokyofoodtours@example.com",
-    ),
-    # ── France ─────────────────────────────────────────────────────────────
-    dict(
-        slug="bordeaux-wine-tasting",
-        title="Grand Cru Wine Tasting | Bordeaux",
-        description=(
-            "Tour three classified châteaux on the Left Bank, meet the winemakers, "
-            "and taste six vintages from 2015–2022. Includes a cellar visit, cheese "
-            "pairings, and a bottle of your favourite to take home."
-        ),
-        category="culinary",
-        country="France",
-        location="Médoc, Bordeaux",
-        duration="Full day",
-        price_min=120.0,
-        price_max=180.0,
-        images=["https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200"],
-        is_featured=True,
-        provider_contact="bordeauxwineclub@example.com",
-    ),
-    dict(
-        slug="provence-lavender-cycling",
-        title="Lavender Fields Cycling Tour | Provence",
-        description=(
-            "Glide through blooming lavender rows between Valensole and Manosque "
-            "on a curated 40 km route with an e-bike option. Includes a stop at a "
-            "family-run distillery and a Provençal picnic lunch."
-        ),
-        category="adventure",
-        country="France",
-        location="Valensole, Provence",
-        duration="Full day",
-        price_min=85.0,
-        price_max=110.0,
-        images=["https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1200"],
-        is_featured=False,
-        provider_contact="provencecycles@example.com",
-    ),
-    # ── UK ─────────────────────────────────────────────────────────────────
-    dict(
-        slug="scottish-highlands-hike",
-        title="Scottish Highlands Trek | Ben Nevis Foothills",
-        description=(
-            "A guided 18 km circular walk through ancient Caledonian pine forest, "
-            "past lochs, and up to the shoulder of Britain's highest mountain. "
-            "Waterproofs, packed lunch, and whisky dram at the summit provided."
-        ),
-        category="adventure",
-        country="United Kingdom",
-        location="Fort William, Scottish Highlands",
-        duration="Full day (9 hours)",
-        price_min=60.0,
-        price_max=85.0,
-        images=["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200"],
-        is_featured=True,
-        provider_contact="highlandtrekkers@example.com",
-    ),
-    # ── Belgium ────────────────────────────────────────────────────────────
-    dict(
-        slug="bruges-chocolate-workshop",
-        title="Artisan Chocolate Workshop | Bruges",
-        description=(
-            "Join a fourth-generation chocolatier in a medieval guildhall. "
-            "Temper couverture, hand-pipe pralines, and leave with a 500 g box "
-            "of your own creations. Belgian beer pairing included."
-        ),
-        category="culinary",
-        country="Belgium",
-        location="Bruges, West Flanders",
-        duration="2.5 hours",
-        price_min=55.0,
-        price_max=75.0,
-        images=["https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200"],
-        is_featured=False,
-        provider_contact="brugescacao@example.com",
-    ),
-    # ── Bali ───────────────────────────────────────────────────────────────
-    dict(
-        slug="bali-sunrise-volcano-trek",
-        title="Sunrise Volcano Trek | Mount Batur",
-        description=(
-            "Start at 2 am, reach the 1717 m crater rim just as dawn breaks over "
-            "the caldera lake and Mount Agung. Breakfast cooked in volcanic steam, "
-            "and a 4x4 transfer back through jungle villages."
-        ),
-        category="adventure",
-        country="Indonesia",
-        location="Kintamani, Bali",
-        duration="7 hours",
-        price_min=45.0,
-        price_max=65.0,
-        images=["https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=1200"],
-        is_featured=True,
-        provider_contact="baturtreks@example.com",
-    ),
-    # ── Morocco ────────────────────────────────────────────────────────────
-    dict(
-        slug="desert-sunrise-merzouga",
-        title="Desert Sunrise Camel Trek | Merzouga",
-        description=(
-            "Wake before dawn in Erg Chebbi, mount a camel at the foot of the dunes, "
-            "and watch the Sahara ignite in gold. Includes traditional Berber breakfast "
-            "in a nomadic tent and a short sandboarding session."
-        ),
-        category="adventure",
-        country="Morocco",
-        location="Merzouga, Drâa-Tafilalet",
-        duration="Half-day (5 hours)",
-        price_min=65.0,
-        price_max=95.0,
-        images=["https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1200"],
-        is_featured=False,
-        provider_contact="hassan.desert@example.com",
-    ),
-    # ── Greece ─────────────────────────────────────────────────────────────
-    dict(
-        slug="santorini-sailing-sunset",
-        title="Catamaran Sunset Sail | Santorini",
-        description=(
-            "Board a 12-metre catamaran in Vlychada and sail to the hot springs at "
-            "Palea Kameni, snorkel above the volcanic reef, and anchor off Oia "
-            "for the world-famous sunset. BBQ dinner and open bar included."
-        ),
-        category="water",
-        country="Greece",
-        location="Oia, Santorini",
-        duration="5 hours",
-        price_min=110.0,
-        price_max=150.0,
-        images=["https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200"],
-        is_featured=True,
-        provider_contact="santorinicatamarans@example.com",
-    ),
-    # ── Italy ──────────────────────────────────────────────────────────────
-    dict(
-        slug="tuscany-cooking-class",
-        title="Tuscan Farmhouse Cooking Class | Siena",
-        description=(
-            "Learn to make fresh pici pasta, wild boar ragù, and tiramisu from "
-            "a Nonna in her 14th-century farmhouse kitchen. Followed by a long "
-            "table lunch in the olive grove with Brunello di Montalcino."
-        ),
-        category="culinary",
-        country="Italy",
-        location="Chianti, Siena Province",
-        duration="4 hours",
-        price_min=95.0,
-        price_max=130.0,
-        images=["https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200"],
-        is_featured=True,
-        provider_contact="casatoscana@example.com",
-    ),
-]
+# No experiences are launched yet, so none are seeded: local dev should show
+# what the live site shows ("coming soon"), not demo listings from countries
+# LOC doesn't operate in. Add real ones here as they launch (targets: Morocco,
+# France, Belgium). The earlier global demo set is in git history.
+EXPERIENCES: list[dict] = []
 
 # The org's real listings, mirrored from production (api.loctravels.com) so
 # local dev shows the same inventory as the live site instead of unrelated
@@ -427,47 +242,8 @@ PROPERTIES = [
     ),
 ]
 
-PRODUCTS = [
-    dict(
-        slug="world-traveler-bundle",
-        title="World Traveler's Digital Bundle",
-        description=(
-            "Six destination PDF guides (Japan, France, Morocco, Bali, Greece, UK), "
-            "68 pages each: top experiences, curated stays, transport tips, "
-            "language cheat sheets, and offline-friendly maps."
-        ),
-        type="guide",
-        price=29.0,
-        image_url="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=800",
-        purchase_url="https://shop.loctravels.com/world-traveler-bundle",
-    ),
-    dict(
-        slug="europe-hidden-gems-pack",
-        title="Europe Hidden Gems Itinerary Pack",
-        description=(
-            "Printable itinerary cards for six under-the-radar European routes: "
-            "Faroe Islands, Albanian Riviera, Slovenia's Soča Valley, "
-            "Azores, Transylvania, and the Lofoten Islands. GPX files included."
-        ),
-        type="itinerary",
-        price=12.0,
-        image_url="https://images.unsplash.com/photo-1519677584237-752f8853252e?w=800",
-        purchase_url="https://shop.loctravels.com/europe-hidden-gems",
-    ),
-    dict(
-        slug="asia-pacific-masterclass",
-        title="Asia Pacific Travel Masterclass | Video Course",
-        description=(
-            "8 short-form videos (total 2 hrs) covering Japan, Bali, Vietnam, and "
-            "Thailand: when to go, where to stay, what to eat, and how to get "
-            "off the tourist trail. Lifetime access."
-        ),
-        type="course",
-        price=34.0,
-        image_url="https://images.unsplash.com/photo-1480796927426-f609979314bd?w=800",
-        purchase_url="https://shop.loctravels.com/asia-pacific-masterclass",
-    ),
-]
+# No travel guides or digital products are launched yet; see EXPERIENCES above.
+PRODUCTS: list[dict] = []
 
 BLOG_POSTS = [
     dict(
