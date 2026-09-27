@@ -353,7 +353,13 @@
     "copyLink": "Copiar enlace",
     "linkCopied": "Enlace copiado",
     "keepReading": "Sigue leyendo",
-    "filedUnder": "Archivado en"
+    "filedUnder": "Archivado en",
+    "writtenBy": "Escrito por",
+    "reviewedBy": "Revisado por",
+    "viewProfile": "Ver perfil",
+    "teamAuthor": "El equipo de LOC",
+    "teamAuthorRole": "Conector de viajes de la Impactors Academy",
+    "aboutTheAuthors": "Sobre los autores"
   },
   "notFound": {
     "title": "No encontramos esa página",
@@ -413,5 +419,62 @@
     "partnerSecondary": "Hablemos",
     "categoriesSoonSubtitle": "Las experiencias locales están en camino. Esto es lo que llega primero.",
     "allStays": "Todos los alojamientos"
+  },
+  "homeFaq": {
+    "eyebrow": "Bueno saberlo",
+    "title": "Lo que preguntan los viajeros",
+    "subtitle": "Cómo funciona LOC, con respuestas claras.",
+    "items": [
+      {
+        "q": "¿Cómo reservo un alojamiento en LOC?",
+        "a": "Envía una consulta desde la página del alojamiento. El anfitrión te responde directamente y organizáis la estancia juntos. LOC os conecta; nunca gestiona la reserva ni el pago."
+      },
+      {
+        "q": "¿LOC cobra una tarifa de reserva?",
+        "a": "No. LOC no cobra comisión por tu estancia ni añade ninguna tarifa de plataforma al precio del anfitrión."
+      },
+      {
+        "q": "¿Dónde puedo alojarme con LOC?",
+        "a": "En Marruecos, sobre todo en Marrakech: villas con piscina privada y jardín, y apartamentos en Guéliz. Cada anuncio muestra su ubicación, fotos y un precio de partida por noche."
+      },
+      {
+        "q": "¿Puedo reservar experiencias locales o guías de viaje?",
+        "a": "Todavía no. Las experiencias locales, las guías de viaje y los alojamientos en Francia y Bélgica llegan pronto, y cada uno aparecerá en el sitio cuando esté listo."
+      },
+      {
+        "q": "Tengo un alojamiento en Marruecos. ¿Cómo lo publico en LOC?",
+        "a": "Cuéntanoslo desde la página Únete a nosotros y nuestro equipo te responderá."
+      },
+      {
+        "q": "¿En qué idiomas está disponible LOC?",
+        "a": "Inglés, francés, español y portugués."
+      }
+    ]
+  },
+  "aboutFaq": {
+    "eyebrow": "Sobre LOC",
+    "title": "Preguntas sobre nosotros",
+    "items": [
+      {
+        "q": "¿Qué es LOC?",
+        "a": "LOC es un conector de viajes de la Impactors Academy. Reúne alojamientos y conocimiento local elegidos por personas que conocen los lugares, y pone a los viajeros en contacto con los anfitriones locales."
+      },
+      {
+        "q": "¿Cómo empezó LOC?",
+        "a": "LOC nació como LocEtudiant. En 2025 se relanzó como LOC, con Lewis Rogers y Kodi Majok Matur como cofundadores."
+      },
+      {
+        "q": "¿Quién está detrás de LOC?",
+        "a": "Los cofundadores Lewis Rogers y Kodi Majok Matur. LOC forma parte de la Impactors Academy, y su plataforma la desarrolla IA Pro, el brazo técnico de la Academy."
+      },
+      {
+        "q": "¿Qué significa «la forma local de ver el mundo»?",
+        "a": "Significa que quienes recomiendan un lugar son quienes lo conocen, y que contactas directamente con el anfitrión o proveedor local."
+      },
+      {
+        "q": "¿En qué países está LOC?",
+        "a": "Hoy en Marruecos. Francia y Bélgica serán los siguientes."
+      }
+    ]
   }
 }

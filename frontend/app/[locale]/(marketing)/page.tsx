@@ -9,6 +9,7 @@ import { PartnerCta } from "@/components/home/PartnerCta"
 import { Rail } from "@/components/home/Rail"
 import { ZeroCommission } from "@/components/home/ZeroCommission"
 import { ButtonLink } from "@/components/shared/ButtonLink"
+import { FaqSection, type FaqItem } from "@/components/shared/FaqSection"
 import { Marquee } from "@/components/shared/Marquee"
 import { SectionHeader } from "@/components/shared/SectionHeader"
 import { api } from "@/lib/api"
@@ -100,6 +101,13 @@ export default async function HomePage() {
       <FeaturedExperiences experiences={experiences} />
       <HowItWorks />
       <JournalPreview posts={posts} />
+      <FaqSection
+        eyebrow={t("homeFaq.eyebrow")}
+        title={t("homeFaq.title")}
+        subtitle={t("homeFaq.subtitle")}
+        items={t.raw("homeFaq.items") as FaqItem[]}
+        className="bg-white"
+      />
       <PartnerCta />
     </>
   )

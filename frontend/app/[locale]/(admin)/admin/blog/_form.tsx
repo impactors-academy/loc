@@ -4,6 +4,7 @@ import { api } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import type { BlogPost } from "@/lib/types"
+import { TEAM } from "@/lib/team"
 
 const input = "w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta"
 const label = "block text-xs font-semibold text-loc-stone uppercase tracking-wide mb-1"
@@ -25,6 +26,8 @@ export function BlogPostForm({ initial, editSlug }: Props) {
     content: initial?.content ?? "",
     image_url: initial?.imageUrl ?? "",
     tags: Array.isArray(initial?.tags) ? (initial.tags as string[]).join(", ") : (initial?.tags ?? ""),
+    author_slug: initial?.authorSlug ?? "",
+    reviewer_slug: initial?.reviewerSlug ?? "",
   })
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -45,6 +48,8 @@ export function BlogPostForm({ initial, editSlug }: Props) {
       content: form.content || null,
       image_url: form.image_url || null,
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+      author_slug: form.author_slug || null,
+      reviewer_slug: form.reviewer_slug || null,
     }
     try {
       if (isEdit) await api.admin.blog.update(editSlug, body)
@@ -68,6 +73,8 @@ export function BlogPostForm({ initial, editSlug }: Props) {
         <div className="col-span-2"><label className={label}>Excerpt</label><textarea className={`${input} min-h-[80px] resize-y`} value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} /></div>
         <div className="col-span-2"><label className={label}>Content (HTML)</label><textarea className={`${input} min-h-[200px] resize-y font-mono text-xs`} value={form.content} onChange={(e) => set("content", e.target.value)} /></div>
         <div className="col-span-2"><label className={label}>Cover Image URL</label><input className={input} type="url" value={form.image_url} onChange={(e) => set("image_url", e.target.value)} /></div>
+        <div><label className={label} htmlFor="author_slug">Author</label><select id="author_slug" className={input} value={form.author_slug} onChange={(e) => set("author_slug", e.target.value)}><option value="">The LOC team</option>{TEAM.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select></div>
+        <div><label className={label} htmlFor="reviewer_slug">Reviewed by</label><select id="reviewer_slug" className={input} value={form.reviewer_slug} onChange={(e) => set("reviewer_slug", e.target.value)}><option value="">No reviewer shown</option>{TEAM.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select></div>
         <div className="col-span-2"><label className={label}>Tags (comma-separated)</label><input className={input} placeholder="morocco, marrakech, food" value={form.tags} onChange={(e) => set("tags", e.target.value)} /></div>
       </div>
 

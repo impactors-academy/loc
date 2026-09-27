@@ -353,7 +353,13 @@
     "copyLink": "Copy link",
     "linkCopied": "Link copied",
     "keepReading": "Keep reading",
-    "filedUnder": "Filed under"
+    "filedUnder": "Filed under",
+    "writtenBy": "Written by",
+    "reviewedBy": "Reviewed by",
+    "viewProfile": "View profile",
+    "teamAuthor": "The LOC team",
+    "teamAuthorRole": "Travel connector from the Impactors Academy",
+    "aboutTheAuthors": "About the authors"
   },
   "notFound": {
     "title": "We couldn't find that page",
@@ -413,5 +419,62 @@
     "partnerSecondary": "Talk to us",
     "categoriesSoonSubtitle": "Local experiences are on their way. Here is what's coming first.",
     "allStays": "All stays"
+  },
+  "homeFaq": {
+    "eyebrow": "Good to know",
+    "title": "Questions travellers ask",
+    "subtitle": "How LOC works, in plain answers.",
+    "items": [
+      {
+        "q": "How do I book a stay on LOC?",
+        "a": "Send an inquiry from the stay's page. The host replies to you directly, and you arrange the stay together. LOC connects you; it never handles the booking or the payment."
+      },
+      {
+        "q": "Does LOC charge a booking fee?",
+        "a": "No. LOC takes no commission on your stay and adds no platform fee to the host's price."
+      },
+      {
+        "q": "Where can I stay with LOC?",
+        "a": "In Morocco, mostly in Marrakech: villas with private pools and gardens, and apartments in Guéliz. Each listing shows its location, photos and a starting price per night."
+      },
+      {
+        "q": "Can I book local experiences or travel guides?",
+        "a": "Not yet. Local experiences, travel guides and stays in France and Belgium are coming soon, and each will appear on the site once it is ready."
+      },
+      {
+        "q": "I have a place in Morocco. How do I list it on LOC?",
+        "a": "Tell us about it from the List with us page and our team will get back to you."
+      },
+      {
+        "q": "Which languages is LOC available in?",
+        "a": "English, French, Spanish and Portuguese."
+      }
+    ]
+  },
+  "aboutFaq": {
+    "eyebrow": "About LOC",
+    "title": "Questions about us",
+    "items": [
+      {
+        "q": "What is LOC?",
+        "a": "LOC is a travel connector from the Impactors Academy. It brings together places to stay and local knowledge chosen by people who know the places they cover, and puts travellers in touch with the local hosts behind them."
+      },
+      {
+        "q": "How did LOC start?",
+        "a": "LOC began as LocEtudiant. In 2025 it was relaunched as LOC, with Lewis Rogers and Kodi Majok Matur as co-founders."
+      },
+      {
+        "q": "Who is behind LOC?",
+        "a": "Co-founders Lewis Rogers and Kodi Majok Matur. LOC is part of the Impactors Academy, and its platform is built by IA Pro, the Academy's technical arm."
+      },
+      {
+        "q": "What does \"the local way to see the world\" mean?",
+        "a": "It means the people recommending a place are the people who know it, and you reach the local host or provider directly."
+      },
+      {
+        "q": "Which countries is LOC in?",
+        "a": "Morocco today. France and Belgium are next."
+      }
+    ]
   }
 }

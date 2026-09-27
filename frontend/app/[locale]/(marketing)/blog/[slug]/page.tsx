@@ -1,7 +1,9 @@
 import { JsonLd } from "@/components/shared/JsonLd"
 import { api } from "@/lib/api"
 import { ReadingProgress, ShareButtons } from "@/components/features/blog/ArticleChrome"
+import { AuthorBox } from "@/components/features/blog/AuthorBox"
 import { RelatedArticles } from "@/components/features/blog/RelatedArticles"
+import { getMember } from "@/lib/team"
 import { Breadcrumbs } from "@/components/shared/DetailParts"
 import { Link } from "@/i18n/navigation"
 import { tidyDashes } from "@/lib/text"
@@ -82,6 +84,8 @@ export default async function BlogPostPage({ params }: Props) {
   const words = (post.content || post.excerpt || "").replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length
   const minutes = Math.max(1, Math.round(words / WORDS_PER_MINUTE))
   const kicker = post.tags?.[0]
+  const author = getMember(post.authorSlug)
+  const reviewer = getMember(post.reviewerSlug)
 
   const faq = post.content ? extractFaq(post.content) : []
   const faqLd =
@@ -100,7 +104,9 @@ export default async function BlogPostPage({ params }: Props) {
     description: post.excerpt,
     datePublished: post.publishedAt,
     ...(post.imageUrl ? { image: [post.imageUrl] } : {}),
-    author: { "@type": "Organization", name: "LOC", url: "https://loctravels.com" },
+    author: author
+      ? { "@type": "Person", name: author.name, url: `https://impactorsacademy.com/profiles/${author.slug}` }
+      : { "@type": "Organization", name: "LOC", url: "https://loctravels.com" },
     publisher: { "@type": "Organization", name: "LOC", url: "https://loctravels.com" },
     mainEntityOfPage: `https://loctravels.com/blog/${slug}`,
   }
@@ -113,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
         <JsonLd data={faqLd} />
       )}
 
-      <article className="pt-28 md:pt-36">
+      <article className="pt-28 md:pt-36 pb-24 md:pb-32">
         {/* Masthead: kicker, headline, standfirst, byline. The same order the
             major newsrooms use, so the reader knows what and who before why. */}
         <header className="container mx-auto px-4 max-w-[752px]">
@@ -141,9 +147,15 @@ export default async function BlogPostPage({ params }: Props) {
 
           <div className="mt-10 py-5 border-y border-loc-night/10 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Image src="/icons/loc-mark.png" alt="" width={44} height={44} className="h-11 w-11 rounded-full" />
+              <Image
+                src={author?.photo ?? "/icons/loc-mark.png"}
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 rounded-full object-cover"
+              />
               <div className="text-sm">
-                <p className="font-semibold text-loc-night">{t("by", { name: t("editorial") })}</p>
+                <p className="font-semibold text-loc-night">{t("by", { name: author?.name ?? t("teamAuthor") })}</p>
                 <p className="text-loc-stone">
                   <time dateTime={post.publishedAt}>{date}</time>
                 </p>
@@ -191,6 +203,10 @@ export default async function BlogPostPage({ params }: Props) {
             )}
             <ShareButtons title={post.title} />
           </footer>
+
+          <div className="mx-auto max-w-[720px] mt-10">
+            <AuthorBox author={author} reviewer={reviewer} />
+          </div>
 
           <div className="mx-auto max-w-[720px] mt-10">
             <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-loc-night hover:text-loc-terracotta transition-colors">
