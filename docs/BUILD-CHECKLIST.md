@@ -147,14 +147,19 @@ To do later (not launched, deliberately "coming soon" for now):
       the new packages are agreed.
 - [ ] **Re-rank priorities** (nav, homepage section order) once experiences, guides
       and packages launch. Stays lead only because they are the only live product.
-- [ ] **Blog:** not top quality yet. Replace the local demo posts (non-target
-      destinations) with real Morocco articles, review the article template with
-      Markie, then port the same article structure to impactors-academy and ia-pro.
+- [ ] **Blog:** shows "coming soon" (no posts published). Demo posts removed from
+      the local DB and `seed.py` 2026-09-27. Write real Morocco articles, review the
+      article template with Markie on a real post, then port the same article
+      structure to impactors-academy and ia-pro.
 - [ ] **Listing data:** remove em dashes from the 12 live titles/descriptions in the
       admin (the site hides them, but the source still has them).
 - [ ] **Tangier listing:** Markie said only Marrakech is real; confirm the Tangier
       apartment should stay live or unpublish it.
 - [ ] Browser pass on real phones and Safari (only Chrome desktop/500px checked).
+- Note (2026-09-27): after many rapid edits the dev server served stale bundles, so
+  a reload showed the old UI and a first load could log a hydration mismatch. A
+  production build hydrated cleanly on all main pages (24 loads). If the local site
+  looks like an older version, stop the frontend, `rm -rf frontend/.next`, restart.
 
 ## Phase 3 — Architecture & Data
 
