@@ -149,8 +149,8 @@ To do later (not launched, deliberately "coming soon" for now):
       and packages launch. Stays lead only because they are the only live product.
 - [ ] **Blog:** no posts on production yet. The local demo posts stay (they were
       removed by mistake on 2026-09-27 and restored the same day; Markie needs them
-      for template review). First real post drafted: "Why We Built LOC" in
-      `content/posts/drafts/2026-09-28-loc-why-we-built-loc/` (loaded locally only).
+      for template review). First real post drafted: "What Is LOC?" (story as Q&A) in
+      `content/posts/drafts/2026-09-28-loc-what-is-loc/` (loaded locally only).
       Publish on production once approved, then port the article structure to
       impactors-academy and ia-pro. Writing rules: `content/strategy/BLOG-GUIDELINES.md`.
 - [x] **Structured data now in the server HTML (2026-09-27):** every JSON-LD block
