@@ -1,3 +1,4 @@
+import { JsonLd } from "@/components/shared/JsonLd"
 import { api } from "@/lib/api"
 import { ReadingProgress, ShareButtons } from "@/components/features/blog/ArticleChrome"
 import { RelatedArticles } from "@/components/features/blog/RelatedArticles"
@@ -8,7 +9,6 @@ import { ArrowLeft } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
-import Script from "next/script"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -36,6 +36,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const WORDS_PER_MINUTE = 225
+
+const stripTags = (html: string) => html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim()
+
+// The Q&A block is authored as <h2 id="faq"> followed by <h3> question / <p>
+// answer pairs (see content/strategy/BLOG-GUIDELINES.md). Turning it into
+// FAQPage data lets search and AI answer engines read the questions directly.
+function extractFaq(html: string): { q: string; a: string }[] {
+  const start = html.search(/<h2[^>]*id="faq"[^>]*>/i)
+  if (start === -1) return []
+  const rest = html.slice(start + 1)
+  const end = rest.search(/<h2[\s>]/i)
+  const block = end === -1 ? rest : rest.slice(0, end)
+  const pairs: { q: string; a: string }[] = []
+  for (const m of block.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi)) {
+    pairs.push({ q: stripTags(m[1]), a: stripTags(m[2]) })
+  }
+  return pairs
+}
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
@@ -65,6 +83,16 @@ export default async function BlogPostPage({ params }: Props) {
   const minutes = Math.max(1, Math.round(words / WORDS_PER_MINUTE))
   const kicker = post.tags?.[0]
 
+  const faq = post.content ? extractFaq(post.content) : []
+  const faqLd =
+    faq.length >= 2
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+        }
+      : null
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -80,7 +108,10 @@ export default async function BlogPostPage({ params }: Props) {
   return (
     <>
       <ReadingProgress />
-      <Script id="article-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
+      {faqLd && (
+        <JsonLd data={faqLd} />
+      )}
 
       <article className="pt-28 md:pt-36">
         {/* Masthead: kicker, headline, standfirst, byline. The same order the

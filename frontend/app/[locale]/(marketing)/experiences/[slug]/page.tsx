@@ -1,3 +1,4 @@
+import { JsonLd } from "@/components/shared/JsonLd"
 import { AffiliateLinks } from "@/components/features/affiliates/AffiliateLinks"
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { TrustStrip } from "@/components/shared/TrustStrip"
@@ -11,7 +12,6 @@ import { Clock, Globe, MapPin, Tag, User } from "lucide-react"
 import { splitTitle, tidyDashes } from "@/lib/text"
 import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
-import Script from "next/script"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -102,11 +102,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
   return (
     <div className="pt-28 md:pt-32 pb-28 lg:pb-32">
       {jsonLd && (
-        <Script
-          id="experience-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <JsonLd data={jsonLd} />
       )}
 
       <div className="container mx-auto px-4">

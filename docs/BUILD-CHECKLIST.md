@@ -147,10 +147,17 @@ To do later (not launched, deliberately "coming soon" for now):
       the new packages are agreed.
 - [ ] **Re-rank priorities** (nav, homepage section order) once experiences, guides
       and packages launch. Stays lead only because they are the only live product.
-- [ ] **Blog:** shows "coming soon" (no posts published). Demo posts removed from
-      the local DB and `seed.py` 2026-09-27. Write real Morocco articles, review the
-      article template with Markie on a real post, then port the same article
-      structure to impactors-academy and ia-pro.
+- [ ] **Blog:** no posts on production yet. The local demo posts stay (they were
+      removed by mistake on 2026-09-27 and restored the same day; Markie needs them
+      for template review). First real post drafted: "Why We Built LOC" in
+      `content/posts/drafts/2026-09-28-loc-why-we-built-loc/` (loaded locally only).
+      Publish on production once approved, then port the article structure to
+      impactors-academy and ia-pro. Writing rules: `content/strategy/BLOG-GUIDELINES.md`.
+- [x] **Structured data now in the server HTML (2026-09-27):** every JSON-LD block
+      (organisation, Article, FAQPage, LodgingBusiness, TouristAttraction, Product)
+      moved from `next/script` (injected after load, invisible to non-JS crawlers)
+      to a server-rendered `JsonLd` component per the Next.js guide. Blog posts
+      emit `FAQPage` from an `<h2 id="faq">` Q&A block.
 - [ ] **Listing data:** remove em dashes from the 12 live titles/descriptions in the
       admin (the site hides them, but the source still has them).
 - [ ] **Tangier listing:** Markie said only Marrakech is real; confirm the Tangier

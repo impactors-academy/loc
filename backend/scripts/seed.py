@@ -245,10 +245,101 @@ PROPERTIES = [
 # No travel guides or digital products are launched yet; see EXPERIENCES above.
 PRODUCTS: list[dict] = []
 
-# No blog posts are published yet, so none are seeded; the blog shows "coming
-# soon" locally just as it does on the live site. The earlier demo articles
-# (non-target destinations) are in git history.
-BLOG_POSTS: list[dict] = []
+BLOG_POSTS = [
+    dict(
+        slug="hidden-destinations-2026",
+        title="10 Off-the-Beaten-Path Destinations for 2026",
+        excerpt=(
+            "From Albania's turquoise coast to Kyushu's onsen towns, these ten "
+            "destinations offer the experiences travellers crave, without the crowds."
+        ),
+        content="""<h2>1. Faroe Islands, Denmark</h2>
+<p>Dramatic sea cliffs, grass-roofed villages, and a total of zero traffic lights. The Faroes top every 'hidden gem' list for a reason: they are genuinely spectacular and still genuinely quiet. Fly direct from Copenhagen or Edinburgh.</p>
+
+<h2>2. Puglia, Italy</h2>
+<p>While crowds flood the Amalfi Coast, southern Puglia offers whitewashed hill towns, olive groves over 2,000 years old, and seafood so fresh it barely left the Adriatic before reaching your plate. Base yourself in Ostuni or Lecce.</p>
+
+<h2>3. Kyushu, Japan</h2>
+<p>Japan's southernmost main island gets a fraction of Kyoto's visitors but packs in volcanic hot springs, samurai castle towns, ramen culture (Fukuoka originated hakata-style tonkotsu), and world-class ceramics in Arita.</p>
+
+<h2>4. Albanian Riviera</h2>
+<p>Pristine Ionian beaches, Ottoman-era villages perched on cliffs, and meal prices that feel like 2005. Himara and Dhermi are the anchor towns; the drive along the coast road is one of Europe's great road trips.</p>
+
+<h2>5. Soča Valley, Slovenia</h2>
+<p>The Soča River runs an impossible turquoise through Julian Alps forest. Kayak it, hike above it, or simply sit beside it. Kobarid village has a Michelin-starred restaurant and a museum about World War I that will stay with you.</p>
+
+<h2>6. Jericoacoara, Brazil</h2>
+<p>No paved roads, no traffic. Just dune lakes, kite-surfers, and the best caipirinhas on the planet, served at sunset from a sandbar. Accessible only by 4WD from Fortaleza.</p>
+
+<h2>7. Azores, Portugal</h2>
+<p>Mid-Atlantic volcanic islands with crater lakes, thermal spas, and landscapes that shift from lunar to lush within a kilometre. São Miguel is the entry point; Flores is the reward for those who go further.</p>
+
+<h2>8. Draa-Tafilalet, Morocco</h2>
+<p>Beyond Marrakech's medina, the Drâa Valley unfolds into a 200 km ribbon of palmeries, kasbahs, and desert. Zagora and Mhamid are quieter alternatives to Merzouga for reaching the dunes.</p>
+
+<h2>9. Gjirokastra, Albania</h2>
+<p>A UNESCO-listed Ottoman city of grey-stone mansions cascading down a hillside, topped by a 12th-century castle. Birthplace of novelist Ismail Kadare. Completely undervisited.</p>
+
+<h2>10. Lofoten, Norway</h2>
+<p>Red fishermen's cabins reflected in still fjords, with the Northern Lights overhead from October to March and the midnight sun blazing in July. Book your rorbuer (fishing cabin) at least six months ahead.</p>""",
+        image_url="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200",
+        tags="destinations,2026,europe,asia,hidden-gems",
+    ),
+    dict(
+        slug="tokyo-street-food-guide",
+        title="Tokyo Street Food: Your Complete First-Timer's Guide",
+        excerpt=(
+            "Navigating Tokyo's food scene for the first time is overwhelming "
+            "in the best possible way. Here is where to start."
+        ),
+        content="""<h2>The Golden Rule</h2>
+<p>Follow the salarymen. If there's a line of suited office workers at 1 pm, the food is excellent and the price is fair. This rule works 99% of the time in Tokyo.</p>
+
+<h2>Tsukiji Outer Market (Breakfast)</h2>
+<p>The inner wholesale market moved to Toyosu, but the outer market's tiny shops are still the best place in the world to eat grilled tamagoyaki, sashimi on rice, and fresh uni (sea urchin) at 8 am. Get there before 10.</p>
+
+<h2>Yurakucho Under the Tracks (Lunch)</h2>
+<p>The warren of izakayas and ramen counters under the Yamanote Line tracks between Yurakucho and Shinbashi stations is a time-warp to 1970s Tokyo. Yakitori grilled over binchōtan charcoal, cold Sapporo, no English menu needed. Just point.</p>
+
+<h2>Asakusa (Afternoon Snacking)</h2>
+<p>Nakamise-dori leads to Senso-ji, and the side streets surrounding it are lined with vendors selling ningyo-yaki (little sponge cakes in temple shapes), ningyo-yaki, and mochi pounded to order. The melonpan (sweet bread) shops here are the best in the city.</p>
+
+<h2>Shinjuku Golden Gai (Night)</h2>
+<p>Six narrow alleys, 200 bars, most seating eight people maximum. No cover charge if you go before 9 pm. Order highball whisky and whatever the chef is making that night. Each bar has a theme: jazz, horror films, baseball, 90s J-pop.</p>
+
+<h2>Practical Notes</h2>
+<p>Cash is still king in most street-food spots. Budget ¥3,000–5,000 (€18–30) for a full day of snacking. The Tokyo Metro day pass (¥800) puts all of this within reach.</p>""",
+        image_url="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1200",
+        tags="japan,tokyo,food,culture,asia",
+    ),
+    dict(
+        slug="morocco-vs-bali-comparison",
+        title="Morocco or Bali? How to Choose Your Next Adventure",
+        excerpt=(
+            "Both deliver ancient culture, jaw-dropping scenery, and extraordinary food "
+            "for a fraction of European prices. But they are very different journeys."
+        ),
+        content="""<h2>For Culture Depth: Morocco</h2>
+<p>Few places on earth compact so much history into a medina walk. Fès el-Bali is a living medieval city: the tanners, the brass-beaters, the Quranic schools, unchanged in structure for 900 years. Bali has extraordinary Hindu temple culture, but the scale and density of Morocco's imperial cities is in a class of its own.</p>
+
+<h2>For Nature & Landscapes: Both (Different)</h2>
+<p>Morocco offers three distinct biomes within a day's drive: Atlantic coast, High Atlas peaks (skiing December–March), and Sahara desert. Bali's canvas is narrower but no less dramatic: volcanic peaks, terraced rice paddies, black-sand beaches, and jungle river gorges. If you want diversity of terrain, Morocco wins by area. If you want a single island where everything is within two hours, Bali is unbeatable.</p>
+
+<h2>For Food: Morocco</h2>
+<p>Moroccan cuisine is one of the great under-celebrated food cultures: tagine, bastilla, couscous, pastilla au lait, preserved lemons, argan oil. Bali's food scene is excellent but leans heavily toward tourist-facing warungs serving nasi goreng and mie goreng. For genuine depth, Morocco.</p>
+
+<h2>For Wellness & Spiritual Reset: Bali</h2>
+<p>Ubud is the global capital of yoga retreats, sound baths, and holistic healing, for better or worse. Morocco has hammams, which are magnificent, but Bali built an entire industry around slowing down. If a retreat is the goal, Bali wins.</p>
+
+<h2>For Budget: Bali (Slightly)</h2>
+<p>Both destinations are good value versus Europe. Bali edges ahead for mid-budget travellers: excellent villas with pools for €80–120/night and restaurant meals for €4–8. Morocco is close behind, especially outside Marrakech.</p>
+
+<h2>Verdict</h2>
+<p>Go to Morocco if: you want history, medinas, Sahara, and the Atlantic. Go to Bali if: you want nature, spirituality, surf, and temple culture on a compact island. Go to both if you can. They are utterly different and both exceptional.</p>""",
+        image_url="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1200",
+        tags="morocco,bali,indonesia,planning,comparison",
+    ),
+]
 
 
 def run():

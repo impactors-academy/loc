@@ -1,6 +1,6 @@
+import { JsonLd } from "@/components/shared/JsonLd"
 import type { Metadata } from "next"
 import localFont from "next/font/local"
-import Script from "next/script"
 import { Analytics } from "@/components/shared/Analytics"
 import "./globals.css"
 
@@ -56,11 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html className={`${clashGrotesk.variable} ${generalSans.variable}`}>
       <body className="font-sans">
-        <Script
-          id="org-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-        />
+        <JsonLd data={organizationSchema} />
         <Analytics />
         {children}
       </body>
