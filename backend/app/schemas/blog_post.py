@@ -10,6 +10,8 @@ class BlogPostBase(BaseModel):
     content: str | None = None
     image_url: str | None = None
     tags: list[str] = []
+    author_slug: str | None = None
+    reviewer_slug: str | None = None
 
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 

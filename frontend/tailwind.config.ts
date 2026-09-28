@@ -1,5 +1,13 @@
 import type { Config } from "tailwindcss";
 
+// The --loc-* tokens are hex, so a bare var() gives Tailwind nothing to apply an
+// opacity modifier to: `bg-loc-cream/85` used to compile to no class at all.
+// color-mix keeps the hex as the single source of truth and makes every
+// `/NN` modifier work.
+function locColor(name: string) {
+  return `color-mix(in srgb, var(--loc-${name}) calc(<alpha-value> * 100%), transparent)`
+}
+
 const config: Config = {
   // Kept as the strategy a dark theme *would* use, not as a live feature: LOC
   // has no theme toggle and no `dark:` utilities anywhere, and app/manifest.ts
@@ -65,14 +73,14 @@ const config: Config = {
         // LOC brand palette — wired to --loc-* CSS custom properties in globals.css.
         // Every hex lives in one place (:root); Tailwind references the variable.
         loc: {
-          copper:     "var(--loc-copper)",
-          terracotta: "var(--loc-terracotta)",
-          sand:       "var(--loc-sand)",
-          amber:      "var(--loc-amber)",
-          slate:      "var(--loc-slate)",
-          night:      "var(--loc-night)",
-          stone:      "var(--loc-stone)",
-          cream:      "var(--loc-cream)",
+          copper:     locColor("copper"),
+          terracotta: locColor("terracotta"),
+          sand:       locColor("sand"),
+          amber:      locColor("amber"),
+          slate:      locColor("slate"),
+          night:      locColor("night"),
+          stone:      locColor("stone"),
+          cream:      locColor("cream"),
         },
       },
       fontFamily: {
@@ -105,6 +113,7 @@ const config: Config = {
       },
       transitionTimingFunction: {
         loc: "var(--loc-ease)",
+        expo: "var(--loc-ease-expo)",
       },
       transitionDuration: {
         loc: "var(--loc-duration)",

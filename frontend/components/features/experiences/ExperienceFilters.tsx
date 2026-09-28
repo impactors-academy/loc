@@ -1,11 +1,23 @@
 "use client"
 
+import { FilterChip, Segmented } from "@/components/shared/FilterChip"
+import { useRouter } from "@/i18n/navigation"
 import { COUNTRIES, EXPERIENCE_CATEGORIES } from "@/lib/constants"
-import { cn } from "@/lib/utils"
-import { Search, X } from "lucide-react"
+import { Flower2, Landmark, LayoutGrid, Mountain, Search, UtensilsCrossed, Waves, Wind, X, type LucideIcon } from "lucide-react"
+import { useExperiences } from "@/hooks/useExperiences"
 import { useTranslations } from "next-intl"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useRef, useTransition } from "react"
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  "": LayoutGrid,
+  adventure: Mountain,
+  wellness: Flower2,
+  culture: Landmark,
+  culinary: UtensilsCrossed,
+  water: Waves,
+  aerial: Wind,
+}
 
 export function ExperienceFilters() {
   const t = useTranslations("experienceCategories")
@@ -18,6 +30,7 @@ export function ExperienceFilters() {
   const activeQ = searchParams.get("q") ?? ""
   const inputRef = useRef<HTMLInputElement>(null)
   const [, startTransition] = useTransition()
+  const { data: all } = useExperiences()
 
   const push = (updates: Record<string, string>) => {
     const params = new URLSearchParams(searchParams)
@@ -25,12 +38,13 @@ export function ExperienceFilters() {
       if (v) params.set(k, v)
       else params.delete(k)
     })
-    startTransition(() => router.push(`/experiences?${params.toString()}`))
+    const qs = params.toString()
+    startTransition(() => router.push(`/experiences${qs ? `?${qs}` : ""}`, { scroll: false }))
   }
 
   const handleSearch = (e: { preventDefault(): void }) => {
     e.preventDefault()
-    push({ q: inputRef.current?.value ?? "" })
+    push({ q: inputRef.current?.value.trim() ?? "" })
   }
 
   const clearSearch = () => {
@@ -38,82 +52,59 @@ export function ExperienceFilters() {
     push({ q: "" })
   }
 
-  const pillPush = (updates: Record<string, string>) => {
-    if (inputRef.current) inputRef.current.value = ""
-    push({ ...updates, q: "" })
-  }
+  // Nothing to filter until the first experiences are live; the grid below
+  // shows the coming-soon panel instead.
+  if (all && all.length === 0) return null
 
   return (
-    <div className="space-y-4 mb-8">
-      {/* Search bar */}
-      <form onSubmit={handleSearch} role="search" aria-label={tCommon("search")} className="relative max-w-md">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-loc-stone pointer-events-none" aria-hidden="true" />
-        <input
-          ref={inputRef}
-          defaultValue={activeQ}
-          placeholder={t("searchPlaceholder")}
-          aria-label={tCommon("search")}
-          className="w-full pl-9 pr-9 py-2.5 rounded-full border border-border text-sm bg-white focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
-        />
-        {activeQ && (
-          <button
-            type="button"
-            onClick={clearSearch}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-loc-stone hover:text-loc-night"
-            aria-label="Clear search"
-          >
-            <X size={14} />
-          </button>
-        )}
-      </form>
-
-      {/* Category pills */}
-      <div className="flex flex-wrap gap-2" role="group" aria-label={t("filterLabel")}>
-        {EXPERIENCE_CATEGORIES.map((cat) => (
-          <button
-            key={cat.value}
-            onClick={() => pillPush({ category: cat.value })}
-            aria-pressed={activeCategory === cat.value}
-            className={cn(
-              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-terracotta/50 focus-visible:ring-offset-1",
-              activeCategory === cat.value
-                ? "bg-loc-terracotta text-white border-loc-terracotta"
-                : "border-border text-loc-stone hover:border-loc-terracotta hover:text-loc-terracotta"
-            )}
-          >
-            {t(cat.value || "all")}
-          </button>
-        ))}
+    <div className="space-y-5">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 md:justify-between">
+        <form onSubmit={handleSearch} role="search" aria-label={tCommon("search")} className="relative w-full md:max-w-md">
+          <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-loc-stone pointer-events-none" aria-hidden="true" />
+          <input
+            ref={inputRef}
+            key={activeQ}
+            type="search"
+            defaultValue={activeQ}
+            placeholder={t("searchPlaceholder")}
+            aria-label={tCommon("search")}
+            className="w-full h-14 pl-12 pr-12 rounded-full border border-loc-night/10 text-[15px] bg-white placeholder:text-loc-stone focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta transition-colors"
+          />
+          {activeQ && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center text-loc-stone hover:bg-loc-night/5 hover:text-loc-night"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </form>
+        <div className="overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+          <Segmented
+            label={tc("filterLabel")}
+            value={activeCountry}
+            onChange={(v) => push({ country: v })}
+            options={[{ value: "", label: tc("all") }, ...COUNTRIES.map((c) => ({ value: c.value, label: tc(c.value) }))]}
+          />
+        </div>
       </div>
 
-      {/* Country pills */}
-      <div className="flex flex-wrap gap-2" role="group" aria-label={tc("filterLabel")}>
-        <button
-          onClick={() => pillPush({ country: "" })}
-          aria-pressed={activeCountry === ""}
-          className={cn(
-            "px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-terracotta/50 focus-visible:ring-offset-1",
-            activeCountry === ""
-              ? "bg-loc-slate text-white border-loc-slate"
-              : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
-          )}
-        >
-          {tc("all")}
-        </button>
-        {COUNTRIES.map((c) => (
-          <button
-            key={c.value}
-            onClick={() => pillPush({ country: c.value })}
-            aria-pressed={activeCountry === c.value}
-            className={cn(
-              "px-4 py-1.5 rounded-full text-sm font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-terracotta/50 focus-visible:ring-offset-1",
-              activeCountry === c.value
-                ? "bg-loc-slate text-white border-loc-slate"
-                : "border-border text-loc-stone hover:border-loc-slate hover:text-loc-slate"
-            )}
+      <div
+        className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap"
+        role="group"
+        aria-label={t("filterLabel")}
+      >
+        {EXPERIENCE_CATEGORIES.map((cat) => (
+          <FilterChip
+            key={cat.value}
+            active={activeCategory === cat.value}
+            onClick={() => push({ category: cat.value })}
+            icon={CATEGORY_ICONS[cat.value]}
           >
-            {tc(c.value)}
-          </button>
+            {t(cat.value || "all")}
+          </FilterChip>
         ))}
       </div>
     </div>

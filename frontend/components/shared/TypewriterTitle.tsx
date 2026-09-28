@@ -12,13 +12,13 @@ const FINAL_HOLD = 3200
 
 type Phase = "typing" | "pausing" | "deleting" | "holding"
 
-export function TypewriterTitle() {
+export function TypewriterTitle({ words }: { words?: string[] }) {
   const [text, setText] = useState("")
   const [idx, setIdx] = useState(0)
   const [phase, setPhase] = useState<Phase>("typing")
   const prefersReducedMotion = usePrefersReducedMotion()
   const t = useTranslations("hero")
-  const destinations = t.raw("destinations") as string[]
+  const destinations = words?.length ? words : (t.raw("destinations") as string[])
 
   useEffect(() => {
     if (prefersReducedMotion) return
@@ -57,26 +57,26 @@ export function TypewriterTitle() {
   }, [text, idx, phase, prefersReducedMotion, destinations])
 
   const longest = destinations.reduce((a, b) => (a.length > b.length ? a : b))
+  const finalWord = destinations[destinations.length - 1]
 
   return (
     <h1
-      className="font-heading font-semibold tracking-tight leading-[0.92] mb-6"
-      style={{ fontSize: "var(--loc-text-hero)", wordSpacing: "-0.15em" }}
+      className="font-heading font-semibold tracking-[-0.045em] leading-[0.86] text-white"
+      style={{ fontSize: "var(--loc-text-display)" }}
     >
-      {t("discover")}{" "}
-      <span className="inline-grid align-baseline">
-        <span
-          className="col-start-1 row-start-1 text-loc-amber"
-          style={{ visibility: "hidden" }}
-          aria-hidden="true"
-        >
-          {longest}
-        </span>
+      <span className="sr-only">
+        {t("discover")} {finalWord}
+      </span>
+      <span aria-hidden="true" className="block">{t("discover")}</span>
+      {/* The invisible longest word holds the line's width so the headline
+          never reflows while letters are typed and deleted. */}
+      <span aria-hidden="true" className="inline-grid">
+        <span className="col-start-1 row-start-1 invisible whitespace-nowrap">{longest}</span>
         <span className="col-start-1 row-start-1 text-loc-amber whitespace-nowrap">
-          {prefersReducedMotion ? destinations[destinations.length - 1] : text}
+          {prefersReducedMotion ? finalWord : text}
           {!prefersReducedMotion && (
             <span
-              className="inline-block w-[3px] h-[0.85em] bg-loc-amber ml-1 align-text-bottom animate-[blink_1s_step-end_infinite]"
+              className="inline-block w-[0.06em] h-[0.78em] bg-loc-amber ml-[0.04em] align-baseline animate-[blink_1s_step-end_infinite]"
               aria-hidden="true"
             />
           )}

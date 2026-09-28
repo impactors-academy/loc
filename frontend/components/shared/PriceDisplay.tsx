@@ -1,4 +1,4 @@
-import { formatPriceRange } from "@/lib/types"
+import { formatAmount, formatPriceRange } from "@/lib/types"
 import { convertAmount, type VisitorPriceContext } from "@/lib/price-display"
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
   priceContext?: VisitorPriceContext | null
   /** "lg" for the detail-page price box, "sm" for grid cards. */
   size?: "sm" | "lg"
+  /** Show only the lower bound, for cards that already say "From". */
+  minOnly?: boolean
   className?: string
 }
 
@@ -17,7 +19,7 @@ interface Props {
 // identically from a server page (detail pages, which already have the
 // context) and a client component (PropertyCard, which gets it prop-drilled
 // from the server-rendered page above it — see lib/price-display.ts).
-export function PriceDisplay({ min, max, currency, suffix = "", priceContext, size = "sm", className = "" }: Props) {
+export function PriceDisplay({ min, max, currency, suffix = "", priceContext, size = "sm", minOnly = false, className = "" }: Props) {
   if (min == null) return null
 
   let displayCurrency = currency
@@ -37,13 +39,15 @@ export function PriceDisplay({ min, max, currency, suffix = "", priceContext, si
   }
 
   const converted = displayCurrency !== currency
+  const format = (lo: number, hi: number | null, cur: string) =>
+    minOnly ? `${formatAmount(lo, cur)}${suffix ? ` ${suffix}` : ""}` : formatPriceRange(lo, hi, cur, suffix)
 
   return (
     <span className={className}>
-      <span>{formatPriceRange(displayMin, displayMax, displayCurrency, suffix)}</span>
+      <span>{format(displayMin, displayMax, displayCurrency)}</span>
       {converted && (
         <span className={size === "lg" ? "block text-xs text-loc-stone mt-1" : "block text-[10px] text-loc-stone/70"}>
-          {formatPriceRange(min, max, currency, suffix)}
+          {format(min, max, currency)}
         </span>
       )}
     </span>

@@ -1,6 +1,6 @@
+import { JsonLd } from "@/components/shared/JsonLd"
 import type { Metadata } from "next"
 import localFont from "next/font/local"
-import Script from "next/script"
 import { Analytics } from "@/components/shared/Analytics"
 import "./globals.css"
 
@@ -29,11 +29,11 @@ const generalSans = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://loctravels.com"),
   title: {
-    default: "LOC | Discover the World | Experiences, Stays & Hidden Gems",
+    default: "LOC | Stays & Local Experiences in Morocco",
     template: "%s | LOC",
   },
   description:
-    "Discover the best tourism experiences, stays, and hidden gems around the world, from Japan to Morocco, Bali to Bordeaux. Curated by people who love to travel.",
+    "Handpicked villas and apartments in Morocco, curated by locals, with direct host contact and no booking commission. France and Belgium are next.",
   authors: [{ name: "LOC", url: "https://loctravels.com" }],
   creator: "LOC",
 }
@@ -56,11 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html className={`${clashGrotesk.variable} ${generalSans.variable}`}>
       <body className="font-sans">
-        <Script
-          id="org-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-        />
+        <JsonLd data={organizationSchema} />
         <Analytics />
         {children}
       </body>

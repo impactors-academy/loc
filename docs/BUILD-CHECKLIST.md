@@ -100,7 +100,73 @@ rename; PRs/refs auto-redirected). It was re-synced with `main` on 2026-09-22
       Focus states already present site-wide (`focus:ring-2` on every interactive
       element). No modals exist on the product side to audit.
 - [x] Global copy: all hero/section copy globalised (not Morocco-only language)
-- [x] Typewriter hero wired with 10-destination rotation
+      **Superseded 2026-09-27**, see "UI redesign" below: copy now claims only what is
+      live (stays in Morocco), France and Belgium are "next".
+- [x] Typewriter hero wired with 10-destination rotation. **Superseded 2026-09-27:** it
+      now cycles the cities that actually have stays, then "Morocco".
+
+### UI redesign (branch `feature/loc-ui-redesign`, 2026-09-27)
+
+Rule set by Markie: **only show what is launched.** Today that is stays in Morocco
+(11 Marrakech + 1 Tangier on production). Target markets are Morocco, France,
+Belgium only. Everything else says "coming soon" and switches on by itself when
+real rows exist in the database.
+
+Landed:
+- [x] Homepage rebuilt: video hero with search, value marquee, stays rail first,
+      destinations bento, experience categories, 0% commission, how it works,
+      journal, partner CTA. Every count and option comes from live data.
+- [x] Listing pages (stays, experiences, blog, store) on a shared masthead, glass
+      filter chips, result counts, image-first cards.
+- [x] Stay and experience detail pages: gallery, facts, sticky enquiry card, mobile
+      enquire bar. Titles split on "—"/"|" into name + detail line.
+- [x] Button system: glass (`.glass-dark` / `.glass-light`) and lit primary
+      (`.btn-primary`, `.btn-dark`, `.btn-light`) in `globals.css`.
+- [x] Footer: icon social buttons (Instagram, TikTok, Facebook), wordmark.
+- [x] No em dashes in site copy (4 locales); listing data is tidied at render.
+- [x] Blog article template, editorial structure (kicker, headline, standfirst,
+      byline + share, lead image, 720px body with drop cap, keep reading).
+      Article bodies were unstyled before: `prose` classes with no typography plugin.
+- [x] "Coming soon": experiences, store, blog and partner packages when empty;
+      France/Belgium and empty categories on the homepage and filters.
+- [x] Stays first in the nav, footer and homepage.
+- [x] Fixes found on the way: `loc-*` colours ignored opacity modifiers (scrolled
+      navbar had no background); mislabelled stock photos; non-locale links on cards
+      and filters; reduced-motion hydration error in `ScrollReveal`; Japan and other
+      non-target markets removed (ryokan type, affiliates, meta description).
+- [x] Local seed mirrors production: fictive experiences/products removed from
+      `backend/scripts/seed.py`; `dev-local.sh` reseeds on empty properties, not
+      empty experiences.
+
+To do later (not launched, deliberately "coming soon" for now):
+- [ ] **Experiences:** none launched. Add real ones (Morocco first; France, Belgium
+      next). Sections and filters switch on automatically.
+- [ ] **Travel guides / store:** guides not created yet; store shows "coming soon".
+- [ ] **Partner packages (Promote):** rework packaging and pricing. Current version is
+      kept intact behind `PACKAGES_LIVE = false` in `promote/page.tsx`; flip it when
+      the new packages are agreed.
+- [ ] **Re-rank priorities** (nav, homepage section order) once experiences, guides
+      and packages launch. Stays lead only because they are the only live product.
+- [ ] **Blog:** no posts on production yet. The local demo posts stay (they were
+      removed by mistake on 2026-09-27 and restored the same day; Markie needs them
+      for template review). First real post drafted: "What Is LOC?" (story as Q&A) in
+      `content/posts/drafts/2026-09-28-loc-what-is-loc/` (loaded locally only).
+      Publish on production once approved, then port the article structure to
+      impactors-academy and ia-pro. Writing rules: `content/strategy/BLOG-GUIDELINES.md`.
+- [x] **Structured data now in the server HTML (2026-09-27):** every JSON-LD block
+      (organisation, Article, FAQPage, LodgingBusiness, TouristAttraction, Product)
+      moved from `next/script` (injected after load, invisible to non-JS crawlers)
+      to a server-rendered `JsonLd` component per the Next.js guide. Blog posts
+      emit `FAQPage` from an `<h2 id="faq">` Q&A block.
+- [ ] **Listing data:** remove em dashes from the 12 live titles/descriptions in the
+      admin (the site hides them, but the source still has them).
+- [ ] **Tangier listing:** Markie said only Marrakech is real; confirm the Tangier
+      apartment should stay live or unpublish it.
+- [ ] Browser pass on real phones and Safari (only Chrome desktop/500px checked).
+- Note (2026-09-27): after many rapid edits the dev server served stale bundles, so
+  a reload showed the old UI and a first load could log a hydration mismatch. A
+  production build hydrated cleanly on all main pages (24 loads). If the local site
+  looks like an older version, stop the frontend, `rm -rf frontend/.next`, restart.
 
 ## Phase 3 — Architecture & Data
 

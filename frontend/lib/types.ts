@@ -61,6 +61,8 @@ export interface BlogPost {
   imageUrl: string
   publishedAt: string
   tags: string[]
+  authorSlug?: string | null
+  reviewerSlug?: string | null
 }
 
 export interface InquiryPayload {

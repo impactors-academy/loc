@@ -89,7 +89,9 @@ cd "$ROOT/backend"
 uv sync -q
 DATABASE_URL="$DB_URL" uv run alembic upgrade head
 
-if [ "$(psql -d loc -tAc 'SELECT count(*) FROM experiences')" = "0" ]; then
+# Keyed on properties, not experiences: there are no live experiences yet, so an
+# empty experiences table is the normal state and must not trigger a reseed.
+if [ "$(psql -d loc -tAc 'SELECT count(*) FROM properties')" = "0" ]; then
   DATABASE_URL="$DB_URL" PYTHONPATH=. uv run python scripts/seed.py
 fi
 
