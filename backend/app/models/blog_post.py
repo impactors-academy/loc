@@ -19,4 +19,7 @@ class BlogPost(Base):
     image_url: Mapped[str | None] = mapped_column(String)
     published_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     tags: Mapped[str | None] = mapped_column(String)
+    # Team member slugs; the author box under each post resolves them.
+    author_slug: Mapped[str | None] = mapped_column(String)
+    reviewer_slug: Mapped[str | None] = mapped_column(String)
     embedding: Mapped[list | None] = mapped_column(Vector(1536), nullable=True)

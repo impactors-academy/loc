@@ -6,7 +6,7 @@ End-to-end process for taking LOC from local dev to production with a lean team.
 
 ```bash
 git clone https://github.com/impactors-academy/loc.git && cd loc
-git checkout develope
+git checkout develop
 cp backend/.env.example backend/.env   # fill DATABASE_URL, REDIS_URL
 docker compose up                       # or: make up
 ```
@@ -63,12 +63,12 @@ start with `test_`. Do not remove that guard.
 ## 2. Branching model
 
 - **`main`** — production-stable. Coolify deploys from here.
-- **`develope`** — active integration branch (note the existing spelling).
-- **`feature/<short-name>`** — branch off `develope`, PR back into `develope`.
-- Release: PR `develope → main` once a slice is verified.
+- **`develop`** — active integration branch.
+- **`feature/<short-name>`** — branch off `develop`, PR back into `develop`.
+- Release: PR `develop → main` once a slice is verified.
 
 ```
-feature/disc-search-hero ──PR──► develope ──PR──► main ──deploy──► prod (Coolify)
+feature/disc-search-hero ──PR──► develop ──PR──► main ──deploy──► prod (Coolify)
 ```
 
 ## 3. Commits & PRs
@@ -76,7 +76,7 @@ feature/disc-search-hero ──PR──► develope ──PR──► main ─�
 - **Conventional commits**: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`.
 - One PR = one vertical slice (e.g. "hero search bar + experiences endpoint country filter").
 - PR description links the user story (e.g. `DISC-1`) and lists what was tested.
-- At least one review before merge to `develope`.
+- At least one review before merge to `develop`.
 
 ## 4. Database migrations (always through Alembic)
 
@@ -126,7 +126,7 @@ Embeddings are generated automatically if `OPENAI_API_KEY` is set; skipped silen
 
 ## 7. CI (GitHub Actions)
 
-On every push to `develope` and `main`, runs in parallel:
+On every push to `develop` and `main`, runs in parallel:
 
 1. **Backend** — `ruff` lint, `uv run pytest` against `pgvector/pgvector:pg16` Postgres service.
 2. **Frontend** — `eslint`, `tsc --noEmit`, `next build`.

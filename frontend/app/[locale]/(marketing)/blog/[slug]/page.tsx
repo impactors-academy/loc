@@ -1,10 +1,16 @@
+import { JsonLd } from "@/components/shared/JsonLd"
 import { api } from "@/lib/api"
+import { ReadingProgress, ShareButtons } from "@/components/features/blog/ArticleChrome"
+import { AuthorBox } from "@/components/features/blog/AuthorBox"
 import { RelatedArticles } from "@/components/features/blog/RelatedArticles"
-import { CalendarDays } from "lucide-react"
+import { getMember } from "@/lib/team"
+import { Breadcrumbs } from "@/components/shared/DetailParts"
+import { Link } from "@/i18n/navigation"
+import { tidyDashes } from "@/lib/text"
+import { ArrowLeft } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
-import Link from "next/link"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -15,18 +21,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const post = await api.blog.get(slug)
     return {
-      title: `${post.title} | LOC Blog`,
+      title: `${tidyDashes(post.title)} | LOC Blog`,
       description: post.excerpt ?? undefined,
       alternates: { canonical: `/blog/${slug}` },
       openGraph: {
+        type: "article",
         title: post.title,
         description: post.excerpt ?? undefined,
+        publishedTime: post.publishedAt,
         images: post.imageUrl ? [{ url: post.imageUrl }] : [],
       },
     }
   } catch {
     return { title: "Article | LOC Blog" }
   }
+}
+
+const WORDS_PER_MINUTE = 225
+
+const stripTags = (html: string) => html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim()
+
+// The Q&A block is authored as <h2 id="faq"> followed by <h3> question / <p>
+// answer pairs (see content/strategy/BLOG-GUIDELINES.md). Turning it into
+// FAQPage data lets search and AI answer engines read the questions directly.
+function extractFaq(html: string): { q: string; a: string }[] {
+  const start = html.search(/<h2[^>]*id="faq"[^>]*>/i)
+  if (start === -1) return []
+  const rest = html.slice(start + 1)
+  const end = rest.search(/<h2[\s>]/i)
+  const block = end === -1 ? rest : rest.slice(0, end)
+  const pairs: { q: string; a: string }[] = []
+  for (const m of block.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi)) {
+    pairs.push({ q: stripTags(m[1]), a: stripTags(m[2]) })
+  }
+  return pairs
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -42,98 +70,154 @@ export default async function BlogPostPage({ params }: Props) {
     // skeleton fallback below
   }
 
-  const date = post
-    ? new Date(post.publishedAt).toLocaleDateString(locale, {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    : null
+  if (!post) {
+    return (
+      <div className="container mx-auto px-4 max-w-3xl pt-32 pb-24 space-y-4">
+        <div className="h-4 w-1/4 bg-loc-night/[0.06] rounded animate-pulse" />
+        <div className="h-14 w-full bg-loc-night/[0.06] rounded animate-pulse" />
+        <div className="h-14 w-2/3 bg-loc-night/[0.06] rounded animate-pulse" />
+      </div>
+    )
+  }
+
+  const date = new Date(post.publishedAt).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })
+  const words = (post.content || post.excerpt || "").replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length
+  const minutes = Math.max(1, Math.round(words / WORDS_PER_MINUTE))
+  const kicker = post.tags?.[0]
+  const author = getMember(post.authorSlug)
+  const reviewer = getMember(post.reviewerSlug)
+
+  const faq = post.content ? extractFaq(post.content) : []
+  const faqLd =
+    faq.length >= 2
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+        }
+      : null
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt,
+    ...(post.imageUrl ? { image: [post.imageUrl] } : {}),
+    author: author
+      ? { "@type": "Person", name: author.name, url: `https://impactorsacademy.com/profiles/${author.slug}` }
+      : { "@type": "Organization", name: "LOC", url: "https://loctravels.com" },
+    publisher: { "@type": "Organization", name: "LOC", url: "https://loctravels.com" },
+    mainEntityOfPage: `https://loctravels.com/blog/${slug}`,
+  }
 
   return (
-    <main className="pt-24 pb-20">
-      <div className="container mx-auto px-4 max-w-3xl">
-        <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">
-          <Link href="/" className="hover:text-loc-terracotta transition-colors">{t("breadcrumbHome")}</Link>
-          <span>/</span>
-          <Link href="/blog" className="hover:text-loc-terracotta transition-colors">{tNav("blog")}</Link>
-          <span>/</span>
-          <span className="text-loc-night line-clamp-1">{post?.title ?? slug}</span>
-        </div>
+    <>
+      <ReadingProgress />
+      <JsonLd data={jsonLd} />
+      {faqLd && (
+        <JsonLd data={faqLd} />
+      )}
 
-        {post ? (
-          <article>
-            {/* Tags */}
+      <article className="pt-28 md:pt-36 pb-24 md:pb-32">
+        {/* Masthead: kicker, headline, standfirst, byline. The same order the
+            major newsrooms use, so the reader knows what and who before why. */}
+        <header className="container mx-auto px-4 max-w-[752px]">
+          <Breadcrumbs items={[{ label: t("breadcrumbHome"), href: "/" }, { label: tNav("blog"), href: "/blog" }]} />
+
+          <p className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-[0.18em]">
+            {kicker && (
+              <Link href={`/blog?tag=${encodeURIComponent(kicker)}`} className="text-loc-terracotta hover:text-loc-night transition-colors">
+                {kicker}
+              </Link>
+            )}
+            {kicker && <span className="h-1 w-1 rounded-full bg-loc-stone/50" aria-hidden="true" />}
+            <span className="text-loc-stone">{t("minRead", { count: minutes })}</span>
+          </p>
+
+          <h1 className="mt-5 font-heading font-semibold text-loc-night tracking-[-0.035em] leading-[0.98] text-balance text-[2.6rem] sm:text-6xl lg:text-[4.25rem]">
+            {tidyDashes(post.title)}
+          </h1>
+
+          {post.excerpt && (
+            <p className="mt-6 text-xl md:text-2xl leading-snug text-loc-night/70 max-w-3xl text-pretty">
+              {tidyDashes(post.excerpt)}
+            </p>
+          )}
+
+          <div className="mt-10 py-5 border-y border-loc-night/10 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Image
+                src={author?.photo ?? "/icons/loc-mark.png"}
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 rounded-full object-cover"
+              />
+              <div className="text-sm">
+                <p className="font-semibold text-loc-night">{t("by", { name: author?.name ?? t("teamAuthor") })}</p>
+                <p className="text-loc-stone">
+                  <time dateTime={post.publishedAt}>{date}</time>
+                </p>
+              </div>
+            </div>
+            <ShareButtons title={post.title} />
+          </div>
+        </header>
+
+        {post.imageUrl && (
+          <figure className="container mx-auto px-4 max-w-6xl mt-10 md:mt-14">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-[24px] bg-loc-sand">
+              <Image src={post.imageUrl} alt="" fill className="object-cover" sizes="(max-width: 1200px) 100vw, 1152px" priority />
+            </div>
+          </figure>
+        )}
+
+        <div className="container mx-auto px-4 mt-12 md:mt-16">
+          {post.content ? (
+            <div
+              id="article-body"
+              className="article-body mx-auto max-w-[720px]"
+              dangerouslySetInnerHTML={{ __html: tidyDashes(post.content) }}
+            />
+          ) : (
+            <p id="article-body" className="mx-auto max-w-[720px] text-xl leading-relaxed text-loc-night/80">
+              {post.excerpt}
+            </p>
+          )}
+
+          <footer className="mx-auto max-w-[720px] mt-16 pt-8 border-t border-loc-night/10 flex flex-wrap items-center justify-between gap-6">
             {post.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-loc-stone mr-1">{t("filedUnder")}</span>
                 {post.tags.map((tag) => (
                   <Link
                     key={tag}
                     href={`/blog?tag=${encodeURIComponent(tag)}`}
-                    className="text-xs font-medium text-loc-terracotta bg-loc-sand/60 hover:bg-loc-sand px-3 py-1 rounded-full transition-colors"
+                    className="glass-light rounded-full px-3.5 py-1.5 text-sm"
                   >
                     {tag}
                   </Link>
                 ))}
               </div>
             )}
+            <ShareButtons title={post.title} />
+          </footer>
 
-            <h1 className="font-heading text-3xl md:text-4xl font-semibold text-loc-night leading-tight mb-4">
-              {post.title}
-            </h1>
-
-            {date && (
-              <p className="flex items-center gap-1.5 text-sm text-loc-stone mb-8">
-                <CalendarDays size={14} />
-                {date}
-              </p>
-            )}
-
-            {/* Hero image */}
-            {post.imageUrl && (
-              <div className="relative rounded-2xl overflow-hidden aspect-video mb-10">
-                <Image
-                  src={post.imageUrl}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 728px"
-                  priority
-                />
-              </div>
-            )}
-
-            {/* Content */}
-            {post.content ? (
-              <div
-                className="prose prose-stone prose-headings:font-heading prose-a:text-loc-terracotta prose-a:no-underline hover:prose-a:underline max-w-none"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
-            ) : (
-              post.excerpt && (
-                <p className="text-loc-stone leading-relaxed text-lg">{post.excerpt}</p>
-              )
-            )}
-          </article>
-        ) : (
-          <div className="space-y-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-5 bg-muted rounded animate-pulse" style={{ width: `${90 - i * 5}%` }} />
-            ))}
+          <div className="mx-auto max-w-[720px] mt-10">
+            <AuthorBox author={author} reviewer={reviewer} />
           </div>
-        )}
 
-        {post && <RelatedArticles slug={slug} />}
-
-        <div className="mt-12 pt-8 border-t border-border">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm font-medium text-loc-terracotta hover:text-loc-terracotta/80 transition-colors"
-          >
-            ← {t("backToStories")}
-          </Link>
+          <div className="mx-auto max-w-[720px] mt-10">
+            <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-loc-night hover:text-loc-terracotta transition-colors">
+              <ArrowLeft size={16} aria-hidden="true" />
+              {t("backToStories")}
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
+      </article>
+
+      <RelatedArticles slug={slug} />
+    </>
   )
 }

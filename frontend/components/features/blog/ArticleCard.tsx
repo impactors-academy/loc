@@ -1,12 +1,13 @@
 "use client"
 
+import { Link } from "@/i18n/navigation"
+import { getPoolImage } from "@/lib/images"
+import { tidyDashes } from "@/lib/text"
 import type { BlogPost } from "@/lib/types"
 import Image from "next/image"
-import Link from "next/link"
-import { useLocale, useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 
 export function ArticleCard({ post }: { post: BlogPost }) {
-  const t = useTranslations("common")
   const locale = useLocale()
   const date = new Date(post.publishedAt).toLocaleDateString(locale, {
     day: "numeric",
@@ -15,53 +16,32 @@ export function ArticleCard({ post }: { post: BlogPost }) {
   })
 
   return (
-    <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-      <Link href={`/blog/${post.slug}`} className="block">
-        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-loc-night via-loc-stone/60 to-loc-terracotta/40">
-          {post.imageUrl ? (
-            <Image
-              src={post.imageUrl}
-              alt={post.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-5xl opacity-20 select-none">✍️</span>
-            </div>
+    <article className="group relative flex flex-col">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] bg-loc-sand">
+        <Image
+          src={post.imageUrl || getPoolImage("default", post.slug, 1200)}
+          alt=""
+          fill
+          className="object-cover transition-transform duration-[900ms] ease-expo group-hover:scale-[1.05]"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+      </div>
+      <div className="pt-5 flex flex-col flex-1">
+        <p className="text-[13px] text-loc-stone">
+          {post.tags?.[0] && (
+            <span className="uppercase tracking-[0.14em] font-semibold text-loc-terracotta mr-3">{post.tags[0]}</span>
           )}
-        </div>
-      </Link>
-
-      <div className="p-5 flex flex-col flex-1">
-        {post.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {post.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                className="text-xs font-medium text-loc-terracotta bg-loc-sand/60 px-2.5 py-0.5 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-        <h3 className="font-heading font-semibold text-loc-night text-lg leading-snug line-clamp-2 mb-2">
-          {post.title}
-        </h3>
-        <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
-          {post.excerpt}
+          <time dateTime={post.publishedAt}>{date}</time>
         </p>
-        <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="text-xs text-loc-stone">{date}</span>
+        <h3 className="mt-2 font-heading font-semibold text-loc-night text-xl leading-snug tracking-tight line-clamp-2 text-balance">
           <Link
             href={`/blog/${post.slug}`}
-            className="text-xs font-semibold text-loc-night bg-loc-sand hover:bg-loc-sand/70 px-4 py-2 rounded-full transition-colors"
+            className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-loc-terracotta focus-visible:after:rounded-[20px] group-hover:underline decoration-1 underline-offset-4"
           >
-            {t("readMore")}
+            {tidyDashes(post.title)}
           </Link>
-        </div>
+        </h3>
+        {post.excerpt && <p className="mt-2 text-loc-stone text-[15px] leading-relaxed line-clamp-2">{tidyDashes(post.excerpt)}</p>}
       </div>
     </article>
   )

@@ -3,6 +3,7 @@
 import { api } from "@/lib/api"
 import { trackEvent } from "@/lib/analytics"
 import { ExternalLink } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface Props {
   slug: string
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function ReferralButton({ slug, referralUrl }: Props) {
+  const t = useTranslations("experienceDetailPage")
   if (!referralUrl) return null
 
   const handleClick = () => {
@@ -22,9 +24,9 @@ export function ReferralButton({ slug, referralUrl }: Props) {
   return (
     <button
       onClick={handleClick}
-      className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-loc-terracotta text-white font-semibold rounded-xl hover:bg-loc-terracotta/90 transition-colors text-sm"
+      className="btn-dark w-full h-14 flex items-center justify-center gap-2 px-5 font-semibold rounded-full text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loc-copper focus-visible:ring-offset-2"
     >
-      Book with provider
+      {t("bookWithProvider")}
       <ExternalLink className="w-4 h-4" />
     </button>
   )

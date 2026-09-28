@@ -1,5 +1,9 @@
 "use client"
 
+import { ButtonLink } from "@/components/shared/ButtonLink"
+import { ComingSoon } from "@/components/shared/ComingSoon"
+import { Feather } from "lucide-react"
+
 import { fadeInUp, staggerContainer } from "@/lib/animations"
 import { useBlogPosts } from "@/hooks/useBlogPosts"
 import { motion } from "framer-motion"
@@ -15,12 +19,14 @@ const SKELETON = Array.from({ length: 6 })
 export function ArticleGrid({ tag }: ArticleGridProps) {
   const { data, isPending, isError } = useBlogPosts(tag)
   const t = useTranslations("blogPage")
+  const tCommon = useTranslations("common")
+  const tNav = useTranslations("nav")
 
   if (isPending) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
         {SKELETON.map((_, i) => (
-          <div key={i} className="rounded-2xl bg-muted aspect-video animate-pulse" />
+          <div key={i} className="rounded-[20px] bg-loc-night/[0.06] aspect-video animate-pulse" />
         ))}
       </div>
     )
@@ -35,21 +41,28 @@ export function ArticleGrid({ tag }: ArticleGridProps) {
   }
 
   if (!data?.length) {
+    if (!tag) {
+      return (
+        <ComingSoon
+          badge={tCommon("comingSoon")}
+          icon={Feather}
+          title={t("soonTitle")}
+          body={t("comingSoon")}
+          actions={<ButtonLink href="/stays" size="lg" arrow>{tNav("stays")}</ButtonLink>}
+        />
+      )
+    }
     return (
-      <div className="py-16 text-center">
-        <p className="font-heading text-xl text-loc-night mb-2">
-          {tag ? t("noArticlesTagged", { tag }) : t("noArticles")}
-        </p>
-        <p className="text-loc-stone text-sm">
-          {tag ? t("tryDifferentTag") : t("comingSoon")}
-        </p>
+      <div className="py-20 text-center">
+        <p className="font-heading text-3xl font-semibold tracking-tight text-loc-night mb-3">{t("noArticlesTagged", { tag })}</p>
+        <p className="text-loc-stone">{t("tryDifferentTag")}</p>
       </div>
     )
   }
 
   return (
     <motion.div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12"
       variants={staggerContainer}
       initial="hidden"
       animate="show"

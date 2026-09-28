@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useReducedMotion, type Variants } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import type { ReactNode } from "react"
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -33,10 +33,10 @@ export function ScrollReveal({
   delay = 0,
   variant = "section",
 }: ScrollRevealProps) {
-  const reduced = useReducedMotion()
-
-  if (reduced) return <div className={className}>{children}</div>
-
+  // No reduced-motion branch here: rendering a plain <div> on the client but a
+  // motion.div on the server broke hydration for those visitors. MotionConfig
+  // reducedMotion="user" (app/providers.tsx) already drops the y-offset for
+  // them, leaving only the fade.
   if (variant === "stagger") {
     return (
       <motion.div
@@ -72,8 +72,6 @@ export function ScrollRevealItem({
   children: ReactNode
   className?: string
 }) {
-  const reduced = useReducedMotion()
-  if (reduced) return <div className={className}>{children}</div>
   return (
     <motion.div className={className} variants={staggerChildVariants}>
       {children}

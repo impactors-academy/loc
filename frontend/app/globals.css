@@ -36,7 +36,11 @@
 
     /* ── Motion ────────────────────────────────────────────────────────── */
     --loc-ease:     cubic-bezier(0.22, 1, 0.36, 1);   /* ease-out quint  */
+    --loc-ease-expo: cubic-bezier(0.19, 1, 0.22, 1);  /* site-studies expo-out */
     --loc-duration: 300ms;
+
+    /* Display scale for the one or two statement headlines per page. */
+    --loc-text-display: clamp(3.25rem, min(10vw, 17svh), 10.5rem);
 
     /* ── LOC semantic tokens (shadcn/ui layer) ─────────────────────────── */
     --background: 37 50% 98%;
@@ -100,6 +104,146 @@
   .text-balance {
     text-wrap: balance;
   }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  /* ── Button finishes ────────────────────────────────────────────────────
+     Rounded controls are never flat fills. Over photography or dark grounds
+     they are frosted glass; on cream they are a lighter glass; the primary
+     action is a solid with a lit top edge and a tinted shadow so it reads as
+     an object, not a sticker. */
+  .glass-dark {
+    color: #fff;
+    background-color: rgb(255 255 255 / 0.12);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 10px 30px -12px rgb(0 0 0 / 0.45);
+    transition: background-color 250ms var(--loc-ease), border-color 250ms var(--loc-ease), color 250ms var(--loc-ease);
+  }
+  .glass-dark:hover {
+    background-color: rgb(255 255 255 / 0.22);
+    border-color: rgb(255 255 255 / 0.4);
+  }
+  .glass-light {
+    color: var(--loc-night);
+    background-color: rgb(255 255 255 / 0.62);
+    border: 1px solid rgb(255 255 255 / 0.9);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 1),
+      0 0 0 1px rgb(35 27 21 / 0.07),
+      0 8px 24px -14px rgb(35 27 21 / 0.35);
+    transition: background-color 250ms var(--loc-ease), box-shadow 250ms var(--loc-ease);
+  }
+  .glass-light:hover {
+    background-color: rgb(255 255 255 / 0.95);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 1),
+      0 0 0 1px rgb(35 27 21 / 0.14),
+      0 12px 28px -14px rgb(35 27 21 / 0.45);
+  }
+  .btn-primary {
+    color: #fff;
+    background-color: var(--loc-terracotta);
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 60%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.3),
+      inset 0 -1px 0 rgb(0 0 0 / 0.14),
+      0 1px 2px rgb(35 27 21 / 0.2),
+      0 10px 24px -10px rgb(161 96 54 / 0.65);
+    transition: background-color 250ms var(--loc-ease), box-shadow 250ms var(--loc-ease);
+  }
+  .btn-primary:hover {
+    background-color: color-mix(in srgb, var(--loc-terracotta) 88%, black);
+  }
+  .btn-dark {
+    color: #fff;
+    background-color: var(--loc-night);
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0) 60%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.16),
+      0 1px 2px rgb(0 0 0 / 0.25),
+      0 10px 24px -12px rgb(35 27 21 / 0.6);
+    transition: background-color 250ms var(--loc-ease);
+  }
+  .btn-dark:hover {
+    background-color: #000;
+  }
+  .btn-light {
+    color: var(--loc-night);
+    background-color: #fff;
+    box-shadow: inset 0 -1px 0 rgb(35 27 21 / 0.08), 0 10px 30px -12px rgb(0 0 0 / 0.5);
+    transition: background-color 250ms var(--loc-ease);
+  }
+  .btn-light:hover {
+    background-color: var(--loc-cream);
+  }
+
+  /* Text-slide hover (site-studies 1.9): the label exits up while its clone
+     rises from below. Pure CSS, so it costs nothing on touch devices. */
+  .flip-label {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+  }
+  .flip-label > span {
+    display: block;
+    transition: transform 450ms var(--loc-ease-expo);
+  }
+  .flip-label > span + span {
+    position: absolute;
+    inset: 0;
+    transform: translateY(105%);
+  }
+  .group:hover .flip-label > span:first-child,
+  .group:focus-visible .flip-label > span:first-child {
+    transform: translateY(-105%);
+  }
+  .group:hover .flip-label > span + span,
+  .group:focus-visible .flip-label > span + span {
+    transform: translateY(0);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes suggest {
+  from { opacity: 0; transform: translateY(60%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 @keyframes blink {
@@ -122,4 +266,93 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── Article body ───────────────────────────────────────────────────────────
+   Editorial typography for blog HTML, set to a reading measure of ~68
+   characters: a larger lede with a drop cap, display-face section heads,
+   pull-quote blockquotes, and quiet rules. Written by hand because the
+   `prose` classes the page used to reference came from a plugin that was
+   never installed, so article bodies rendered completely unstyled. */
+.article-body {
+  color: color-mix(in srgb, var(--loc-night) 88%, transparent);
+  font-size: 1.1875rem;
+  line-height: 1.75;
+}
+.article-body > * + * { margin-top: 1.5rem; }
+.article-body > p:first-child {
+  font-size: 1.375rem;
+  line-height: 1.6;
+  color: var(--loc-night);
+}
+.article-body > p:first-child::first-letter {
+  float: left;
+  font-family: var(--font-clash), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 4.6em;
+  line-height: 0.82;
+  margin: 0.08em 0.1em 0 0;
+  color: var(--loc-terracotta);
+}
+.article-body h2 {
+  margin-top: 3.5rem;
+  font-family: var(--font-clash), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3vw, 2.125rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--loc-night);
+}
+.article-body h3 {
+  margin-top: 2.5rem;
+  font-family: var(--font-clash), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  color: var(--loc-night);
+}
+.article-body h2 + *, .article-body h3 + * { margin-top: 1rem; }
+.article-body a {
+  color: var(--loc-terracotta);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.article-body a:hover { color: var(--loc-night); }
+.article-body strong { font-weight: 600; color: var(--loc-night); }
+.article-body ul, .article-body ol { padding-left: 1.4rem; }
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body li + li { margin-top: 0.5rem; }
+.article-body li::marker { color: var(--loc-terracotta); }
+.article-body blockquote {
+  margin: 3rem 0;
+  padding-left: 1.75rem;
+  border-left: 3px solid var(--loc-copper);
+  font-family: var(--font-clash), system-ui, sans-serif;
+  font-size: clamp(1.5rem, 2.6vw, 1.875rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--loc-night);
+}
+.article-body img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  margin: 2.5rem 0;
+}
+.article-body figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--loc-stone);
+}
+.article-body hr {
+  margin: 3.5rem auto;
+  border: 0;
+  text-align: center;
+}
+.article-body hr::after {
+  content: "✦  ✦  ✦";
+  color: var(--loc-copper);
+  letter-spacing: 0.5em;
 }

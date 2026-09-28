@@ -10,7 +10,7 @@ import type { Property } from "@/lib/types"
 const input = "w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-loc-terracotta/30 focus:border-loc-terracotta"
 const label = "block text-xs font-semibold text-loc-stone uppercase tracking-wide mb-1"
 
-const TYPES = ["villa", "ryokan", "riad", "hotel", "hostel", "apartment"]
+const TYPES = ["villa", "riad", "hotel", "hostel", "apartment"]
 const TIERS = ["standard", "featured", "premium"]
 
 function toSlug(s: string) {

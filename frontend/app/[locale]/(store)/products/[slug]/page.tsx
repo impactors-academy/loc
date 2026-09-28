@@ -1,3 +1,4 @@
+import { JsonLd } from "@/components/shared/JsonLd"
 import { api } from "@/lib/api"
 import { YouTubeEmbed } from "@/components/shared/YouTubeEmbed"
 import { formatAmount } from "@/lib/types"
@@ -6,7 +7,6 @@ import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import Script from "next/script"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -85,11 +85,7 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <main className="pt-24 pb-20">
       {jsonLd && (
-        <Script
-          id="product-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <JsonLd data={jsonLd} />
       )}
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex items-center gap-2 text-xs text-loc-stone mb-8">

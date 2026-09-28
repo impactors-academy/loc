@@ -42,25 +42,25 @@ export function LanguageSwitcher({ scrolled = false }: { scrolled?: boolean }) {
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex items-center gap-1.5 text-xs font-medium transition-colors px-2 py-1.5 rounded-md",
-          scrolled
-            ? "text-loc-stone hover:text-loc-terracotta"
-            : "text-white/80 hover:text-white"
+          "flex items-center gap-1.5 h-11 px-4 text-xs font-semibold rounded-full",
+          scrolled ? "glass-light" : "glass-dark"
         )}
         aria-label="Change language"
+        aria-expanded={open}
+        aria-haspopup="true"
       >
         <Globe size={14} />
         <span className="uppercase">{locale}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-loc-sand/70 py-1 min-w-[140px] z-50">
+        <div className="glass-light absolute right-0 top-full mt-2 rounded-2xl p-1.5 min-w-[160px] z-50">
           {LOCALES.map((l) => (
             <button
               key={l.code}
               onClick={() => switchLocale(l.code)}
               className={cn(
-                "w-full text-left px-4 py-2 text-sm transition-colors",
+                "w-full text-left px-3.5 py-2 text-sm rounded-xl transition-colors",
                 l.code === locale
                   ? "text-loc-terracotta font-medium bg-loc-sand/30"
                   : "text-loc-stone hover:text-loc-night hover:bg-loc-sand/20"

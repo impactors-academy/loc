@@ -1,6 +1,7 @@
+import { ComingSoon } from "@/components/shared/ComingSoon"
 import { InquiryForm } from "@/components/shared/InquiryForm"
 import { SectionHeader } from "@/components/shared/SectionHeader"
-import { Check, Target, Coins, MapPinned } from "lucide-react"
+import { Check, Target, Coins, MapPinned, Package } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 import type { LucideIcon } from "lucide-react"
@@ -23,6 +24,12 @@ const PACKAGE_META = [
   { price: "€599", period: "/ month", highlight: false },
 ] as const
 
+// Partner packages are being reworked (pricing and what each tier includes).
+// The current version is kept below, untouched, so it can be switched back on
+// by flipping this to true once the new packaging is agreed. Until then the
+// section says "coming soon" and routes businesses to the enquiry form.
+const PACKAGES_LIVE = false
+
 const WHY_LOC_ICONS: LucideIcon[] = [Target, Coins, MapPinned]
 
 interface PackageCopy {
@@ -44,8 +51,10 @@ export default async function PromotePage() {
   const packages = PACKAGE_META.map((meta, i) => ({ ...meta, ...packagesCopy[i] }))
   const whyLoc = WHY_LOC_ICONS.map((Icon, i) => ({ Icon, ...whyLocCopy[i] }))
 
+  const tCommon = await getTranslations("common")
+
   return (
-    <main className="pt-24 pb-20">
+    <div className="pt-28 md:pt-32 pb-24">
       {/* Hero */}
       <section className="container mx-auto px-4 text-center max-w-2xl mb-16">
         <SectionHeader
@@ -57,12 +66,12 @@ export default async function PromotePage() {
       </section>
 
       {/* Why LOC */}
-      <section className="bg-loc-sand/30 py-14 mb-16">
+      <section className="bg-loc-cream py-16 mb-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {whyLoc.map((item) => (
               <div key={item.title} className="text-center px-4">
-                <div className="w-14 h-14 rounded-2xl bg-loc-sand/70 flex items-center justify-center mx-auto mb-5">
+                <div className="glass-light w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5">
                   <item.Icon size={26} strokeWidth={1.5} className="text-loc-terracotta" aria-hidden="true" />
                 </div>
                 <h3 className="font-heading text-lg font-semibold text-loc-night mb-2">{item.title}</h3>
@@ -73,7 +82,24 @@ export default async function PromotePage() {
         </div>
       </section>
 
+      {!PACKAGES_LIVE && (
+        <section className="container mx-auto px-4 mb-20">
+          <ComingSoon
+            badge={tCommon("comingSoon")}
+            icon={Package}
+            title={t("packagesSoonTitle")}
+            body={t("packagesSoonBody")}
+            actions={
+              <a href="#promote-enquire" className="btn-light inline-flex items-center rounded-full px-7 py-4 text-[15px] font-semibold">
+                {t("packagesSoonCta")}
+              </a>
+            }
+          />
+        </section>
+      )}
+
       {/* Packages */}
+      {PACKAGES_LIVE && (
       <section className="container mx-auto px-4 mb-20">
         <SectionHeader
           eyebrow={t("pricingEyebrow")}
@@ -122,10 +148,11 @@ export default async function PromotePage() {
           ))}
         </div>
       </section>
+      )}
 
       {/* Inquiry */}
-      <section className="container mx-auto px-4 max-w-2xl">
-        <div className="rounded-2xl bg-white border border-border p-8 shadow-sm">
+      <section id="promote-enquire" className="container mx-auto px-4 max-w-2xl scroll-mt-28">
+        <div className="rounded-[24px] bg-white border border-loc-night/10 p-8 md:p-10 shadow-[0_24px_60px_-30px_rgba(35,27,21,0.35)]">
           <SectionHeader
             eyebrow={t("inquiryEyebrow")}
             title={t("inquiryTitle")}
@@ -136,6 +163,6 @@ export default async function PromotePage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

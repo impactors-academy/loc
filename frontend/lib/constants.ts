@@ -38,7 +38,6 @@ export const PROPERTY_TYPES = [
   { label: "All", value: "" },
   { label: "Apartment", value: "apartment" },
   { label: "Villa", value: "villa" },
-  { label: "Ryokan", value: "ryokan" },
   { label: "Gîte", value: "gite" },
   { label: "Riad", value: "riad" },
   { label: "Hotel", value: "hotel" },

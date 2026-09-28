@@ -17,7 +17,7 @@ loc/
 └── backend/      ← FastAPI · Python 3.11+ · PostgreSQL 16 + pgvector · Redis · Alembic
 ```
 
-**Branches:** `develope` = active work · `main` = production-stable
+**Branches:** `develop` = active work · `main` = production-stable
 **Deployment:** Hostinger VPS via Coolify · DNS on Cloudflare · `docker-compose.coolify.yml`
 
 ## Session start — do this first, every time
@@ -32,12 +32,12 @@ loc/
 
 1. Update `docs/BUILD-CHECKLIST.md` — one line per completed item.
 2. Commit checklist alongside code in the same commit.
-3. Push to `develope` branch, not `main`. PR to `main` only when a release is stable.
+3. Push to `develop` branch, not `main`. PR to `main` only when a release is stable.
 4. Never push from the workspace root.
 
 ## Critical rules
 
-- **Always work on `develope`, merge to `main` for releases only.**
+- **Always work on `develop`, merge to `main` for releases only.**
 - LOC earns via referrals/leads — never add a checkout, cart, or payment form.
 - pgvector hybrid search (RRF) is the canonical search path — do not regress to
   FTS-only. Both paths must coexist until vector is proven stable in production.

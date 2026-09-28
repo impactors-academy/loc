@@ -44,7 +44,7 @@ Each stage requires a defined revenue or automation milestone before moving to t
 - **Repo structure:**
   - `frontend/` — Next.js app
   - `backend/` — FastAPI app (`main.py`, `api/`, `models/`, `schemas/`, `repositories/`, `services/`, `db/`)
-- **Branches:** `develope` = active development · `main` = production-stable
+- **Branches:** `develop` = active development · `main` = production-stable
 
 ## Brand Palette
 

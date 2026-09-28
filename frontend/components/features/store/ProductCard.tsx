@@ -1,81 +1,72 @@
 "use client"
 
+import { Link } from "@/i18n/navigation"
 import { formatAmount } from "@/lib/types"
 import type { Product } from "@/lib/types"
-import { cn } from "@/lib/utils"
-import { ExternalLink } from "lucide-react"
+import { BookOpen, Camera, ClipboardList, ExternalLink, GraduationCap, Map, Package, Route, type LucideIcon } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 import { useTranslations } from "next-intl"
 
-const TYPE_GRADIENTS: Record<string, string> = {
-  guide: "from-amber-950 via-orange-900 to-amber-800",
-  map: "from-teal-950 via-emerald-900 to-teal-800",
-  photography: "from-rose-950 via-pink-900 to-rose-800",
-  template: "from-indigo-950 via-blue-900 to-indigo-800",
-}
-
-const TYPE_ICONS: Record<string, string> = {
-  guide: "📖",
-  map: "🗺️",
-  photography: "📷",
-  template: "📋",
+const TYPE_ICONS: Record<string, LucideIcon> = {
+  guide: BookOpen,
+  map: Map,
+  photography: Camera,
+  template: ClipboardList,
+  itinerary: Route,
+  course: GraduationCap,
 }
 
 export function ProductCard({ product }: { product: Product }) {
   const t = useTranslations("common")
   const tp = useTranslations("productTypes")
-  const gradient = TYPE_GRADIENTS[product.type] ?? "from-neutral-900 via-neutral-800 to-neutral-700"
-  const icon = TYPE_ICONS[product.type] ?? "📦"
+  const Icon = TYPE_ICONS[product.type] ?? Package
   const typeLabel = tp.has(product.type) ? tp(product.type) : product.type
 
   return (
-    <article className="group rounded-2xl overflow-hidden bg-white border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-      <Link href={`/products/${product.slug}`} className="block">
-        <div
-          className={cn(
-            "relative aspect-[3/4] overflow-hidden",
-            !product.imageUrl && `bg-gradient-to-b ${gradient}`
-          )}
-        >
-          {product.imageUrl ? (
-            <Image
-              src={product.imageUrl}
-              alt={product.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-7xl opacity-25 select-none">{icon}</span>
-            </div>
-          )}
-          <span className="absolute top-3 left-3 bg-white/90 text-loc-night text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
-            {typeLabel}
-          </span>
-        </div>
-      </Link>
+    <article className="group relative flex flex-col">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-[20px] bg-loc-night">
+        {product.imageUrl ? (
+          <Image
+            src={product.imageUrl}
+            alt={product.title}
+            fill
+            className="object-cover transition-transform duration-[900ms] ease-expo group-hover:scale-[1.05]"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-loc-night via-loc-slate to-loc-terracotta" aria-hidden="true">
+            <Icon size={56} strokeWidth={1.25} className="text-white/30" />
+          </div>
+        )}
+        <span className="glass-light absolute top-3 left-3 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] px-3 py-1.5 rounded-full">
+          <Icon size={13} aria-hidden="true" />
+          {typeLabel}
+        </span>
+      </div>
 
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-heading font-semibold text-loc-night text-base leading-snug line-clamp-2 mb-2">
-          {product.title}
+      <div className="pt-4 flex flex-col flex-1">
+        <h3 className="font-heading font-semibold text-loc-night text-lg leading-snug line-clamp-2">
+          <Link
+            href={`/products/${product.slug}`}
+            className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-loc-terracotta focus-visible:after:rounded-[20px]"
+          >
+            {product.title}
+          </Link>
         </h3>
-        <p className="text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">
-          {product.description}
-        </p>
-        <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-          <span className="font-heading text-lg font-semibold text-loc-terracotta">
+        <p className="mt-1.5 text-loc-stone text-sm leading-relaxed line-clamp-2 flex-1">{product.description}</p>
+        <div className="flex items-center justify-between gap-3 mt-4">
+          <span className="font-heading text-xl font-semibold text-loc-night tabular-nums">
             {formatAmount(product.price, product.currency, 2)}
           </span>
+          {/* Sits above the card's stretched link so it stays its own target. */}
           <a
             href={product.purchaseUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 bg-loc-terracotta text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-loc-terracotta/90 transition-all hover:scale-[1.03]"
-            aria-label={`Buy ${product.title}`}
+            className="btn-primary relative z-10 inline-flex items-center gap-1.5 h-10 text-sm font-semibold px-4 rounded-full"
+            aria-label={`${t("buyNow")}: ${product.title}`}
           >
-            {t("buyNow")} <ExternalLink size={11} />
+            {t("buyNow")} <ExternalLink size={13} aria-hidden="true" />
           </a>
         </div>
       </div>
