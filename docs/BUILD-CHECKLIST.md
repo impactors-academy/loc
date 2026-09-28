@@ -682,3 +682,15 @@ have all since been deleted (2026-08-08).**
    OG alt, `areaServed` in the org JSON-LD). The hero reads "Serving tourists in" +
    typewriter over live cities then the three countries, prepositions per locale
    (`hero.city`, `hero.destinations`, `hero.cityNames`). PR #85, not merged.
+   Follow-up same day: `home.heroEyebrow` simplified to natural phrasing per
+   locale (no "·" separator), "Which countries is LOC in?" now reads
+   "Currently operating in ...", and listing titles reach the gallery/embed/
+   inquiry subject through `tidyDashes` (an em dash was showing raw in
+   aria-labels, e.g. "Villa Bahamas — Designer Interiors").
+11. **Tangier apartment delisted** — 2026-09-28, Markie's call after the photo
+   curation pass (`modern-2br-apartment-doha-val-fleurie-tangier`, 18 photos,
+   the weakest set in the catalog). Deleted **locally only** (backed up first,
+   see `local-properties-backup-2026-09-28.json` in that session's scratchpad).
+   Still needs deleting on production — no prod `EDITOR_API_KEY` is available
+   from this environment; do it from the admin dashboard or hand me a way to
+   reach the production API. The stays FAQ answer no longer mentions Tangier.
