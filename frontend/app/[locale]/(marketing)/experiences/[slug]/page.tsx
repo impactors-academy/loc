@@ -137,7 +137,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
 
             <PropertyGallery
               images={images}
-              title={experience.title}
+              title={tidyDashes(experience.title)}
               showAllLabel={tCommon("showAllPhotos", { count: images.length })}
             />
 

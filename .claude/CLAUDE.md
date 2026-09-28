@@ -14,6 +14,7 @@ Active branch: `develop`
 |---|---|
 | `docs/BUILD-CHECKLIST.md` | **Every session start** — audit against code, update before committing |
 | `docs/WORKFLOW.md` | Content workflow · editorial process · partner onboarding |
+| `docs/LISTING-PHOTOS.md` | Adding or reviewing a listing's photos — curation rule and target counts |
 | `docs/ARCHITECTURE.md` | DB schema · API structure · service boundaries |
 | `docs/ORG-STATUS.md` | Cross-project dependencies · Coolify migration status |
 | `[workspace]/docs/PLATFORM-STANDARDS.md` → API Backend section | New endpoint types · auth · search · payments · deploy topology |

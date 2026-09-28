@@ -14,8 +14,12 @@ interface Props {
 // Airbnb-style grid: one large hero photo plus up to four thumbnails, any tile
 // opens the same photo full-screen. A listing with a single photo gets it at
 // full width instead of a half-empty grid.
+const LIGHTBOX_SIZES = "(max-width: 1024px) 100vw, 1024px"
+
 export function PropertyGallery({ images, title, showAllLabel }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [loaded, setLoaded] = useState<Set<string>>(() => new Set())
+  const markLoaded = useCallback((src: string) => setLoaded((s) => (s.has(src) ? s : new Set(s).add(src))), [])
 
   const close = useCallback(() => setOpenIndex(null), [])
   const prev = useCallback(() => setOpenIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length)), [images.length])
@@ -113,7 +117,41 @@ export function PropertyGallery({ images, title, showAllLabel }: Props) {
             </>
           )}
           <div className="relative w-full h-full max-w-5xl max-h-[80vh] mx-16" onClick={(e) => e.stopPropagation()}>
-            <Image src={images[openIndex]} alt={`${title} photo ${openIndex + 1}`} fill className="object-contain" sizes="100vw" />
+            {/* Keyed per photo: reusing one <img> and swapping src let the
+                browser keep painting the previous photo until the next one
+                arrived, so fast swiping showed the same photos over and over
+                while the counter moved on. */}
+            <Image
+              key={images[openIndex]}
+              src={images[openIndex]}
+              alt={`${title} photo ${openIndex + 1}`}
+              fill
+              className={cn("object-contain transition-opacity duration-150", loaded.has(images[openIndex]) ? "opacity-100" : "opacity-0")}
+              sizes={LIGHTBOX_SIZES}
+              onLoad={() => markLoaded(images[openIndex])}
+            />
+            {!loaded.has(images[openIndex]) && (
+              <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                <span className="h-8 w-8 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+              </div>
+            )}
+            {/* Warm the neighbours so the next swipe is instant. */}
+            {images.length > 1 &&
+              [(openIndex + 1) % images.length, (openIndex - 1 + images.length) % images.length].map((n) =>
+                n === openIndex || loaded.has(images[n]) ? null : (
+                  <Image
+                    key={`preload-${images[n]}`}
+                    src={images[n]}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    loading="eager"
+                    className="opacity-0 pointer-events-none"
+                    sizes={LIGHTBOX_SIZES}
+                    onLoad={() => markLoaded(images[n])}
+                  />
+                )
+              )}
           </div>
           <span className="absolute bottom-6 text-white/60 text-sm tabular-nums">{openIndex + 1} / {images.length}</span>
         </div>

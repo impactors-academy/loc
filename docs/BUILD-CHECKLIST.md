@@ -657,3 +657,40 @@ have all since been deleted (2026-08-08).**
    LOC inbox always copied; no traveller name/email in logs. **To activate:** verify
    `loctravels.com` in Resend (DNS records in Cloudflare), then set `RESEND_API_KEY`
    and `EMAIL_TO` in Coolify and redeploy.
+9. **Listing photos: duplicates, stale swipes, curation** — from user feedback
+   2026-09-28 ("photos repeat as you scroll through a gallery"). An earlier
+   sample of four villas wrongly concluded "not a bug"; a full pass over all 12
+   listings (496 photos, MD5 + perceptual hash) found real repeats: 8 byte-identical
+   re-uploads each on `loc-1001a` and `loc-1002a`, 1 on `loc-1003a`, 3 truncated
+   JPEGs on `loc-1001a`, plus near-duplicate bursts everywhere. Three causes, three
+   fixes (PR #85, not merged):
+   - [x] R2 keys were a random uuid per upload, so the same file uploaded twice got
+     two URLs. Keys are now the file's sha256 (`build_object_key`, `PresignRequest.sha256`),
+     and `ImageUploader` skips a photo already on the listing.
+   - [x] `images` arrays dedupe exact URLs on save and read (`dedupe_images`).
+   - [x] Lightbox reused one `<img>` and swapped `src`, so fast swiping kept painting
+     the previous photo while the counter moved on. Now keyed per photo, fades in on
+     load, preloads both neighbours.
+   - [x] Curated every listing to one photo per space, 496 → 195 (7–24 each),
+     applied **locally only**. Production still has the old arrays; backup of prod
+     arrays taken before any change. Apply to prod after Markie reviews.
+   Guideline: `docs/LISTING-PHOTOS.md`.
+10. **Site copy named only Morocco** — same feedback round, 2026-09-28. LOC operates in
+   Morocco, France and Belgium, but titles, meta descriptions, the hero and FAQs said
+   "Morocco, France and Belgium next". All four locales now name the three countries
+   (`meta`, `staysPage`, `experiencesPage`, `home`, FAQs, root `layout.tsx`, `manifest.ts`,
+   OG alt, `areaServed` in the org JSON-LD). The hero reads "Serving tourists in" +
+   typewriter over live cities then the three countries, prepositions per locale
+   (`hero.city`, `hero.destinations`, `hero.cityNames`). PR #85, not merged.
+   Follow-up same day: `home.heroEyebrow` simplified to natural phrasing per
+   locale (no "·" separator), "Which countries is LOC in?" now reads
+   "Currently operating in ...", and listing titles reach the gallery/embed/
+   inquiry subject through `tidyDashes` (an em dash was showing raw in
+   aria-labels, e.g. "Villa Bahamas — Designer Interiors").
+11. **Tangier apartment delisted** — 2026-09-28, Markie's call after the photo
+   curation pass (`modern-2br-apartment-doha-val-fleurie-tangier`, 18 photos,
+   the weakest set in the catalog). Deleted **locally only** (backed up first,
+   see `local-properties-backup-2026-09-28.json` in that session's scratchpad).
+   Still needs deleting on production — no prod `EDITOR_API_KEY` is available
+   from this environment; do it from the admin dashboard or hand me a way to
+   reach the production API. The stays FAQ answer no longer mentions Tangier.

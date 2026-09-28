@@ -31,7 +31,7 @@ export async function generateMetadata({
           url: "/images/hero.jpg",
           width: 1280,
           height: 720,
-          alt: "LOC | Discover the World",
+          alt: "LOC | Serving tourists in Morocco, France & Belgium",
         },
       ],
     },

@@ -32,9 +32,14 @@ def _client():
     )
 
 
-def build_object_key(content_type: str, *, prefix: str = "properties") -> str:
+def build_object_key(content_type: str, *, prefix: str = "properties", sha256: str | None = None) -> str:
+    # Keyed by content hash when the caller sends one: the same photo always
+    # lands on the same URL, so an accidental re-upload is caught by the
+    # listing's URL dedupe instead of becoming a second copy under a new
+    # random name (which is how loc-1001a/1002a ended up with 8 repeats each).
     ext = ALLOWED_CONTENT_TYPES[content_type]
-    return f"{prefix}/{uuid.uuid4().hex}.{ext}"
+    name = sha256 if sha256 else uuid.uuid4().hex
+    return f"{prefix}/{name}.{ext}"
 
 
 def presign_put(key: str, content_type: str) -> str:

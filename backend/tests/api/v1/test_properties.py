@@ -45,3 +45,26 @@ def test_update_without_amenities_preserves_them(client, monkeypatch):
         assert cleared.json()["amenities"] == []
     finally:
         client.delete(f"/api/v1/properties/{slug}", headers=headers)
+
+
+def test_duplicate_images_are_stored_once_in_order(client, monkeypatch):
+    # Listings were saved with the same photo several times over, so the
+    # gallery showed repeats as a guest swiped through it.
+    from app.core import deps
+
+    monkeypatch.setattr(deps.settings, "editor_api_key", "test-key")
+    headers = {"X-API-Key": "test-key"}
+    slug = "dedupe-images"
+    a, b, c = (f"https://media.example/{n}.jpg" for n in "abc")
+
+    created = client.post(
+        "/api/v1/properties/",
+        json={"slug": slug, "title": "Villa", "type": "villa", "images": [a, b, a, c, b, a]},
+        headers=headers,
+    )
+    assert created.status_code in (200, 201), created.text
+    try:
+        assert created.json()["images"] == [a, b, c]
+        assert client.get(f"/api/v1/properties/{slug}").json()["images"] == [a, b, c]
+    finally:
+        client.delete(f"/api/v1/properties/{slug}", headers=headers)
