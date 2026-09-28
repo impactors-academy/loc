@@ -37,10 +37,14 @@ export default async function HomePage() {
   const cities = [...cityCounts.entries()].sort((a, b) => b[1] - a[1]).map(([city]) => city)
   const stayCountries = [...new Set(properties.map((p) => p.country).filter((c): c is string => Boolean(c)))]
   const stayTypes = [...new Set(properties.map((p) => p.type))]
-  // Cities come from the data; the closing word is the translated country with
-  // its article ("le Maroc"), which a raw country name can't provide.
-  const heroDestinations = t.raw("hero.destinations") as string[]
-  const heroWords = [...cities, heroDestinations[heroDestinations.length - 1]]
+  // Cities come from the data; the countries after them are translated with
+  // their preposition ("en Belgique", "na Bélgica"), which a raw country name
+  // can't provide. All three markets are named even before each has listings.
+  const cityNames = t.raw("hero.cityNames") as Record<string, string>
+  const heroWords = [
+    ...cities.map((city) => t("hero.city", { city: cityNames[city] ?? city })),
+    ...(t.raw("hero.destinations") as string[]),
+  ]
   const categoryCounts = Object.fromEntries(
     [...new Set(experiences.map((e) => e.category))].map((cat) => [cat, experiences.filter((e) => e.category === cat).length])
   )

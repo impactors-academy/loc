@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LOC | Descubra Marrocos | Experiências, Estadias & Tesouros Escondidos",
-    "description": "Descubra as melhores experiências turísticas, estadias e tesouros escondidos em Marrocos, selecionados por quem vive lá. Em breve em França e na Bélgica."
+    "title": "LOC | Ao serviço dos turistas em Marrocos, França e Bélgica | Estadias e Experiências",
+    "description": "Estadias escolhidas a dedo, experiências locais e guias de viagem em Marrocos, França e Bélgica, selecionados por quem vive lá. Contacto direto com os anfitriões, sem comissão de reserva."
   },
   "nav": {
     "experiences": "Experiências",
@@ -14,7 +14,6 @@
   },
   "hero": {
     "eyebrow": "Ao serviço dos turistas",
-    "discover": "Descubra",
     "subtitle": "Selecionados por locais. Contacte qualquer anfitrião ou prestador diretamente.",
     "cta": "Explorar experiências",
     "ctaSecondary": "Encontrar estadia",
@@ -24,8 +23,9 @@
     "staysPill": "Estadias",
     "guides": "Guias",
     "destinations": [
-      "Marraquexe",
-      "Marrocos"
+      "em Marrocos",
+      "em França",
+      "na Bélgica"
     ],
     "searchSuggestions": [
       "Marraquexe",
@@ -34,7 +34,13 @@
       "hammam",
       "montanhas do Atlas"
     ],
-    "searchHint": "Pesquisar destinos, experiências e estadias"
+    "searchHint": "Pesquisar destinos, experiências e estadias",
+    "lead": "Ao serviço dos turistas",
+    "city": "em {city}",
+    "cityNames": {
+      "Tangier": "Tânger",
+      "Marrakech": "Marraquexe"
+    }
   },
   "howItWorks": {
     "eyebrow": "Simples por design",
@@ -73,7 +79,7 @@
     "intentProviderCta": "Junte-se a nós"
   },
   "footer": {
-    "tagline": "O seu conector de viagens em Marrocos, com França e Bélgica a seguir. Alojamentos escolhidos hoje; experiências locais e guias de viagem estão a caminho.",
+    "tagline": "O seu conector de viagens em Marrocos, França e Bélgica. Alojamentos escolhidos hoje; experiências locais e guias de viagem estão a caminho.",
     "explore": "Explorar",
     "forBusinesses": "Para empresas",
     "company": "Empresa",
@@ -255,11 +261,11 @@
     "packagesSoonCta": "Fale-nos do seu negócio"
   },
   "experiencesPage": {
-    "metaTitle": "Experiências em Marrocos",
-    "metaDescription": "Descubra aventuras, retiros de bem-estar, tours culinários e experiências culturais em Marrocos, selecionados por locais. França e Bélgica chegam em breve.",
-    "eyebrow": "Explore Marrocos",
+    "metaTitle": "Experiências em Marrocos, França e Bélgica",
+    "metaDescription": "Aventuras, retiros de bem-estar, tours culinários e experiências culturais em Marrocos, França e Bélgica, selecionados por locais.",
+    "eyebrow": "Marrocos · França · Bélgica",
     "title": "Experiências",
-    "subtitle": "Aventuras, retiros de bem-estar, tours culinários e muito mais, selecionados por quem conhece melhor Marrocos.",
+    "subtitle": "Aventuras, retiros de bem-estar, tours culinários e muito mais, selecionados por quem melhor conhece cada lugar.",
     "loadError": "Não foi possível carregar as experiências neste momento. Tente novamente mais tarde.",
     "noResults": "Nenhuma experiência encontrada",
     "noResultsFor": "Sem resultados para \"{q}\"",
@@ -285,11 +291,11 @@
     "bookWithProvider": "Reservar com o fornecedor"
   },
   "staysPage": {
-    "metaTitle": "Estadias em Marrocos",
-    "metaDescription": "Explore vilas e apartamentos escolhidos a dedo em Marrocos, com contacto direto com o anfitrião e sem taxas ocultas. França e Bélgica chegam em breve.",
+    "metaTitle": "Estadias em Marrocos, França e Bélgica",
+    "metaDescription": "Explore vilas e apartamentos escolhidos a dedo em Marrocos, França e Bélgica, com contacto direto com o anfitrião e sem taxas ocultas.",
     "eyebrow": "Lugares para ficar",
     "title": "Estadias",
-    "subtitle": "Vilas e apartamentos em Marrocos, cada um selecionado pelo seu carácter, conforto e localização.",
+    "subtitle": "Vilas e apartamentos em Marrocos, França e Bélgica, cada um selecionado pelo seu carácter, conforto e localização.",
     "loadError": "Não foi possível carregar as propriedades neste momento. Tente novamente mais tarde.",
     "noResults": "Nenhuma propriedade encontrada",
     "tryDifferent": "Tente outro tipo ou volte em breve.",
@@ -368,7 +374,7 @@
     "ctaSecondary": "Explorar experiências"
   },
   "home": {
-    "heroEyebrow": "Moradias e apartamentos em Marrocos",
+    "heroEyebrow": "Moradias e apartamentos · Marrocos, França, Bélgica",
     "quickLinksLabel": "Pesquisas populares",
     "search": {
       "tabsLabel": "O que procura",
@@ -383,13 +389,13 @@
       "stayOnlyLabel": "Encontre um alojamento"
     },
     "marquee": [
-      "0% de comissão nas reservas",
+      "0% de comissão de reserva",
       "Fale diretamente com os anfitriões",
-      "Moradias e apartamentos em Marrocos",
-      "Escolhido por locais",
+      "Marrocos · França · Bélgica",
+      "Selecionado por locais",
       "Disponível em 4 idiomas",
       "Experiências em breve",
-      "França e Bélgica a seguir"
+      "Moradias e apartamentos escolhidos"
     ],
     "categoriesEyebrow": "Experiências",
     "categoriesTitle": "Encontre a sua forma de viajar",
@@ -435,14 +441,14 @@
       },
       {
         "q": "Onde posso ficar com a LOC?",
-        "a": "Em Marrocos, sobretudo em Marraquexe: moradias com piscina privada e jardim, e apartamentos em Guéliz. Cada anúncio mostra a localização, fotos e um preço inicial por noite."
+        "a": "Em Marrocos, França e Bélgica. Os nossos anúncios atuais são moradias com piscina privada e jardim em Marraquexe, e apartamentos em Guéliz e Tânger. Cada anúncio mostra a localização, fotos e um preço inicial por noite."
       },
       {
         "q": "Posso reservar experiências locais ou guias de viagem?",
-        "a": "Ainda não. As experiências locais, os guias de viagem e os alojamentos em França e na Bélgica chegam em breve, e cada um aparecerá no site quando estiver pronto."
+        "a": "Ainda não. As experiências locais e os guias de viagem chegam em breve, e cada um aparecerá no site assim que estiver pronto."
       },
       {
-        "q": "Tenho um alojamento em Marrocos. Como o anuncio na LOC?",
+        "q": "Tenho um alojamento em Marrocos, França ou Bélgica. Como o anuncio na LOC?",
         "a": "Fale-nos dele a partir da página Junte-se a nós e a nossa equipa entrará em contacto."
       },
       {
@@ -473,7 +479,7 @@
       },
       {
         "q": "Em que países está a LOC?",
-        "a": "Hoje em Marrocos. França e Bélgica serão os próximos."
+        "a": "Marrocos, França e Bélgica."
       }
     ]
   }

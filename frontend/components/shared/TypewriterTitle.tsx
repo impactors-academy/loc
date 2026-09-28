@@ -65,9 +65,11 @@ export function TypewriterTitle({ words }: { words?: string[] }) {
       style={{ fontSize: "var(--loc-text-display)" }}
     >
       <span className="sr-only">
-        {t("discover")} {finalWord}
+        {t("lead")} {destinations.join(", ")}
       </span>
-      <span aria-hidden="true" className="block">{t("discover")}</span>
+      {/* The lead runs at a fraction of the display size: at full size
+          "Serving tourists in" alone would fill the hero. */}
+      <span aria-hidden="true" className="block text-[0.4em] tracking-[-0.03em] leading-none mb-[0.18em] text-white/90">{t("lead")}</span>
       {/* The invisible longest word holds the line's width so the headline
           never reflows while letters are typed and deleted. */}
       <span aria-hidden="true" className="inline-grid">
