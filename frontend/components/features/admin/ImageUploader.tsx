@@ -34,7 +34,12 @@ export function ImageUploader({ images, onChange }: Props) {
         if (!put.ok) throw new Error(`Upload failed for ${file.name}`)
         uploaded.push(public_url)
       }
-      onChange([...images, ...uploaded])
+      // Re-selecting the same files (e.g. after a slow upload, or clicking
+      // twice) used to append them again — listings ended up with repeated
+      // photos in the gallery. The backend also dedupes on save, but doing
+      // it here avoids a flash of duplicate rows in the editor itself.
+      const existing = new Set(images)
+      onChange([...images, ...uploaded.filter((url) => !existing.has(url))])
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed")
     } finally {
