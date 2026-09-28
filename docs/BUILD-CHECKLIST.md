@@ -657,3 +657,14 @@ have all since been deleted (2026-08-08).**
    LOC inbox always copied; no traveller name/email in logs. **To activate:** verify
    `loctravels.com` in Resend (DNS records in Cloudflare), then set `RESEND_API_KEY`
    and `EMAIL_TO` in Coolify and redeploy.
+9. **Large listings need a photo curation pass** — flagged from user feedback
+   2026-09-28 ("photos repeat as you scroll through a gallery"). Investigated:
+   not a bug — every photo on the checked listings is a distinct file (no
+   duplicate URLs, no duplicate content hashes). The `images` array now
+   dedupes exact re-uploads automatically (`PropertyBase`/`ExperienceBase` in
+   `backend/app/schemas/`, PR #85, not merged), but the real cause is
+   uncurated photo sets: `villa-gina-marrakech` (35 photos, very likely the
+   listing behind the feedback), `villa-bahamas-designer-interiors-marrakech`
+   (79), `villa-perle-rouge-private-pool-terrace-marrakech` (68), and
+   `villa-dalia-marrakech` (55) all need a human pass to trim near-duplicate
+   angles. Guideline: `docs/LISTING-PHOTOS.md`.
