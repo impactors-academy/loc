@@ -127,10 +127,10 @@ export const api = {
       list: () => adminFetcher<Record<string, unknown>[]>("/leads?limit=100"),
     },
     uploads: {
-      presign: (contentType: string) =>
+      presign: (contentType: string, sha256?: string) =>
         adminFetcher<{ upload_url: string; public_url: string }>("/uploads/presign", {
           method: "POST",
-          body: JSON.stringify({ content_type: contentType }),
+          body: JSON.stringify({ content_type: contentType, sha256 }),
         }),
     },
   },

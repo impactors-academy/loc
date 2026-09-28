@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.config import settings
 from app.core.deps import require_editor_key
@@ -10,6 +10,9 @@ router = APIRouter(prefix="/uploads", tags=["uploads"])
 
 class PresignRequest(BaseModel):
     content_type: str
+    # Hex SHA-256 of the file, computed in the browser. Optional so older
+    # callers keep working; when present it becomes the object key.
+    sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
 
 
 class PresignResponse(BaseModel):
@@ -35,5 +38,5 @@ async def presign_image_upload(data: PresignRequest):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unsupported content type. Allowed: {', '.join(ALLOWED_CONTENT_TYPES)}",
         )
-    key = build_object_key(data.content_type)
+    key = build_object_key(data.content_type, sha256=data.sha256)
     return PresignResponse(upload_url=presign_put(key, data.content_type), public_url=public_url(key))

@@ -29,11 +29,11 @@ const generalSans = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://loctravels.com"),
   title: {
-    default: "LOC | Stays & Local Experiences in Morocco",
+    default: "LOC | Stays & Local Experiences in Morocco, France & Belgium",
     template: "%s | LOC",
   },
   description:
-    "Handpicked villas and apartments in Morocco, curated by locals, with direct host contact and no booking commission. France and Belgium are next.",
+    "Handpicked villas and apartments in Morocco, France and Belgium, curated by locals, with direct host contact and no booking commission.",
   authors: [{ name: "LOC", url: "https://loctravels.com" }],
   creator: "LOC",
 }
@@ -44,7 +44,12 @@ const organizationSchema = {
   name: "LOC",
   url: "https://loctravels.com",
   description:
-    "Your global tourism connector. Curated experiences, handpicked stays, and digital travel products from around the world.",
+    "Travel connector serving tourists in Morocco, France and Belgium. Curated experiences, handpicked stays, and digital travel guides.",
+  areaServed: [
+    { "@type": "Country", name: "Morocco" },
+    { "@type": "Country", name: "France" },
+    { "@type": "Country", name: "Belgium" },
+  ],
   sameAs: [
     "https://www.instagram.com/loc_ia24",
     "https://www.tiktok.com/@loc_ia",

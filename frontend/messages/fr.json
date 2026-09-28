@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LOC | Découvrez le Maroc | Expériences, Séjours & Trésors Cachés",
-    "description": "Découvrez les meilleures expériences touristiques, séjours et trésors cachés au Maroc, sélectionnés par ceux qui y vivent. Bientôt en France et en Belgique."
+    "title": "LOC | Au service des touristes au Maroc, en France et en Belgique | Séjours & Expériences",
+    "description": "Des séjours triés sur le volet, des expériences locales et des guides de voyage au Maroc, en France et en Belgique, sélectionnés par ceux qui y vivent. Contact direct avec les hôtes, sans commission de réservation."
   },
   "nav": {
     "experiences": "Expériences",
@@ -14,7 +14,6 @@
   },
   "hero": {
     "eyebrow": "Au service des touristes",
-    "discover": "Découvrez",
     "subtitle": "Sélectionnés par des locaux. Contactez directement chaque hôte ou prestataire.",
     "cta": "Explorer les expériences",
     "ctaSecondary": "Trouver un séjour",
@@ -24,8 +23,9 @@
     "staysPill": "Séjours",
     "guides": "Guides",
     "destinations": [
-      "Marrakech",
-      "le Maroc"
+      "au Maroc",
+      "en France",
+      "en Belgique"
     ],
     "searchSuggestions": [
       "Marrakech",
@@ -34,7 +34,13 @@
       "hammam",
       "montagnes de l'Atlas"
     ],
-    "searchHint": "Rechercher des destinations, expériences et séjours"
+    "searchHint": "Rechercher des destinations, expériences et séjours",
+    "lead": "Au service des touristes",
+    "city": "à {city}",
+    "cityNames": {
+      "Tangier": "Tanger",
+      "Marrakech": "Marrakech"
+    }
   },
   "howItWorks": {
     "eyebrow": "Simple par conception",
@@ -73,7 +79,7 @@
     "intentProviderCta": "Nous rejoindre"
   },
   "footer": {
-    "tagline": "Votre connecteur voyage au Maroc, avec la France et la Belgique ensuite. Des hébergements sélectionnés dès aujourd'hui ; les expériences locales et les guides de voyage arrivent.",
+    "tagline": "Votre connecteur voyage au Maroc, en France et en Belgique. Des hébergements sélectionnés dès aujourd'hui ; les expériences locales et les guides de voyage arrivent.",
     "explore": "Explorer",
     "forBusinesses": "Pour les entreprises",
     "company": "Entreprise",
@@ -255,11 +261,11 @@
     "packagesSoonCta": "Parlez-nous de votre activité"
   },
   "experiencesPage": {
-    "metaTitle": "Expériences au Maroc",
-    "metaDescription": "Découvrez des aventures, des retraites bien-être, des circuits culinaires et des expériences culturelles au Maroc, sélectionnés par des locaux. La France et la Belgique arrivent bientôt.",
-    "eyebrow": "Explorer le Maroc",
+    "metaTitle": "Expériences au Maroc, en France et en Belgique",
+    "metaDescription": "Des aventures, des retraites bien-être, des circuits culinaires et des expériences culturelles au Maroc, en France et en Belgique, sélectionnés par des locaux.",
+    "eyebrow": "Maroc · France · Belgique",
     "title": "Expériences",
-    "subtitle": "Aventures, retraites bien-être, circuits culinaires et plus, sélectionnés par ceux qui connaissent le mieux le Maroc.",
+    "subtitle": "Aventures, retraites bien-être, circuits culinaires et plus, sélectionnés par ceux qui connaissent le mieux chaque lieu.",
     "loadError": "Impossible de charger les expériences pour le moment. Veuillez réessayer plus tard.",
     "noResults": "Aucune expérience trouvée",
     "noResultsFor": "Aucun résultat pour « {q} »",
@@ -285,11 +291,11 @@
     "bookWithProvider": "Réserver auprès du prestataire"
   },
   "staysPage": {
-    "metaTitle": "Séjours au Maroc",
-    "metaDescription": "Parcourez des villas et appartements triés sur le volet au Maroc, avec contact direct de l'hôte et sans frais cachés. La France et la Belgique arrivent bientôt.",
+    "metaTitle": "Séjours au Maroc, en France et en Belgique",
+    "metaDescription": "Parcourez des villas et appartements triés sur le volet au Maroc, en France et en Belgique, avec contact direct de l'hôte et sans frais cachés.",
     "eyebrow": "Lieux de séjour",
     "title": "Séjours",
-    "subtitle": "Villas et appartements au Maroc, chacun sélectionné pour son caractère, son confort et son emplacement.",
+    "subtitle": "Villas et appartements au Maroc, en France et en Belgique, chacun sélectionné pour son caractère, son confort et son emplacement.",
     "loadError": "Impossible de charger les propriétés pour le moment. Veuillez réessayer plus tard.",
     "noResults": "Aucune propriété trouvée",
     "tryDifferent": "Essayez un autre type ou revenez bientôt.",
@@ -368,7 +374,7 @@
     "ctaSecondary": "Explorer les expériences"
   },
   "home": {
-    "heroEyebrow": "Villas et appartements au Maroc",
+    "heroEyebrow": "Villas et appartements au Maroc, en France et en Belgique",
     "quickLinksLabel": "Recherches populaires",
     "search": {
       "tabsLabel": "Que recherchez-vous",
@@ -383,13 +389,13 @@
       "stayOnlyLabel": "Trouver un hébergement"
     },
     "marquee": [
-      "0 % de commission sur les réservations",
+      "0 % de commission de réservation",
       "Parlez directement aux hôtes",
-      "Villas et appartements au Maroc",
+      "Maroc · France · Belgique",
       "Sélectionné par des locaux",
       "Disponible en 4 langues",
       "Expériences bientôt disponibles",
-      "France et Belgique à venir"
+      "Villas et appartements triés sur le volet"
     ],
     "categoriesEyebrow": "Expériences",
     "categoriesTitle": "Trouvez votre façon de voyager",
@@ -435,14 +441,14 @@
       },
       {
         "q": "Où puis-je loger avec LOC ?",
-        "a": "Au Maroc, surtout à Marrakech : des villas avec piscine privée et jardin, et des appartements à Guéliz. Chaque annonce indique son emplacement, ses photos et un prix de départ par nuit."
+        "a": "Au Maroc, en France et en Belgique. Nos annonces actuelles sont des villas avec piscine privée et jardin à Marrakech, et des appartements à Guéliz. Chaque annonce indique son emplacement, ses photos et un prix de départ par nuit."
       },
       {
         "q": "Puis-je réserver des expériences locales ou des guides de voyage ?",
-        "a": "Pas encore. Les expériences locales, les guides de voyage et les hébergements en France et en Belgique arrivent bientôt, et chacun apparaîtra sur le site dès qu'il sera prêt."
+        "a": "Pas encore. Les expériences locales et les guides de voyage arrivent bientôt, et chacun apparaîtra sur le site dès qu'il sera prêt."
       },
       {
-        "q": "J'ai un logement au Maroc. Comment le proposer sur LOC ?",
+        "q": "J'ai un logement au Maroc, en France ou en Belgique. Comment le proposer sur LOC ?",
         "a": "Présentez-le depuis la page Rejoignez-nous et notre équipe vous répondra."
       },
       {
@@ -473,7 +479,7 @@
       },
       {
         "q": "Dans quels pays LOC est-il présent ?",
-        "a": "Au Maroc aujourd'hui. La France et la Belgique suivront."
+        "a": "Actuellement présents au Maroc, en France et en Belgique."
       }
     ]
   }

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "LOC | Discover Morocco | Experiences, Stays & Hidden Gems",
-    "description": "Discover the best tourism experiences, stays, and hidden gems in Morocco, curated by people who live there. Expanding next into France and Belgium."
+    "title": "LOC | Serving Tourists in Morocco, France & Belgium | Stays & Experiences",
+    "description": "Handpicked stays, local experiences and travel guides in Morocco, France and Belgium, curated by people who live there. Talk to hosts directly, no booking commission."
   },
   "nav": {
     "experiences": "Experiences",
@@ -14,7 +14,6 @@
   },
   "hero": {
     "eyebrow": "Serving Tourists",
-    "discover": "Discover",
     "subtitle": "Curated by locals. Reach any host or provider directly.",
     "cta": "Explore Experiences",
     "ctaSecondary": "Find a Stay",
@@ -24,8 +23,9 @@
     "staysPill": "Stays",
     "guides": "Guides",
     "destinations": [
-      "Marrakech",
-      "Morocco"
+      "Morocco",
+      "France",
+      "Belgium"
     ],
     "searchSuggestions": [
       "Marrakech",
@@ -34,7 +34,13 @@
       "hammam",
       "Atlas Mountains"
     ],
-    "searchHint": "Search destinations, experiences, and stays"
+    "searchHint": "Search destinations, experiences, and stays",
+    "lead": "Serving tourists in",
+    "city": "{city}",
+    "cityNames": {
+      "Tangier": "Tangier",
+      "Marrakech": "Marrakech"
+    }
   },
   "howItWorks": {
     "eyebrow": "Simple by design",
@@ -73,7 +79,7 @@
     "intentProviderCta": "List with us"
   },
   "footer": {
-    "tagline": "Your travel connector in Morocco, with France and Belgium next. Handpicked stays today; local experiences and travel guides are on the way.",
+    "tagline": "Your travel connector in Morocco, France and Belgium. Handpicked stays today; local experiences and travel guides are on the way.",
     "explore": "Explore",
     "forBusinesses": "For Businesses",
     "company": "Company",
@@ -255,11 +261,11 @@
     "packagesSoonCta": "Tell us about your business"
   },
   "experiencesPage": {
-    "metaTitle": "Morocco Experiences",
-    "metaDescription": "Discover curated adventures, wellness retreats, culinary tours, and cultural experiences in Morocco, handpicked by locals. France and Belgium coming next.",
-    "eyebrow": "Explore Morocco",
+    "metaTitle": "Experiences in Morocco, France & Belgium",
+    "metaDescription": "Curated adventures, wellness retreats, culinary tours and cultural experiences in Morocco, France and Belgium, handpicked by locals.",
+    "eyebrow": "Morocco · France · Belgium",
     "title": "Experiences",
-    "subtitle": "Adventures, wellness retreats, culinary tours, and more, curated by people who know Morocco best.",
+    "subtitle": "Adventures, wellness retreats, culinary tours, and more, curated by people who know each place best.",
     "loadError": "Could not load experiences right now. Please try again later.",
     "noResults": "No experiences found",
     "noResultsFor": "No results for \"{q}\"",
@@ -285,11 +291,11 @@
     "bookWithProvider": "Book with provider"
   },
   "staysPage": {
-    "metaTitle": "Morocco Stays",
-    "metaDescription": "Browse handpicked villas and apartments in Morocco, with direct host contact and no hidden fees. France and Belgium coming next.",
+    "metaTitle": "Stays in Morocco, France & Belgium",
+    "metaDescription": "Browse handpicked villas and apartments in Morocco, France and Belgium, with direct host contact and no hidden fees.",
     "eyebrow": "Places to Stay",
     "title": "Stays",
-    "subtitle": "Villas and apartments in Morocco, each one selected for its character, comfort, and location.",
+    "subtitle": "Villas and apartments in Morocco, France and Belgium, each one selected for its character, comfort, and location.",
     "loadError": "Could not load properties right now. Please try again later.",
     "noResults": "No properties found",
     "tryDifferent": "Try a different type or check back soon.",
@@ -368,7 +374,7 @@
     "ctaSecondary": "Browse experiences"
   },
   "home": {
-    "heroEyebrow": "Villas & apartments in Morocco",
+    "heroEyebrow": "Villas & apartments in Morocco, France & Belgium",
     "quickLinksLabel": "Popular searches",
     "search": {
       "tabsLabel": "What are you looking for",
@@ -385,11 +391,11 @@
     "marquee": [
       "0% booking commission",
       "Talk to hosts directly",
-      "Villas & apartments in Morocco",
+      "Morocco · France · Belgium",
       "Curated by locals",
       "Available in 4 languages",
       "Experiences coming soon",
-      "France & Belgium next"
+      "Handpicked villas & apartments"
     ],
     "categoriesEyebrow": "Experiences",
     "categoriesTitle": "Find your kind of trip",
@@ -435,14 +441,14 @@
       },
       {
         "q": "Where can I stay with LOC?",
-        "a": "In Morocco, mostly in Marrakech: villas with private pools and gardens, and apartments in Guéliz. Each listing shows its location, photos and a starting price per night."
+        "a": "In Morocco, France and Belgium. Our current listings are villas with private pools and gardens in Marrakech, and apartments in Guéliz. Each listing shows its location, photos and a starting price per night."
       },
       {
         "q": "Can I book local experiences or travel guides?",
-        "a": "Not yet. Local experiences, travel guides and stays in France and Belgium are coming soon, and each will appear on the site once it is ready."
+        "a": "Not yet. Local experiences and travel guides are coming soon, and each will appear on the site once it is ready."
       },
       {
-        "q": "I have a place in Morocco. How do I list it on LOC?",
+        "q": "I have a place in Morocco, France or Belgium. How do I list it on LOC?",
         "a": "Tell us about it from the List with us page and our team will get back to you."
       },
       {
@@ -473,7 +479,7 @@
       },
       {
         "q": "Which countries is LOC in?",
-        "a": "Morocco today. France and Belgium are next."
+        "a": "Currently operating in Morocco, France and Belgium."
       }
     ]
   }
