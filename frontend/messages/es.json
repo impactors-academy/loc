@@ -374,7 +374,7 @@
     "ctaSecondary": "Explorar experiencias"
   },
   "home": {
-    "heroEyebrow": "Villas y apartamentos · Marruecos, Francia, Bélgica",
+    "heroEyebrow": "Villas y apartamentos en Marruecos, Francia y Bélgica",
     "quickLinksLabel": "Búsquedas populares",
     "search": {
       "tabsLabel": "Qué buscas",
@@ -441,7 +441,7 @@
       },
       {
         "q": "¿Dónde puedo alojarme con LOC?",
-        "a": "En Marruecos, Francia y Bélgica. Nuestros anuncios actuales son villas con piscina privada y jardín en Marrakech, y apartamentos en Guéliz y Tánger. Cada anuncio muestra su ubicación, fotos y un precio de partida por noche."
+        "a": "En Marruecos, Francia y Bélgica. Nuestros anuncios actuales son villas con piscina privada y jardín en Marrakech, y apartamentos en Guéliz. Cada anuncio muestra su ubicación, fotos y un precio de partida por noche."
       },
       {
         "q": "¿Puedo reservar experiencias locales o guías de viaje?",
@@ -479,7 +479,7 @@
       },
       {
         "q": "¿En qué países está LOC?",
-        "a": "Marruecos, Francia y Bélgica."
+        "a": "Actualmente operamos en Marruecos, Francia y Bélgica."
       }
     ]
   }

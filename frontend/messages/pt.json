@@ -374,7 +374,7 @@
     "ctaSecondary": "Explorar experiências"
   },
   "home": {
-    "heroEyebrow": "Moradias e apartamentos · Marrocos, França, Bélgica",
+    "heroEyebrow": "Moradias e apartamentos em Marrocos, França e Bélgica",
     "quickLinksLabel": "Pesquisas populares",
     "search": {
       "tabsLabel": "O que procura",
@@ -441,7 +441,7 @@
       },
       {
         "q": "Onde posso ficar com a LOC?",
-        "a": "Em Marrocos, França e Bélgica. Os nossos anúncios atuais são moradias com piscina privada e jardim em Marraquexe, e apartamentos em Guéliz e Tânger. Cada anúncio mostra a localização, fotos e um preço inicial por noite."
+        "a": "Em Marrocos, França e Bélgica. Os nossos anúncios atuais são moradias com piscina privada e jardim em Marraquexe, e apartamentos em Guéliz. Cada anúncio mostra a localização, fotos e um preço inicial por noite."
       },
       {
         "q": "Posso reservar experiências locais ou guias de viagem?",
@@ -479,7 +479,7 @@
       },
       {
         "q": "Em que países está a LOC?",
-        "a": "Marrocos, França e Bélgica."
+        "a": "Atualmente a operar em Marrocos, França e Bélgica."
       }
     ]
   }

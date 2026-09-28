@@ -374,7 +374,7 @@
     "ctaSecondary": "Explorer les expériences"
   },
   "home": {
-    "heroEyebrow": "Villas et appartements · Maroc, France, Belgique",
+    "heroEyebrow": "Villas et appartements au Maroc, en France et en Belgique",
     "quickLinksLabel": "Recherches populaires",
     "search": {
       "tabsLabel": "Que recherchez-vous",
@@ -441,7 +441,7 @@
       },
       {
         "q": "Où puis-je loger avec LOC ?",
-        "a": "Au Maroc, en France et en Belgique. Nos annonces actuelles sont des villas avec piscine privée et jardin à Marrakech, et des appartements à Guéliz et à Tanger. Chaque annonce indique son emplacement, ses photos et un prix de départ par nuit."
+        "a": "Au Maroc, en France et en Belgique. Nos annonces actuelles sont des villas avec piscine privée et jardin à Marrakech, et des appartements à Guéliz. Chaque annonce indique son emplacement, ses photos et un prix de départ par nuit."
       },
       {
         "q": "Puis-je réserver des expériences locales ou des guides de voyage ?",
@@ -479,7 +479,7 @@
       },
       {
         "q": "Dans quels pays LOC est-il présent ?",
-        "a": "Au Maroc, en France et en Belgique."
+        "a": "Actuellement présents au Maroc, en France et en Belgique."
       }
     ]
   }

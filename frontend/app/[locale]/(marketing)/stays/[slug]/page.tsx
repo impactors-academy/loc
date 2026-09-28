@@ -143,7 +143,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             {property.images.length > 0 && (
               <PropertyGallery
                 images={property.images}
-                title={property.title}
+                title={tidyDashes(property.title)}
                 showAllLabel={tCommon("showAllPhotos", { count: property.images.length })}
               />
             )}
@@ -163,7 +163,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 {property.videoUrl && (
                   <section className="py-10 border-b border-loc-night/10">
-                    <YouTubeEmbed url={property.videoUrl} title={property.title} />
+                    <YouTubeEmbed url={property.videoUrl} title={tidyDashes(property.title)} />
                   </section>
                 )}
 
@@ -191,7 +191,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div className="mb-6">
                     <TrustStrip />
                   </div>
-                  <InquiryForm subject={`Inquiry about stay: ${property.title}`} />
+                  <InquiryForm subject={`Inquiry about stay: ${tidyDashes(property.title)}`} />
                 </div>
               </aside>
             </div>
