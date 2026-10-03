@@ -19,7 +19,7 @@ export const TEAM: TeamMember[] = [
   {
     slug: "emmanuel-morris",
     name: "Emmanuel Morris (MENDER)",
-    role: { en: "Founder & Engineer, Impactors Academy", fr: "Fondateur & Ingénieur, Impactors Academy", es: "Fundador e Ingeniero, Impactors Academy", pt: "Fundador e Engenheiro, Impactors Academy" },
+    role: { en: "Co-Founder, LOC", fr: "Cofondateur, LOC", es: "Cofundador, LOC", pt: "Cofundador, LOC" },
     photo: "/images/team/emmanuel-morris.jpg",
   },
   {
